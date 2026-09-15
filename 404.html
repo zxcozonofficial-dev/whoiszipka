@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>404 — Зипка</title>
+<link rel="icon" href="assets/favicon.png" type="image/png" sizes="64x64">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,380..560&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root{
+    --bg: #f2f1ee;
+    --ink: #171614;
+    --ink-soft: #6b6a65;
+    --line: #cfcdc7;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #121211;
+      --ink: #efeee9;
+      --ink-soft: #928f87;
+      --line: #34332c;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg: #121211;
+    --ink: #efeee9;
+    --ink-soft: #928f87;
+    --line: #34332c;
+  }
+
+  *{ box-sizing: border-box; }
+  html, body{ height: 100%; }
+  body{
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .scene{
+    position: relative;
+    text-align: center;
+    max-width: 520px;
+  }
+
+  .code{
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 480;
+    font-size: clamp(110px, 26vw, 230px);
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    margin: 0;
+    position: relative;
+    display: inline-flex;
+  }
+  .code span{
+    display: inline-block;
+    animation: drop 2.6s cubic-bezier(.34,1.56,.64,1) infinite;
+  }
+  .code span:nth-child(1){ animation-delay: 0s; }
+  .code span:nth-child(2){ color: var(--ink-soft); animation-delay: .12s; }
+  .code span:nth-child(3){ animation-delay: .24s; }
+
+  @keyframes drop{
+    0%, 40%, 100%{ transform: translateY(0); }
+    20%{ transform: translateY(-14px); }
+  }
+
+  .snap{
+    position: absolute;
+    left: 50%;
+    top: 62%;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--ink-soft);
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    animation: spark 2.6s ease-out infinite;
+  }
+  @keyframes spark{
+    0%, 38%{ opacity: 0; transform: translate(-50%,-50%) scale(0); }
+    42%{ opacity: .8; }
+    60%{ opacity: 0; transform: translate(-50%,-50%) scale(14); }
+    100%{ opacity: 0; }
+  }
+
+  .eyebrow{
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 18px 0 0;
+  }
+  .msg{
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin: 10px 0 0;
+  }
+  .msg code{
+    color: var(--ink);
+    background: color-mix(in srgb, var(--ink) 8%, transparent);
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+
+  .home{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 28px;
+    font-size: 12.5px;
+    letter-spacing: 0.02em;
+    color: var(--bg);
+    background: var(--ink);
+    padding: 11px 18px;
+    border-radius: 3px;
+    text-decoration: none;
+    transition: transform .15s ease, opacity .15s ease;
+  }
+  .home:hover, .home:focus-visible{ opacity: 0.8; transform: translateY(-1px); }
+  .home:focus-visible{ outline: 1px solid var(--ink); outline-offset: 3px; }
+
+  @media (prefers-reduced-motion: reduce){
+    .code span{ animation: none; }
+    .snap{ animation: none; opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scene">
+  <p class="code" aria-label="404">
+    <span>4</span><span>0</span><span>4</span>
+  </p>
+  <span class="snap" aria-hidden="true"></span>
+  <p class="eyebrow">страница не найдена</p>
+  <p class="msg">такой страницы нет — проверь адрес, или это была <code>черновик</code>, который ещё не доехал.</p>
+  <a class="home" href="/whoiszipka/">На главную ↗</a>
+</div>
+
+</body>
+</html>
