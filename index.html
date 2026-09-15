@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Зипка — веб-дизайн и разработка</title>
+<meta name="description" content="Зипка — веб-дизайн и разработка сайтов. Работы: ВиброЭксперт СПб, ВиброРотор, Hakune.">
+<meta property="og:title" content="Зипка">
+<meta property="og:description" content="Веб-дизайн и разработка сайтов.">
+<meta property="og:image" content="assets/logo-full.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="assets/logo-crop.png" type="image/png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,380..560&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap');
+
+  :root{
+    --bg: #f2f1ee;
+    --ink: #171614;
+    --ink-soft: #6b6a65;
+    --line: #cfcdc7;
+    --fill: #171614;
+    --on-fill: #f2f1ee;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #121211;
+      --ink: #efeee9;
+      --ink-soft: #928f87;
+      --line: #34332c;
+      --fill: #c9c6bd;
+      --on-fill: #14140f;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg: #121211;
+    --ink: #efeee9;
+    --ink-soft: #928f87;
+    --line: #34332c;
+    --fill: #c9c6bd;
+    --on-fill: #14140f;
+  }
+
+  *{ box-sizing: border-box; }
+  body{
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', -apple-system, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+  }
+  ::selection{ background: var(--ink); color: var(--bg); }
+  a{ color: inherit; }
+
+  #grain{
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    z-index: 50;
+  }
+
+  .wrap{
+    max-width: 860px;
+    margin: 0 auto;
+    padding-inline: clamp(20px, 5vw, 40px);
+    position: relative;
+  }
+
+  .mono{ font-family: 'IBM Plex Mono', ui-monospace, monospace; }
+
+  /* hero */
+  .hero{
+    padding-block: clamp(56px, 12vw, 108px) clamp(36px, 7vw, 56px);
+    position: relative;
+    overflow: hidden;
+  }
+  .eyebrow{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 18px;
+  }
+  h1{
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 480;
+    font-size: clamp(56px, 13vw, 132px);
+    line-height: 0.88;
+    letter-spacing: -0.02em;
+    margin: 0;
+    text-wrap: balance;
+    position: relative;
+    z-index: 2;
+  }
+  h1 .dim{ color: var(--ink-soft); }
+  .lede{
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 42ch;
+    margin: 24px 0 0;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-meta{
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 26px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 2;
+  }
+  .cta{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.02em;
+    color: var(--bg);
+    background: var(--ink);
+    padding: 11px 18px;
+    border-radius: 3px;
+    text-decoration: none;
+    transition: transform .15s ease, opacity .15s ease;
+  }
+  .cta:hover, .cta:focus-visible{ opacity: 0.8; transform: translateY(-1px); }
+  .cta:focus-visible{ outline: 1px solid var(--ink); outline-offset: 3px; }
+  .hero-count{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .avatar{
+    position: absolute;
+    right: clamp(-10px, 1vw, 24px);
+    top: 50%;
+    transform: translateY(-50%) rotate(-3deg);
+    width: clamp(110px, 20vw, 220px);
+    height: clamp(110px, 20vw, 220px);
+    z-index: 1;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid var(--line);
+    box-shadow: 0 18px 40px -20px rgba(0,0,0,0.35);
+    pointer-events: none;
+  }
+  .avatar img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  @media (max-width: 640px){
+    .avatar{
+      position: static;
+      transform: none;
+      width: 84px;
+      height: 84px;
+      margin-top: 24px;
+    }
+  }
+
+  /* section */
+  section{ padding-block: clamp(28px, 5vw, 40px); }
+  .section-title{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 12px;
+  }
+
+  /* work rows */
+  .row{
+    display: grid;
+    grid-template-columns: 34px 1fr auto;
+    align-items: baseline;
+    gap: 8px 16px;
+    padding: 22px 14px;
+    margin-inline: -14px;
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+    color: inherit;
+    border-radius: 4px;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .row::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--fill);
+    border-radius: inherit;
+    transform: scaleX(0);
+    transform-origin: left center;
+    z-index: -1;
+    transition: transform .5s cubic-bezier(.22,1,.36,1);
+  }
+  .row:hover::before, .row:focus-visible::before{ transform: scaleX(1); }
+  .row:last-child{ border-bottom: none; }
+  .row-index,
+  .row-title,
+  .row-desc,
+  .row-url{
+    transition: color .45s ease .04s;
+  }
+  .row:hover .row-index, .row:focus-visible .row-index{ color: var(--on-fill); opacity: 0.6; }
+  .row-index{
+    grid-row: 1;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .row-title{
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: clamp(20px, 3.2vw, 25px);
+    font-weight: 500;
+  }
+  .row:hover .row-title, .row:focus-visible .row-title{ color: var(--on-fill); }
+  .row:focus-visible{ outline: 1px solid var(--ink); outline-offset: 2px; }
+  .row-desc{
+    grid-column: 1 / -1;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 50ch;
+  }
+  .row:hover .row-desc, .row:focus-visible .row-desc{ color: var(--on-fill); opacity: 0.72; }
+  .row-url{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  .row:hover .row-url, .row:focus-visible .row-url{ color: var(--on-fill); opacity: 0.75; }
+  @media (prefers-reduced-motion: reduce){
+    .row::before{ transition: none; }
+    .row-index, .row-title, .row-desc, .row-url{ transition: none; }
+  }
+  @media (max-width: 560px){
+    .row{ grid-template-columns: 26px 1fr; }
+    .row-url{ grid-column: 1 / -1; }
+  }
+
+  /* about */
+  .about{
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    max-width: 56ch;
+  }
+  .about strong{ color: var(--ink); font-weight: 500; }
+
+  /* contact */
+  .contact-list{
+    display: flex;
+    flex-direction: column;
+  }
+  .contact-row{
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding-block: 16px;
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+  }
+  .contact-row:last-child{ border-bottom: none; }
+  .contact-label{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .contact-value-wrap{
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .contact-value{
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: clamp(16px, 2.6vw, 19px);
+    font-weight: 480;
+    transition: color .15s ease;
+  }
+  .contact-row:hover .contact-value,
+  .contact-row:focus-visible .contact-value{ color: var(--ink-soft); }
+  .contact-row:focus-visible{ outline: 1px solid var(--ink); outline-offset: 4px; }
+  .copy-hint{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    opacity: 0;
+    transition: opacity .15s ease;
+    white-space: nowrap;
+  }
+  .contact-row:hover .copy-hint{ opacity: 0.7; }
+  .copy-hint.copied{ opacity: 1; color: var(--ink); }
+
+  /* footer */
+  footer{
+    border-top: 1px solid var(--line);
+    padding-block: 24px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .footrow{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .footrow a{ text-decoration: underline; text-underline-offset: 3px; }
+  .footrow a:hover{ color: var(--ink); }
+  .footmark{
+    display: inline-flex;
+    align-items: center;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 3px 6px;
+    opacity: 0.7;
+  }
+  .footmark img{
+    height: 10px;
+    width: auto;
+    display: block;
+    image-rendering: pixelated;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="grain"></canvas>
+
+<main>
+  <div class="hero wrap">
+    <p class="eyebrow">Web design & development</p>
+    <h1>Зипка<span class="dim">.</span></h1>
+    <div class="avatar"><img src="assets/logo-crop.png" alt="justzipka" style="object-fit: cover;"></div>
+    <p class="lede">Делаю сайты. Ниже — примеры работ.</p>
+    <div class="hero-meta">
+      <a class="cta" href="https://t.me/holyfear" target="_blank" rel="noopener">Написать в Telegram ↗</a>
+      <span class="hero-count">3 проекта</span>
+    </div>
+  </div>
+
+  <section class="wrap">
+    <div class="section-title">Работы</div>
+
+    <a class="row" href="https://vibroexpertspb.ru/" target="_blank" rel="noopener">
+      <span class="row-index mono">01</span>
+      <span class="row-title">ВиброЭксперт СПб</span>
+      <span class="row-url mono">vibroexpertspb.ru</span>
+      <span class="row-desc">Сайт компании по вибродиагностике оборудования.</span>
+    </a>
+
+    <a class="row" href="https://vibrorotor.ru/" target="_blank" rel="noopener">
+      <span class="row-index mono">02</span>
+      <span class="row-title">ВиброРотор</span>
+      <span class="row-url mono">vibrorotor.ru</span>
+      <span class="row-desc">Сайт по балансировке роторов.</span>
+    </a>
+
+    <a class="row" href="https://hakune.blog/" target="_blank" rel="noopener">
+      <span class="row-index mono">03</span>
+      <span class="row-title">Hakune</span>
+      <span class="row-url mono">hakune.blog</span>
+      <span class="row-desc">Личный блог.</span>
+    </a>
+  </section>
+
+  <section class="wrap">
+    <div class="section-title">О себе</div>
+    <p class="about">Собираю сайты от макета до продакшена — вёрстка, минимальный бэкенд, внимание к деталям. Пишу на <strong>HTML/CSS/JS</strong>, если нужно — беру бэкенд на себя.</p>
+  </section>
+
+  <section id="contact" class="wrap">
+    <div class="section-title">Контакты</div>
+    <div class="contact-list">
+      <a class="contact-row" href="https://t.me/holyfear" target="_blank" rel="noopener" data-copy="@holyfear">
+        <span class="contact-label mono">Telegram</span>
+        <span class="contact-value-wrap">
+          <span class="contact-value">@holyfear</span>
+          <span class="copy-hint mono">скопировать</span>
+        </span>
+      </a>
+      <a class="contact-row" href="https://discord.com/users/1243462258395451487" target="_blank" rel="noopener" data-copy="die.ru">
+        <span class="contact-label mono">Discord</span>
+        <span class="contact-value-wrap">
+          <span class="contact-value">die.ru</span>
+          <span class="copy-hint mono">скопировать</span>
+        </span>
+      </a>
+      <a class="contact-row" href="mailto:godcomplexxed@xyecoc.com" data-copy="godcomplexxed@xyecoc.com">
+        <span class="contact-label mono">Почта</span>
+        <span class="contact-value-wrap">
+          <span class="contact-value">godcomplexxed@xyecoc.com</span>
+          <span class="copy-hint mono">скопировать</span>
+        </span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap footrow">
+    <span>© 2026 Зипка</span>
+    <span class="footmark"><img src="assets/logo-full.png" alt="justzipka"></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var c = document.getElementById('grain');
+  if(!c || !c.getContext) return;
+  var ctx = c.getContext('2d');
+  var tile = 128;
+  c.width = tile; c.height = tile;
+  var img = ctx.createImageData(tile, tile);
+  for(var i=0;i<img.data.length;i+=4){
+    var v = Math.random()*255;
+    img.data[i] = v; img.data[i+1] = v; img.data[i+2] = v; img.data[i+3] = 255;
+  }
+  ctx.putImageData(img,0,0);
+  var url = c.toDataURL();
+  c.style.backgroundImage = 'url(' + url + ')';
+  c.style.backgroundRepeat = 'repeat';
+  c.style.backgroundSize = tile + 'px ' + tile + 'px';
+  c.removeAttribute('width');
+  c.removeAttribute('height');
+})();
+
+(function(){
+  var rows = document.querySelectorAll('.contact-row[data-copy]');
+  rows.forEach(function(row){
+    row.addEventListener('click', function(e){
+      var value = row.getAttribute('data-copy');
+      if(!navigator.clipboard) return;
+      navigator.clipboard.writeText(value).then(function(){
+        var hint = row.querySelector('.copy-hint');
+        if(!hint) return;
+        var original = hint.textContent;
+        hint.textContent = 'скопировано';
+        hint.classList.add('copied');
+        setTimeout(function(){
+          hint.textContent = original;
+          hint.classList.remove('copied');
+        }, 1400);
+      }).catch(function(){});
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
