@@ -345,16 +345,19 @@
     display: block;
     image-rendering: pixelated;
   }
+  .counter-chip{
+    display: inline-flex;
+    align-items: center;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 4px 7px;
+  }
   .counter{
     display: block;
-    height: 18px;
+    height: 26px;
     width: auto;
-    opacity: 0.85;
   }
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]) .counter{ mix-blend-mode: screen; }
-  }
-  :root[data-theme="dark"] .counter{ mix-blend-mode: screen; }
 </style>
 </head>
 <body>
@@ -434,7 +437,7 @@
 <footer>
   <div class="wrap footrow">
     <span>© 2026 Зипка</span>
-    <img class="counter" src="https://count.getloli.com/get/@whoiszipka?theme=moebooru" alt="счётчик посещений">
+    <span class="counter-chip"><img class="counter" src="https://count.getloli.com/get/@whoiszipka?theme=moebooru" alt="счётчик посещений"></span>
     <span class="footmark"><img src="assets/logo-full.png" alt="justzipka"></span>
   </div>
 </footer>
