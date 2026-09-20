@@ -22,10 +22,10 @@
     --line: #cfcdc7;
     --fill: #171614;
     --on-fill: #f2f1ee;
-    --paper: #fbf9f4;
+    /* paper stays light in both themes — it is paper */
+    --paper: #f4f0e7;
     --paper-ink: #171614;
     --paper-soft: #6b6a65;
-    --paper-line: #d9d5cb;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
@@ -35,10 +35,6 @@
       --line: #34332c;
       --fill: #c9c6bd;
       --on-fill: #14140f;
-      --paper: #1e1d1a;
-      --paper-ink: #efeee9;
-      --paper-soft: #928f87;
-      --paper-line: #35332c;
     }
   }
   :root[data-theme="dark"]{
@@ -48,10 +44,6 @@
     --line: #34332c;
     --fill: #c9c6bd;
     --on-fill: #14140f;
-    --paper: #1e1d1a;
-    --paper-ink: #efeee9;
-    --paper-soft: #928f87;
-    --paper-line: #35332c;
   }
 
   *{ box-sizing: border-box; }
@@ -372,105 +364,38 @@
     border-radius: 2px;
   }
 
-  /* ===== paper unfold intro ===== */
-  .unfold{
+  /* ===== crumpled paper intro ===== */
+  .crumple{
     position: relative;
-    height: 340vh;
+    height: 320vh;
   }
-  .unfold-pin{
+  .crumple-pin{
     position: sticky;
     top: 0;
     height: 100vh;
-    height: 100svh; /* stable on mobile when the browser bar hides */
-    display: grid;
-    place-items: center;
+    height: 100svh;
     overflow: hidden;
-    perspective: 1500px;
-    perspective-origin: 50% 46%;
   }
-  .paper{
-    /* driven by JS; these are the folded starting values */
-    --u-fy: 180;   /* right column folded over the left */
-    --u-fx: 180;   /* top halves folded down over the bottom */
-    --u-cz: 8;     /* z offsets that keep folded layers from z-fighting */
-    --u-qz: 4;
-    --u-scale: 0.26;
-    --u-tilt: 46;
-    --u-twist: -9;
-    --u-rise: 70;
-    --u-flat: 0;
-
-    width: min(94vw, 1000px);
-    height: min(82vh, 680px);
-    position: relative;
-    transform-style: preserve-3d;
-    will-change: transform;
-    transform:
-      translateY(calc(var(--u-rise) * 1px))
-      rotateX(calc(var(--u-tilt) * 1deg))
-      rotateZ(calc(var(--u-twist) * 1deg))
-      scale(var(--u-scale));
-  }
-  /* two columns; the right one folds over the left */
-  .col{
-    position: absolute;
-    top: 0;
-    width: 50%;
-    height: 100%;
-    transform-style: preserve-3d;
-  }
-  .col-l{ left: 0; }
-  .col-r{
-    left: 50%;
-    transform-origin: 0% 50%;
-    transform: translateZ(calc(var(--u-cz) * 1px)) rotateY(calc(var(--u-fy) * -1deg));
-  }
-  /* each column splits into two quarters; the top one folds down */
-  .q{
-    position: absolute;
-    left: 0;
-    width: 100%;
-    height: 50%;
-    background: var(--paper);
-    transform-style: preserve-3d;
-    backface-visibility: visible;
-    box-shadow: 0 18px 40px -22px rgba(0,0,0,.5);
-  }
-  /* shading that fades out as the sheet flattens */
-  .q::after{
-    content: "";
+  #paper-gl{
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(0,0,0,.07), rgba(0,0,0,0) 55%);
-    opacity: calc(1 - var(--u-flat));
-    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    display: block;
   }
-  .q-b{ top: 50%; }
-  .q-t{
-    top: 0;
-    transform-origin: 50% 100%;
-    transform: translateZ(calc(var(--u-qz) * 1px)) rotateX(calc(var(--u-fx) * -1deg));
-  }
-  /* crease lines, visible only once flat */
-  .crease{
-    position: absolute;
-    background: var(--paper-line);
-    opacity: calc(var(--u-flat) * 0.5);
-    transform: translateZ(9px);
-    pointer-events: none;
-  }
-  .crease-h{ left: 0; width: 100%; top: 50%; height: 1px; }
-  .crease-v{ top: 0; height: 100%; left: 50%; width: 1px; }
-
   .paper-copy{
     position: absolute;
-    inset: 0;
-    transform: translateZ(8px);
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(94vw, 1000px);
+    height: min(82vh, 680px);
+    height: min(82svh, 680px); /* matches the sheet the renderer draws */
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 12px;
-    padding: clamp(24px, 5vw, 64px);
+    padding: clamp(26px, 5vw, 66px);
     pointer-events: none;
   }
   .pc-line{
@@ -501,8 +426,7 @@
     color: var(--paper-soft);
     max-width: 46ch;
   }
-
-  .unfold-hint{
+  .crumple-hint{
     position: absolute;
     bottom: 26px;
     left: 50%;
@@ -515,30 +439,31 @@
   }
 
   @media (max-width: 640px){
-    .unfold{ height: 300vh; }
-    .paper{ width: 92vw; height: 76vh; }
-    .unfold-pin{ perspective: 1000px; }
+    .crumple{ height: 320vh; }
   }
 
-  @media (prefers-reduced-motion: reduce){
-    .unfold{ height: auto; }
-    .unfold-pin{
-      position: static;
-      height: auto;
-      padding-block: 12vh;
-      perspective: none;
-    }
-    .paper{
-      transform: none;
-      height: auto;
-      min-height: 58vh;
-      background: var(--paper);
-      border: 1px solid var(--paper-line);
-      border-radius: 6px;
-    }
-    .col, .crease, .unfold-hint{ display: none; }
-    .paper-copy{ position: static; transform: none; }
-    .pc-line{ opacity: 1 !important; transform: none !important; }
+  /* no WebGL, or motion turned off: just show a plain flat sheet */
+  .crumple.is-static{ height: auto; }
+  .crumple.is-static .crumple-pin{
+    position: static;
+    height: auto;
+    padding-block: 12vh;
+    display: grid;
+    place-items: center;
+  }
+  .crumple.is-static #paper-gl,
+  .crumple.is-static .crumple-hint{ display: none; }
+  .crumple.is-static .paper-copy{
+    position: static;
+    transform: none;
+    height: auto;
+    min-height: 58vh;
+    background: var(--paper);
+    border-radius: 6px;
+  }
+  .crumple.is-static .pc-line{
+    opacity: 1;
+    transform: none;
   }
 </style>
 </head>
@@ -547,30 +472,19 @@
 <canvas id="grain"></canvas>
 
 <main>
-  <section class="unfold" id="unfold" aria-label="Вступление">
-    <div class="unfold-pin">
-      <div class="paper">
-        <div class="col col-l">
-          <div class="q q-b"></div>
-          <div class="q q-t"></div>
-        </div>
-        <div class="col col-r">
-          <div class="q q-b"></div>
-          <div class="q q-t"></div>
-        </div>
-        <div class="crease crease-h"></div>
-        <div class="crease crease-v"></div>
-        <div class="paper-copy">
-          <p class="pc-eyebrow pc-line mono">Привет</p>
-          <h2 class="pc-big">
-            <span class="pc-line">Ну Зипка,</span>
-            <span class="pc-line">не Зипка —</span>
-            <span class="pc-line">а сайты делаю.</span>
-          </h2>
-          <p class="pc-sub pc-line">Вёрстка, дизайн, немного бэкенда. Ниже — что уже сделал.</p>
-        </div>
+  <section class="crumple" id="crumple" aria-label="Вступление">
+    <div class="crumple-pin">
+      <canvas id="paper-gl"></canvas>
+      <div class="paper-copy">
+        <p class="pc-eyebrow pc-line mono">Привет</p>
+        <h2 class="pc-big">
+          <span class="pc-line">Ну Зипка,</span>
+          <span class="pc-line">не Зипка —</span>
+          <span class="pc-line">а сайты делаю.</span>
+        </h2>
+        <p class="pc-sub pc-line">Вёрстка, дизайн, немного бэкенда. Ниже — что уже сделал.</p>
       </div>
-      <div class="unfold-hint mono">прокрути вниз ↓</div>
+      <div class="crumple-hint mono">прокрути вниз ↓</div>
     </div>
   </section>
 
@@ -673,63 +587,246 @@
 })();
 
 (function(){
-  var sec = document.getElementById('unfold');
+  var sec = document.getElementById('crumple');
   if(!sec) return;
-  var paper = sec.querySelector('.paper');
-  var lines = Array.prototype.slice.call(sec.querySelectorAll('.pc-line'));
-  var hint = sec.querySelector('.unfold-hint');
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var canvas = document.getElementById('paper-gl');
+  var lines = [].slice.call(sec.querySelectorAll('.pc-line'));
+  var hint = sec.querySelector('.crumple-hint');
+  var reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var darkMQ = window.matchMedia('(prefers-color-scheme: dark)');
+  var debug = location.search.indexOf('debug') >= 0;
+
+  function bail(){ sec.classList.add('is-static'); }
+  if(reduceMQ.matches){ bail(); return; }
+
+  var gl = null;
+  try{
+    gl = canvas.getContext('webgl', {
+      alpha: true,
+      antialias: true,
+      premultipliedAlpha: false,
+      preserveDrawingBuffer: debug
+    });
+  }catch(e){}
+  if(!gl){ bail(); return; }
+  gl.getExtension('OES_standard_derivatives');
+
+  var VS = [
+    'precision highp float;',
+    'attribute vec2 aXY;',
+    'uniform vec2 uSheet;',
+    'uniform vec2 uRes;',
+    'uniform float uK;',
+    'uniform float uSeed;',
+    'uniform mat3 uRot;',
+    'varying vec3 vPos;',
+    'float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }',
+    'float vnoise(vec2 p){',
+    '  vec2 i = floor(p);',
+    '  vec2 f = fract(p);',
+    '  vec2 u = f * f * (3.0 - 2.0 * f);',
+    '  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),',
+    '             mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);',
+    '}',
+    'float fbm(vec2 p){',
+    '  float s = 0.0; float a = 0.5;',
+    '  for(int i = 0; i < 4; i++){ s += a * vnoise(p); p *= 2.03; a *= 0.5; }',
+    '  return s;',
+    '}',
+    'float ridge(vec2 p){ return 1.0 - abs(vnoise(p) * 2.0 - 1.0); }',
+    'void main(){',
+    '  float k = uK;',
+    '  vec2 g = aXY + uSeed;',
+    '  float m = min(uSheet.x, uSheet.y);',
+    '  float wob = fbm(g * 3.0);',
+    '  vec2 ball = aXY * m * (0.40 + 0.18 * wob);',
+    '  ball += (vec2(fbm(g * 6.0 + 3.1), fbm(g * 6.0 + 9.7)) - 0.5) * m * 0.09;',
+    '  vec2 xy = mix(aXY * uSheet, ball, k);',
+    '  float r = ridge(g * 3.2) * 0.56 + ridge(g * 6.5) * 0.29 + ridge(g * 13.0) * 0.15;',
+    '  float z = (r - 0.42) * pow(k, 1.35) * m * 0.48;',
+    '  vec3 p = uRot * vec3(xy, z);',
+    '  vPos = p;',
+    '  float pf = 1.0 + p.z * 0.0006;',
+    '  gl_Position = vec4(p.x * pf * 2.0 / uRes.x, p.y * pf * 2.0 / uRes.y,',
+    '                     clamp(-p.z / 2000.0, -0.99, 0.99), 1.0);',
+    '}'
+  ].join('\n');
+
+  var FS = [
+    '#extension GL_OES_standard_derivatives : enable',
+    'precision highp float;',
+    'varying vec3 vPos;',
+    'uniform vec3 uPaper;',
+    'uniform float uK;',
+    'void main(){',
+    '  vec3 n = normalize(cross(dFdx(vPos), dFdy(vPos)));',
+    '  if(n.z < 0.0) n = -n;',
+    '  vec3 L = normalize(vec3(-0.32, 0.58, 0.75));',
+    '  float hl = dot(n, L) * 0.5 + 0.5;',
+    '  float shade = 0.56 + 0.44 * hl;',
+    '  shade *= mix(1.0, 0.88 + 0.12 * hl, uK);',
+    '  gl_FragColor = vec4(uPaper * shade, 1.0);',
+    '}'
+  ].join('\n');
+
+  function compile(type, src){
+    var s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    if(!gl.getShaderParameter(s, gl.COMPILE_STATUS)){
+      window.__glError = gl.getShaderInfoLog(s);
+      return null;
+    }
+    return s;
+  }
+  var vs = compile(gl.VERTEX_SHADER, VS);
+  var fs = compile(gl.FRAGMENT_SHADER, FS);
+  if(!vs || !fs){ bail(); return; }
+  var prog = gl.createProgram();
+  gl.attachShader(prog, vs);
+  gl.attachShader(prog, fs);
+  gl.linkProgram(prog);
+  if(!gl.getProgramParameter(prog, gl.LINK_STATUS)){
+    window.__glError = gl.getProgramInfoLog(prog);
+    bail();
+    return;
+  }
+
+  var loc = {
+    aXY: gl.getAttribLocation(prog, 'aXY'),
+    uSheet: gl.getUniformLocation(prog, 'uSheet'),
+    uRes: gl.getUniformLocation(prog, 'uRes'),
+    uK: gl.getUniformLocation(prog, 'uK'),
+    uSeed: gl.getUniformLocation(prog, 'uSeed'),
+    uRot: gl.getUniformLocation(prog, 'uRot'),
+    uPaper: gl.getUniformLocation(prog, 'uPaper')
+  };
+
+  /* grid of the sheet */
+  var N = 160;
+  var verts = new Float32Array((N + 1) * (N + 1) * 2);
+  var t = 0;
+  for(var j = 0; j <= N; j++){
+    for(var i = 0; i <= N; i++){
+      verts[t++] = i / N - 0.5;
+      verts[t++] = j / N - 0.5;
+    }
+  }
+  var idx = new Uint16Array(N * N * 6);
+  var q = 0;
+  for(var jj = 0; jj < N; jj++){
+    for(var ii = 0; ii < N; ii++){
+      var a = jj * (N + 1) + ii, b = a + 1, c = a + (N + 1), d = c + 1;
+      idx[q++] = a; idx[q++] = c; idx[q++] = b;
+      idx[q++] = b; idx[q++] = c; idx[q++] = d;
+    }
+  }
+  var vbo = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+  gl.bufferData(gl.ARRAY_BUFFER, verts, gl.STATIC_DRAW);
+  var ibo = gl.createBuffer();
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, idx, gl.STATIC_DRAW);
+
+  var paperRGB = [0.98, 0.976, 0.957];
+  function readPaper(){
+    var v = getComputedStyle(document.documentElement).getPropertyValue('--paper').trim();
+    var m = /^#([0-9a-f]{6})$/i.exec(v);
+    if(m){
+      var n = parseInt(m[1], 16);
+      paperRGB = [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
+    }
+  }
+  readPaper();
+  if(darkMQ.addEventListener) darkMQ.addEventListener('change', readPaper);
 
   function clamp01(v){ return v < 0 ? 0 : (v > 1 ? 1 : v); }
   function range(p, a, b){ return clamp01((p - a) / (b - a)); }
   function easeInOut(t){ return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2; }
   function easeOut(t){ return 1 - Math.pow(1 - t, 3); }
-  function lerp(a, b, t){ return a + (b - a) * t; }
 
-  var ticking = false;
+  var rotBuf = new Float32Array(9);
+  function rot(ax, ay){
+    var cx = Math.cos(ax), sx = Math.sin(ax), cy = Math.cos(ay), sy = Math.sin(ay);
+    rotBuf[0] = cy;      rotBuf[1] = 0;   rotBuf[2] = -sy;
+    rotBuf[3] = sy * sx; rotBuf[4] = cx;  rotBuf[5] = cy * sx;
+    rotBuf[6] = sy * cx; rotBuf[7] = -sx; rotBuf[8] = cy * cx;
+    return rotBuf;
+  }
 
-  function apply(){
-    ticking = false;
-    if(reduce.matches) return;
+  function draw(p, now){
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    if(!w || !h) return;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var cw = Math.round(w * dpr), ch = Math.round(h * dpr);
+    if(canvas.width !== cw || canvas.height !== ch){ canvas.width = cw; canvas.height = ch; }
 
-    var total = sec.offsetHeight - window.innerHeight;
-    if(total <= 0) return;
-    var p = clamp01(-sec.getBoundingClientRect().top / total);
+    var open = easeInOut(range(p, 0.05, 0.62));
+    var k = 1 - open;
+    var txt = range(p, 0.58, 0.92);
 
-    var openSide = easeInOut(range(p, 0.10, 0.48));  /* right column swings open */
-    var openTop  = easeInOut(range(p, 0.30, 0.66));  /* top halves lift up */
-    var grow     = easeInOut(range(p, 0.26, 0.82));
-    var flat     = easeInOut(range(p, 0.26, 0.86));
-    var rise     = easeOut(range(p, 0.00, 0.30));
-    var txt      = range(p, 0.70, 1.00);
+    var sheetW = Math.min(w * 0.94, 1000);
+    var sheetH = Math.min(h * 0.82, 680);
 
-    var s = paper.style;
-    s.setProperty('--u-fy', (180 * (1 - openSide)).toFixed(2));
-    s.setProperty('--u-fx', (180 * (1 - openTop)).toFixed(2));
-    s.setProperty('--u-cz', (8 * (1 - openSide)).toFixed(2));
-    s.setProperty('--u-qz', (4 * (1 - openTop)).toFixed(2));
-    s.setProperty('--u-scale', lerp(0.26, 1, grow).toFixed(4));
-    s.setProperty('--u-tilt', lerp(46, 0, flat).toFixed(2));
-    s.setProperty('--u-twist', lerp(-9, 0, flat).toFixed(2));
-    s.setProperty('--u-rise', lerp(70, 0, rise).toFixed(2));
-    s.setProperty('--u-flat', flat.toFixed(3));
+    var idle = Math.sin(now * 0.00045) * 0.22;
+    var ax = k * 0.26;
+    var ay = k * (-0.40 + idle);
+
+    gl.viewport(0, 0, cw, ch);
+    gl.enable(gl.DEPTH_TEST);
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gl.useProgram(prog);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+    gl.enableVertexAttribArray(loc.aXY);
+    gl.vertexAttribPointer(loc.aXY, 2, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
+    gl.uniform2f(loc.uSheet, sheetW, sheetH);
+    gl.uniform2f(loc.uRes, w, h);
+    gl.uniform1f(loc.uK, k);
+    gl.uniform1f(loc.uSeed, 4.37);
+    gl.uniform3f(loc.uPaper, paperRGB[0], paperRGB[1], paperRGB[2]);
+    gl.uniformMatrix3fv(loc.uRot, false, rot(ax, ay));
+    gl.drawElements(gl.TRIANGLES, idx.length, gl.UNSIGNED_SHORT, 0);
 
     for(var i = 0; i < lines.length; i++){
-      var t = easeOut(clamp01((txt - i * 0.12) / 0.5));
-      lines[i].style.opacity = t.toFixed(3);
-      lines[i].style.transform = 'translateY(' + (16 * (1 - t)).toFixed(2) + 'px)';
+      var tv = easeOut(clamp01((txt - i * 0.11) / 0.45));
+      lines[i].style.opacity = tv.toFixed(3);
+      lines[i].style.transform = 'translateY(' + (16 * (1 - tv)).toFixed(2) + 'px)';
     }
-    if(hint) hint.style.opacity = (1 - clamp01(p / 0.12)).toFixed(3);
+    if(hint) hint.style.opacity = (1 - clamp01(p / 0.1)).toFixed(3);
   }
 
-  function onScroll(){
-    if(!ticking){ ticking = true; requestAnimationFrame(apply); }
+  function progress(){
+    var total = sec.offsetHeight - window.innerHeight;
+    if(total <= 0) return 0;
+    return clamp01(-sec.getBoundingClientRect().top / total);
   }
 
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll);
-  if(reduce.addEventListener) reduce.addEventListener('change', apply);
-  apply();
+  var running = false, rafId = 0;
+  function loop(now){
+    rafId = 0;
+    draw(progress(), now);
+    if(running) rafId = requestAnimationFrame(loop);
+  }
+  function start(){ if(!running){ running = true; if(!rafId) rafId = requestAnimationFrame(loop); } }
+  function stop(){ running = false; }
+
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(es){
+      if(es[0].isIntersecting) start(); else stop();
+    }, { threshold: 0 }).observe(sec);
+  } else {
+    start();
+  }
+  window.addEventListener('resize', function(){ draw(progress(), 0); });
+  draw(progress(), 0);
+
+  /* used only by the local screenshot harness */
+  window.__frame = function(pv){
+    draw(pv, 0);
+    return canvas.toDataURL('image/png');
+  };
 })();
 
 (function(){
