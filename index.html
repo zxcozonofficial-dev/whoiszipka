@@ -359,6 +359,20 @@
     width: auto;
     border-radius: 2px;
   }
+
+  /* scroll reveal */
+  .reveal{
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity .6s ease, transform .6s ease;
+  }
+  .reveal.in{
+    opacity: 1;
+    transform: none;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ opacity: 1; transform: none; transition: none; }
+  }
 </style>
 </head>
 <body>
@@ -380,21 +394,21 @@
   <section class="wrap">
     <div class="section-title">Работы</div>
 
-    <a class="row" href="https://vibroexpertspb.ru/" target="_blank" rel="noopener">
+    <a class="row reveal" href="https://vibroexpertspb.ru/" target="_blank" rel="noopener">
       <span class="row-index mono">01</span>
       <span class="row-title">ВиброЭксперт СПб</span>
       <span class="row-url mono">vibroexpertspb.ru</span>
       <span class="row-desc">Сайт компании по вибродиагностике оборудования.</span>
     </a>
 
-    <a class="row" href="https://vibrorotor.ru/" target="_blank" rel="noopener">
+    <a class="row reveal" href="https://vibrorotor.ru/" target="_blank" rel="noopener">
       <span class="row-index mono">02</span>
       <span class="row-title">ВиброРотор</span>
       <span class="row-url mono">vibrorotor.ru</span>
       <span class="row-desc">Сайт по балансировке роторов.</span>
     </a>
 
-    <a class="row" href="https://hakune.blog/" target="_blank" rel="noopener">
+    <a class="row reveal" href="https://hakune.blog/" target="_blank" rel="noopener">
       <span class="row-index mono">03</span>
       <span class="row-title">Hakune</span>
       <span class="row-url mono">hakune.blog</span>
@@ -404,27 +418,27 @@
 
   <section class="wrap">
     <div class="section-title">О себе</div>
-    <p class="about">Собираю сайты от макета до продакшена — вёрстка, минимальный бэкенд, внимание к деталям. Пишу на <strong>HTML/CSS/JS</strong>, если нужно — беру бэкенд на себя.</p>
+    <p class="about reveal">Собираю сайты от макета до продакшена — вёрстка, минимальный бэкенд, внимание к деталям. Пишу на <strong>HTML/CSS/JS</strong>, если нужно — беру бэкенд на себя.</p>
   </section>
 
   <section id="contact" class="wrap">
     <div class="section-title">Контакты</div>
     <div class="contact-list">
-      <a class="contact-row" href="https://t.me/holyfear" target="_blank" rel="noopener" data-copy="@holyfear">
+      <a class="contact-row reveal" href="https://t.me/holyfear" target="_blank" rel="noopener" data-copy="@holyfear">
         <span class="contact-label mono">Telegram</span>
         <span class="contact-value-wrap">
           <span class="contact-value">@holyfear</span>
           <span class="copy-hint mono">скопировать</span>
         </span>
       </a>
-      <a class="contact-row" href="https://discord.com/users/1243462258395451487" target="_blank" rel="noopener" data-copy="die.ru">
+      <a class="contact-row reveal" href="https://discord.com/users/1243462258395451487" target="_blank" rel="noopener" data-copy="die.ru">
         <span class="contact-label mono">Discord</span>
         <span class="contact-value-wrap">
           <span class="contact-value">die.ru</span>
           <span class="copy-hint mono">скопировать</span>
         </span>
       </a>
-      <a class="contact-row" href="mailto:godcomplexxed@xyecoc.com" data-copy="godcomplexxed@xyecoc.com">
+      <a class="contact-row reveal" href="mailto:godcomplexxed@xyecoc.com" data-copy="godcomplexxed@xyecoc.com">
         <span class="contact-label mono">Почта</span>
         <span class="contact-value-wrap">
           <span class="contact-value">godcomplexxed@xyecoc.com</span>
@@ -462,6 +476,27 @@
   c.style.backgroundSize = tile + 'px ' + tile + 'px';
   c.removeAttribute('width');
   c.removeAttribute('height');
+})();
+
+(function(){
+  var els = document.querySelectorAll('.reveal');
+  if(!els.length) return;
+  if(!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    els.forEach(function(el){ el.classList.add('in'); });
+    return;
+  }
+  els.forEach(function(el, i){
+    el.style.transitionDelay = Math.min(i * 70, 210) + 'ms';
+  });
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+  els.forEach(function(el){ io.observe(el); });
 })();
 
 (function(){
