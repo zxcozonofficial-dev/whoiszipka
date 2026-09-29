@@ -1,509 +1,495 @@
 <!-- ыжадэж агурес -->
 <!doctype html>
-<html lang="ru">
+<html lang="ru" class="no-js" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Зипка. Веб-дизайн и разработка</title>
-<meta name="description" content="Зипка. Делаю сайты и Telegram-ботов. Работы: ВиброЭксперт СПб, ВиброРотор, Hakune.">
-<meta property="og:title" content="Зипка">
-<meta property="og:description" content="Делаю сайты и Telegram-ботов.">
-<meta property="og:image" content="assets/logo-full.png">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Зипка. Веб-дизайнер и разработчик</title>
+<meta name="description" content="Я Зипка (justzipka). Придумываю и собираю сайты, пишу Telegram-ботов и Mini Apps. Работы: ВиброЭксперт СПб, ВиброРотор, Hakune.">
+<meta name="author" content="Зипка">
+<meta name="theme-color" content="#0b0b0a">
+<link rel="canonical" href="https://zxcozonofficial-dev.github.io/whoiszipka/">
+
 <meta property="og:type" content="website">
-<meta name="twitter:card" content="summary">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:site_name" content="justzipka">
+<meta property="og:title" content="Зипка. Веб-дизайнер и разработчик">
+<meta property="og:description" content="Сайты, дизайн, Telegram-боты и Mini Apps. От макета до запуска.">
+<meta property="og:url" content="https://zxcozonofficial-dev.github.io/whoiszipka/">
+<meta property="og:image" content="https://zxcozonofficial-dev.github.io/whoiszipka/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Зипка. Веб-дизайнер и разработчик">
+<meta name="twitter:description" content="Сайты, дизайн, Telegram-боты и Mini Apps. От макета до запуска.">
+<meta name="twitter:image" content="https://zxcozonofficial-dev.github.io/whoiszipka/assets/og.png">
+
 <link rel="icon" href="assets/favicon.png" type="image/png" sizes="64x64">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,380..560&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap');
 
-  :root{
-    --bg: #f2f1ee;
-    --ink: #171614;
-    --ink-soft: #6b6a65;
-    --line: #cfcdc7;
-    --fill: #171614;
-    --on-fill: #f2f1ee;
-  }
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --bg: #121211;
-      --ink: #efeee9;
-      --ink-soft: #928f87;
-      --line: #34332c;
-      --fill: #c9c6bd;
-      --on-fill: #14140f;
-    }
-  }
-  :root[data-theme="dark"]{
-    --bg: #121211;
-    --ink: #efeee9;
-    --ink-soft: #928f87;
-    --line: #34332c;
-    --fill: #c9c6bd;
-    --on-fill: #14140f;
-  }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Martian+Mono:wdth,wght@75..112.5,400..600&family=Onest:wght@400..700&family=Pixelify+Sans:wght@700&family=Unbounded:wght@400..900&display=swap">
+<link rel="stylesheet" href="assets/css/style.css">
 
-  *{ box-sizing: border-box; }
-  body{
-    margin: 0;
-    background: var(--bg);
-    color: var(--ink);
-    font-family: 'IBM Plex Sans', -apple-system, 'Segoe UI', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    position: relative;
-  }
-  ::selection{ background: var(--ink); color: var(--bg); }
-  a{ color: inherit; }
+<script>
+  (function () {
+    var d = document.documentElement;
+    if (!('noModule' in HTMLScriptElement.prototype)) return;
+    d.classList.remove('no-js');
+    d.classList.add('js');
+    try {
+      var t = localStorage.getItem('zipka-theme');
+      if (t === 'light' || t === 'dark') d.setAttribute('data-theme', t);
+    } catch (e) {}
+    var skip = false;
+    try { skip = sessionStorage.getItem('zipka-unzipped') === '1'; } catch (e) {}
+    if (skip || window.matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('skip-intro');
+  })();
+</script>
+<script type="module" src="assets/js/main.js"></script>
 
-  #grain{
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    opacity: 0.05;
-    mix-blend-mode: overlay;
-    z-index: 50;
-  }
-
-  .wrap{
-    max-width: 860px;
-    margin: 0 auto;
-    padding-inline: clamp(20px, 5vw, 40px);
-    position: relative;
-  }
-
-  .mono{ font-family: 'IBM Plex Mono', ui-monospace, monospace; }
-
-  /* hero */
-  .hero{
-    padding-block: clamp(56px, 12vw, 108px) clamp(36px, 7vw, 56px);
-    position: relative;
-    overflow: hidden;
-  }
-  .eyebrow{
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    margin: 0 0 18px;
-  }
-  h1{
-    font-family: 'Fraunces', Georgia, serif;
-    font-weight: 480;
-    font-size: clamp(56px, 13vw, 132px);
-    line-height: 0.88;
-    letter-spacing: -0.02em;
-    margin: 0;
-    text-wrap: balance;
-    position: relative;
-    z-index: 2;
-  }
-  h1 .dim{ color: var(--ink-soft); }
-  .lede{
-    font-size: 16px;
-    line-height: 1.6;
-    color: var(--ink-soft);
-    max-width: 42ch;
-    margin: 24px 0 0;
-    position: relative;
-    z-index: 2;
-  }
-  .hero-meta{
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-top: 26px;
-    flex-wrap: wrap;
-    position: relative;
-    z-index: 2;
-  }
-  .cta{
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12.5px;
-    letter-spacing: 0.02em;
-    color: var(--bg);
-    background: var(--ink);
-    padding: 11px 18px;
-    border-radius: 3px;
-    text-decoration: none;
-    transition: transform .15s ease, opacity .15s ease;
-  }
-  .cta:hover, .cta:focus-visible{ opacity: 0.8; transform: translateY(-1px); }
-  .cta:focus-visible{ outline: 1px solid var(--ink); outline-offset: 3px; }
-  .hero-count{
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    color: var(--ink-soft);
-  }
-  .avatar{
-    position: absolute;
-    right: clamp(-10px, 1vw, 24px);
-    top: 50%;
-    transform: translateY(-50%) rotate(-3deg);
-    width: clamp(110px, 20vw, 220px);
-    height: clamp(110px, 20vw, 220px);
-    z-index: 1;
-    border-radius: 14px;
-    overflow: hidden;
-    background: #fff;
-    border: 1px solid var(--line);
-    box-shadow: 0 18px 40px -20px rgba(0,0,0,0.35);
-    pointer-events: none;
-  }
-  .avatar img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  @media (max-width: 640px){
-    .avatar{
-      position: static;
-      transform: none;
-      width: 84px;
-      height: 84px;
-      margin-top: 24px;
-    }
-  }
-
-  /* section */
-  section{ padding-block: clamp(28px, 5vw, 40px); }
-  .section-title{
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    border-bottom: 1px solid var(--line);
-    padding-bottom: 12px;
-  }
-
-  /* work rows */
-  .row{
-    display: grid;
-    grid-template-columns: 34px 1fr auto;
-    align-items: baseline;
-    gap: 8px 16px;
-    padding: 22px 14px;
-    margin-inline: -14px;
-    border-bottom: 1px solid var(--line);
-    text-decoration: none;
-    color: inherit;
-    border-radius: 4px;
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-  }
-  .row::before{
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: var(--fill);
-    border-radius: inherit;
-    transform: scaleX(0);
-    transform-origin: left center;
-    z-index: -1;
-    transition: transform .5s cubic-bezier(.22,1,.36,1);
-  }
-  .row:hover::before, .row:focus-visible::before{ transform: scaleX(1); }
-  .row:last-child{ border-bottom: none; }
-  .row-index,
-  .row-title,
-  .row-desc,
-  .row-url{
-    transition: color .45s ease .04s;
-  }
-  .row:hover .row-index, .row:focus-visible .row-index{ color: var(--on-fill); opacity: 0.6; }
-  .row-index{
-    grid-row: 1;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    color: var(--ink-soft);
-  }
-  .row-title{
-    font-family: 'Fraunces', Georgia, serif;
-    font-size: clamp(20px, 3.2vw, 25px);
-    font-weight: 500;
-  }
-  .row:hover .row-title, .row:focus-visible .row-title{ color: var(--on-fill); }
-  .row:focus-visible{ outline: 1px solid var(--ink); outline-offset: 2px; }
-  .row-desc{
-    grid-column: 1 / -1;
-    font-size: 14px;
-    line-height: 1.5;
-    color: var(--ink-soft);
-    max-width: 50ch;
-  }
-  .row:hover .row-desc, .row:focus-visible .row-desc{ color: var(--on-fill); opacity: 0.72; }
-  .row-url{
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    color: var(--ink-soft);
-    white-space: nowrap;
-  }
-  .row:hover .row-url, .row:focus-visible .row-url{ color: var(--on-fill); opacity: 0.75; }
-  @media (prefers-reduced-motion: reduce){
-    .row::before{ transition: none; }
-    .row-index, .row-title, .row-desc, .row-url{ transition: none; }
-  }
-  @media (max-width: 560px){
-    .row{ grid-template-columns: 26px 1fr; }
-    .row-url{ grid-column: 1 / -1; }
-  }
-
-  /* about */
-  .about{
-    font-size: 15px;
-    line-height: 1.65;
-    color: var(--ink-soft);
-    max-width: 56ch;
-  }
-  .about strong{ color: var(--ink); font-weight: 500; }
-
-  /* contact */
-  .contact-list{
-    display: flex;
-    flex-direction: column;
-  }
-  .contact-row{
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 16px;
-    padding-block: 16px;
-    border-bottom: 1px solid var(--line);
-    text-decoration: none;
-    color: inherit;
-    position: relative;
-  }
-  .contact-row:last-child{ border-bottom: none; }
-  .contact-label{
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-  }
-  .contact-value-wrap{
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-  }
-  .contact-value{
-    font-family: 'Fraunces', Georgia, serif;
-    font-size: clamp(16px, 2.6vw, 19px);
-    font-weight: 480;
-    transition: color .15s ease;
-  }
-  .contact-row:hover .contact-value,
-  .contact-row:focus-visible .contact-value{ color: var(--ink-soft); }
-  .contact-row:focus-visible{ outline: 1px solid var(--ink); outline-offset: 4px; }
-  .copy-hint{
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 10.5px;
-    letter-spacing: 0.04em;
-    color: var(--ink-soft);
-    opacity: 0;
-    transition: opacity .15s ease;
-    white-space: nowrap;
-  }
-  .contact-row:hover .copy-hint{ opacity: 0.7; }
-  .copy-hint.copied{ opacity: 1; color: var(--ink); }
-
-  /* footer */
-  footer{
-    border-top: 1px solid var(--line);
-    padding-block: 24px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    color: var(--ink-soft);
-  }
-  .footrow{
-    display: flex;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  .footrow a{ text-decoration: underline; text-underline-offset: 3px; }
-  .footrow a:hover{ color: var(--ink); }
-  .counter-chip{
-    display: inline-flex;
-    align-items: center;
-    background: transparent;
-    border: 1px solid var(--line);
-    border-radius: 4px;
-    padding: 5px 9px;
-  }
-  .counter{
-    display: block;
-    height: 40px;
-    width: auto;
-    border-radius: 2px;
-  }
-
-  /* scroll reveal */
-  .reveal{
-    opacity: 0;
-    transform: translateY(14px);
-    transition: opacity .6s ease, transform .6s ease;
-  }
-  .reveal.in{
-    opacity: 1;
-    transform: none;
-  }
-  @media (prefers-reduced-motion: reduce){
-    .reveal{ opacity: 1; transform: none; transition: none; }
-  }
-</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Зипка",
+  "alternateName": "justzipka",
+  "jobTitle": "Веб-дизайнер и разработчик",
+  "url": "https://zxcozonofficial-dev.github.io/whoiszipka/",
+  "image": "https://zxcozonofficial-dev.github.io/whoiszipka/assets/logo-full.png",
+  "sameAs": ["https://t.me/holyfear"],
+  "knowsAbout": ["Веб-дизайн", "Вёрстка", "JavaScript", "Telegram-боты", "Telegram Mini Apps"]
+}
+</script>
 </head>
 <body>
 
-<canvas id="grain"></canvas>
+<a class="skip" href="#main">К содержимому</a>
 
-<main>
-  <div class="hero wrap">
-    <p class="eyebrow">Web design & development</p>
-    <h1>Я Зипка<span class="dim">.</span></h1>
-    <div class="avatar"><img src="assets/logo-crop.png" alt="justzipka" style="object-fit: cover;"></div>
-    <p class="lede">Делаю сайты. Ниже примеры работ.</p>
-    <div class="hero-meta">
-      <a class="cta" href="https://t.me/holyfear" target="_blank" rel="noopener">Написать в Telegram ↗</a>
-      <span class="hero-count">3 проекта</span>
+<svg class="defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <path id="logo-path" d="M128 0h5v1h-5zM64 2h4v1h-4zM11 2h4v1h-4zM98 2h7v1h-7zM97 3h7v1h-7zM128 1h6v4h-6zM10 3h6v2h-6zM101 4h3v2h-3zM97 4h2v2h-2zM11 5h5v2h-5zM97 6h7v1h-7zM98 7h6v1h-6zM64 3h5v7h-5zM128 5h5v5h-5zM43 9h2v1h-2zM8 10h8v1h-8zM77 10h17v1h-17zM43 10h11v1h-11zM108 10h4v2h-4zM8 11h6v1h-6zM79 11h15v1h-15zM44 11h10v1h-10zM77 11h1v1h-1zM138 10h6v3h-6zM114 10h8v3h-8zM128 10h6v3h-6zM59 10h16v3h-16zM152 10h11v3h-11zM31 10h6v3h-6zM15 12h2v1h-2zM108 12h5v1h-5zM77 12h17v1h-17zM9 12h5v1h-5zM43 12h11v1h-11zM39 13h17v1h-17zM78 13h15v1h-15zM60 13h14v1h-14zM149 13h17v1h-17zM94 13h1v1h-1zM11 13h6v1h-6zM108 13h17v2h-17zM137 13h6v2h-6zM149 14h6v1h-6zM70 14h4v1h-4zM60 14h9v1h-9zM39 14h10v1h-10zM160 14h6v1h-6zM50 14h6v1h-6zM78 14h17v1h-17zM128 13h5v3h-5zM89 15h5v1h-5zM120 15h6v1h-6zM108 15h8v2h-8zM51 15h5v2h-5zM149 15h5v2h-5zM86 16h8v1h-8zM40 15h5v3h-5zM136 15h5v3h-5zM128 16h6v2h-6zM86 17h5v2h-5zM161 15h5v5h-5zM40 18h8v2h-8zM84 19h7v1h-7zM128 18h12v5h-12zM83 20h6v3h-6zM43 20h11v3h-11zM152 20h14v3h-14zM149 23h18v1h-18zM48 23h8v2h-8zM136 23h5v2h-5zM149 24h15v1h-15zM31 13h5v13h-5zM108 17h5v9h-5zM128 23h5v3h-5zM81 23h5v3h-5zM166 24h2v2h-2zM161 25h4v1h-4zM136 25h6v1h-6zM136 26h7v1h-7zM78 26h8v1h-8zM20 10h5v18h-5zM64 15h5v13h-5zM120 16h5v12h-5zM51 25h5v3h-5zM149 25h5v3h-5zM108 26h8v2h-8zM29 26h7v2h-7zM40 26h5v2h-5zM158 26h8v2h-8zM78 27h5v1h-5zM138 27h5v1h-5zM129 26h5v3h-5zM64 28h10v1h-10zM99 10h5v20h-5zM138 28h7v2h-7zM149 28h17v2h-17zM20 28h16v2h-16zM40 28h16v2h-16zM64 29h7v1h-7zM128 29h6v1h-6zM108 28h14v3h-14zM73 29h1v2h-1zM99 30h6v1h-6zM140 30h5v2h-5zM66 30h6v2h-6zM73 31h2v1h-2zM11 14h5v19h-5zM78 28h16v5h-16zM128 30h5v3h-5zM22 30h8v3h-8zM32 30h4v3h-4zM161 30h5v3h-5zM152 30h8v3h-8zM43 30h11v3h-11zM114 31h3v2h-3zM98 31h7v2h-7zM141 32h4v1h-4zM5 32h2v1h-2zM66 32h9v1h-9zM1 32h2v1h-2zM0 33h7v1h-7zM11 33h6v2h-6zM0 34h6v1h-6zM1 35h16v2h-16zM108 31h5v9h-5zM4 37h9v3h-9zM108 40h3v1h-3zM108 41h4v1h-4zM113 41h1v1h-1zM108 42h5v1h-5z"/>
+    <path id="qr-path" d="M18 0h7v1h-7zM0 0h7v1h-7zM9 0h2v1h-2zM13 0h2v2h-2zM8 1h2v1h-2zM16 1h1v1h-1zM12 2h1v1h-1zM8 2h3v1h-3zM15 2h1v2h-1zM8 3h1v1h-1zM12 3h2v1h-2zM20 2h3v3h-3zM2 2h3v3h-3zM10 3h1v2h-1zM16 4h1v1h-1zM0 1h1v5h-1zM18 1h1v5h-1zM6 1h1v5h-1zM24 1h1v5h-1zM9 5h1v1h-1zM12 5h1v2h-1zM0 6h7v1h-7zM18 6h7v1h-7zM14 5h1v3h-1zM10 6h1v2h-1zM8 6h1v2h-1zM16 6h1v2h-1zM0 8h1v1h-1zM17 8h2v1h-2zM6 8h1v1h-1zM21 8h3v1h-3zM8 8h7v1h-7zM20 9h4v1h-4zM1 9h1v1h-1zM9 9h4v1h-4zM4 9h2v1h-2zM14 9h2v1h-2zM12 10h1v1h-1zM0 10h2v1h-2zM23 10h2v1h-2zM4 10h4v1h-4zM15 10h3v1h-3zM21 10h1v2h-1zM0 11h1v1h-1zM9 11h1v1h-1zM14 11h3v1h-3zM11 11h2v1h-2zM19 11h1v1h-1zM3 11h3v1h-3zM24 11h1v2h-1zM5 12h3v1h-3zM12 12h1v1h-1zM18 12h1v1h-1zM2 12h1v1h-1zM9 12h2v1h-2zM16 12h1v1h-1zM14 13h3v1h-3zM19 13h1v1h-1zM2 13h4v1h-4zM7 13h4v1h-4zM23 13h1v1h-1zM2 14h12v1h-12zM15 14h1v1h-1zM19 14h3v1h-3zM23 14h2v1h-2zM17 14h1v1h-1zM16 15h4v1h-4zM24 15h1v1h-1zM8 15h4v1h-4zM14 15h1v1h-1zM21 15h2v1h-2zM0 13h1v4h-1zM2 15h1v2h-1zM22 16h1v1h-1zM6 16h1v1h-1zM11 16h1v1h-1zM8 16h1v1h-1zM16 16h5v1h-5zM12 17h2v1h-2zM8 17h3v1h-3zM16 17h1v2h-1zM9 18h1v1h-1zM0 18h7v1h-7zM18 18h1v1h-1zM11 18h1v1h-1zM24 18h1v1h-1zM20 17h1v3h-1zM15 19h2v1h-2zM23 19h2v1h-2zM9 19h2v1h-2zM12 19h2v1h-2zM10 20h1v1h-1zM12 20h1v1h-1zM22 20h3v1h-3zM14 20h7v1h-7zM9 21h1v1h-1zM17 21h2v1h-2zM14 21h2v1h-2zM23 21h2v1h-2zM2 20h3v3h-3zM9 22h4v1h-4zM21 22h2v1h-2zM16 22h1v1h-1zM0 19h1v5h-1zM6 19h1v5h-1zM9 23h1v1h-1zM11 23h1v1h-1zM16 23h5v1h-5zM14 23h1v1h-1zM24 22h1v3h-1zM0 24h7v1h-7zM13 24h4v1h-4zM21 24h1v1h-1zM8 24h2v1h-2zM18 24h1v1h-1z"/>
+    <symbol id="i-ne" viewBox="0 0 5 5"><path d="M2 0h3v1h-3zM3 1h2v1h-2zM2 2h1v1h-1zM4 2h1v1h-1zM1 3h1v1h-1zM0 4h1v1h-1z"/></symbol>
+    <symbol id="i-down" viewBox="0 0 5 5"><path d="M2 0h1v5h-1zM0 2h1v1h-1zM4 2h1v1h-1zM1 3h1v1h-1zM3 3h1v1h-1z"/></symbol>
+    <symbol id="i-up" viewBox="0 0 5 5"><path d="M2 0h1v5h-1zM1 1h1v1h-1zM3 1h1v1h-1zM0 2h1v1h-1zM4 2h1v1h-1z"/></symbol>
+    <symbol id="i-right" viewBox="0 0 5 5"><path d="M0 2h5v1h-5zM2 0h1v1h-1zM3 1h1v1h-1zM3 3h1v1h-1zM2 4h1v1h-1z"/></symbol>
+    <symbol id="i-star" viewBox="0 0 5 5"><path d="M2 0h1v5h-1zM0 1h1v1h-1zM4 1h1v1h-1zM1 2h3v1h-3zM0 3h1v1h-1zM4 3h1v1h-1z"/></symbol>
+    <symbol id="i-theme" viewBox="0 0 7 7"><path d="M2 0h3v1h-3zM1 1h1v1h-1zM3 1h4v1h-4zM0 2h1v3h-1zM3 2h4v3h-4zM1 5h1v1h-1zM3 5h4v1h-4zM2 6h3v1h-3z"/></symbol>
+  </defs>
+</svg>
+
+<!-- распаковка архива: прелоадер -->
+<div class="intro" id="intro" aria-hidden="true">
+  <canvas class="intro__px"></canvas>
+  <div class="intro__big"><span class="intro__num">0</span><small>%</small></div>
+  <div class="intro__term">
+    <pre class="intro__log"></pre>
+    <div class="intro__bar"><span class="intro__fill"></span></div>
+    <div class="intro__meta"><span>justzipka.zip</span><span class="intro__pct">0%</span></div>
+  </div>
+  <button class="intro__skip" type="button" tabindex="-1">пропустить</button>
+</div>
+
+<div class="cursor" aria-hidden="true">
+  <span class="cursor__box"><i></i><i></i><i></i><i></i></span>
+  <span class="cursor__dot"></span>
+</div>
+<div class="cursor-label" aria-hidden="true"><span></span></div>
+
+<header class="hdr" id="hdr">
+  <a class="hdr__logo" href="#top" aria-label="justzipka, наверх" data-snap>
+    <svg viewBox="0 0 168 43" aria-hidden="true"><use href="#logo-path"/></svg>
+  </a>
+  <nav class="hdr__nav" aria-label="Разделы">
+    <a href="#about" data-snap data-scramble-hover>обо мне</a>
+    <a href="#services" data-snap data-scramble-hover>услуги</a>
+    <a href="#works" data-snap data-scramble-hover>работы</a>
+    <a href="#process" data-snap data-scramble-hover>процесс</a>
+    <a href="#terminal" data-snap data-scramble-hover>терминал</a>
+    <a href="#contact" data-snap data-scramble-hover>контакты</a>
+  </nav>
+  <div class="hdr__right">
+    <span class="hdr__clock"><i class="pulse"></i>МСК <time data-clock>--:--:--</time></span>
+    <button class="icon-btn theme-btn" type="button" aria-label="Сменить тему" data-snap>
+      <svg viewBox="0 0 7 7" aria-hidden="true"><use href="#i-theme"/></svg>
+    </button>
+    <a class="btn btn--accent btn--sm hdr__cta" href="https://t.me/holyfear" target="_blank" rel="noopener" data-snap>Написать</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu" data-snap>
+      <span class="menu-btn__txt">меню</span><span class="menu-btn__ico" aria-hidden="true"><i></i><i></i></span>
+    </button>
+  </div>
+</header>
+
+<div class="menu" id="menu" hidden>
+  <nav class="menu__nav" aria-label="Меню">
+    <a href="#about"><span>01</span>обо мне</a>
+    <a href="#services"><span>02</span>услуги</a>
+    <a href="#works"><span>03</span>работы</a>
+    <a href="#process"><span>04</span>процесс</a>
+    <a href="#terminal"><span>05</span>терминал</a>
+    <a href="#contact"><span>06</span>контакты</a>
+  </nav>
+  <div class="menu__foot">
+    <a href="https://t.me/holyfear" target="_blank" rel="noopener">telegram ↗</a>
+    <a href="https://discord.com/users/1243462258395451487" target="_blank" rel="noopener">discord ↗</a>
+    <a href="mailto:godcomplexxed@xyecoc.com">почта ↗</a>
+  </div>
+</div>
+
+<main id="main">
+
+  <!-- 00 / hero -->
+  <section class="hero" id="top" data-name="старт" data-idx="00">
+    <canvas class="hero__canvas" aria-hidden="true"></canvas>
+    <div class="hero__inner wrap">
+      <div class="hero__row hero__row--top">
+        <p class="label hx"><span class="br">[</span> веб-дизайнер <span class="dim">/</span> разработчик <span class="br">]</span></p>
+        <p class="label label--r hx">портфолио <span data-year>2026</span></p>
+      </div>
+
+      <h1 class="sr-only">Зипка, веб-дизайнер и разработчик</h1>
+
+      <div class="hero__mark" aria-hidden="true">
+        <svg class="mark-1" viewBox="0 0 168 43"><use href="#logo-path"/></svg>
+        <div class="mark-2">
+          <svg viewBox="0 0 75 43"><use href="#logo-path"/></svg>
+          <svg viewBox="77 0 91 43"><use href="#logo-path"/></svg>
+        </div>
+      </div>
+
+      <div class="hero__row hero__row--bottom">
+        <p class="hero__lede hx">Я Зипка. Придумываю и собираю сайты, пишу Telegram-ботов и Mini Apps. Дизайн и код в одних руках, поэтому ничего не теряется по дороге.</p>
+        <div class="hero__cta hx">
+          <a class="btn btn--accent" href="https://t.me/holyfear" target="_blank" rel="noopener" data-magnetic data-snap>
+            <span>Написать в Telegram</span><svg class="ico ico--ne" viewBox="0 0 5 5" aria-hidden="true"><use href="#i-ne"/></svg>
+          </a>
+          <a class="btn btn--line" href="#works" data-snap>
+            <span>Смотреть работы</span><svg class="ico ico--down" viewBox="0 0 5 5" aria-hidden="true"><use href="#i-down"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="hero__row hero__row--foot">
+        <span class="status hx"><i class="pulse"></i>беру новые проекты</span>
+        <span class="hero__scroll hx" aria-hidden="true">листай <i></i></span>
+        <span class="hero__hint hx" aria-hidden="true"><svg class="ico" viewBox="0 0 5 5"><use href="#i-star"/></svg>кликни по буквам</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- бегущие строки -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__band marquee__band--b">
+      <div class="marquee__track" data-dir="1">
+        <span>от макета до продакшена</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-star"/></svg>
+        <span>justzipka</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-star"/></svg>
+        <span>дизайн</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-right"/></svg><span>код</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-right"/></svg><span>запуск</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-star"/></svg>
+      </div>
+    </div>
+    <div class="marquee__band marquee__band--a">
+      <div class="marquee__track" data-dir="-1">
+        <span>Сайты</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-star"/></svg>
+        <span>Дизайн</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-star"/></svg>
+        <span>Telegram-боты</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-star"/></svg>
+        <span>Mini Apps</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-star"/></svg>
+        <span>Лендинги</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-star"/></svg>
+        <span>Анимации</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-star"/></svg>
+      </div>
     </div>
   </div>
 
-  <section class="wrap">
-    <div class="section-title">Работы</div>
+  <!-- 01 / обо мне -->
+  <section class="sec about" id="about" data-name="обо мне" data-idx="01">
+    <div class="sec-head wrap rv">
+      <span class="sec-head__idx">01</span><span class="sec-head__name" data-scramble>обо мне</span><span class="sec-head__line"></span><span class="sec-head__file">bio.txt</span>
+    </div>
 
-    <a class="row reveal" href="https://vibroexpertspb.ru/" target="_blank" rel="noopener">
-      <span class="row-index mono">01</span>
-      <span class="row-title">ВиброЭксперт СПб</span>
-      <span class="row-url mono">vibroexpertspb.ru</span>
-      <span class="row-desc">Сайт компании по вибродиагностике оборудования.</span>
-    </a>
+    <div class="about__grid wrap">
+      <p class="about__text" data-lit>Привет, я Зипка. Делаю сайты <em>целиком</em>: придумываю, рисую, верстаю и выкладываю в сеть. Люблю, когда сайт быстро открывается, удобно листается с телефона и чем-то <em>цепляет</em> с первого экрана. Если к сайту нужен бот в <em>Telegram</em> или <em>Mini App</em>, это тоже ко мне.</p>
 
-    <a class="row reveal" href="https://vibrorotor.ru/" target="_blank" rel="noopener">
-      <span class="row-index mono">02</span>
-      <span class="row-title">ВиброРотор</span>
-      <span class="row-url mono">vibrorotor.ru</span>
-      <span class="row-desc">Сайт по балансировке роторов.</span>
-    </a>
+      <div class="about__badge">
+        <div class="badge-stage">
+          <div class="badge-rig" data-badge>
+            <div class="badge-strap"><span>justzipka justzipka justzipka justzipka justzipka justzipka</span></div>
+            <div class="badge-clip"></div>
+            <div class="badge" tabindex="0" role="button" aria-label="Пропуск Зипки. Нажми Enter, чтобы перевернуть" data-cursor="тяни">
+              <div class="badge__face badge__front">
+                <div class="badge__hole"></div>
+                <div class="badge__top"><span>пропуск</span><span>#001</span></div>
+                <div class="badge__photo">
+                  <svg viewBox="0 0 168 43" aria-hidden="true"><use href="#logo-path"/></svg>
+                </div>
+                <dl class="badge__rows">
+                  <div><dt>имя</dt><dd>Зипка</dd></div>
+                  <div><dt>роль</dt><dd>дизайн + код</dd></div>
+                  <div><dt>доступ</dt><dd>от макета до запуска</dd></div>
+                </dl>
+                <div class="badge__code"><span class="badge__bars" aria-hidden="true"></span><span class="badge__id">JUSTZIPKA-<span data-year>2026</span></span></div>
+                <span class="badge__glare"></span>
+              </div>
+              <div class="badge__face badge__back">
+                <div class="badge__hole"></div>
+                <div class="badge__top"><span>связь</span><span>tg</span></div>
+                <div class="badge__qr">
+                  <svg viewBox="-2 -2 29 29" role="img" aria-label="QR-код на Telegram @holyfear"><rect x="-2" y="-2" width="29" height="29" fill="#fff"/><use href="#qr-path" fill="#0b0b0a"/></svg>
+                </div>
+                <p class="badge__qr-cap">t.me/holyfear<br><span>наведи камеру, откроется чат</span></p>
+                <span class="badge__glare"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="badge-hint"><span class="hint-fine">потяни пропуск, двойной клик переворачивает</span><span class="hint-touch">потяни пропуск, тап переворачивает</span></p>
+      </div>
 
-    <a class="row reveal" href="https://hakune.blog/" target="_blank" rel="noopener">
-      <span class="row-index mono">03</span>
-      <span class="row-title">Hakune</span>
-      <span class="row-url mono">hakune.blog</span>
-      <span class="row-desc">Личный блог.</span>
-    </a>
-  </section>
+      <dl class="facts" data-stagger>
+        <div class="fact rv"><dt>ник</dt><dd data-scramble>Зипка / justzipka</dd></div>
+        <div class="fact rv"><dt>делаю</dt><dd data-scramble>сайты, дизайн, ботов и Mini Apps</dd></div>
+        <div class="fact rv"><dt>стек</dt><dd data-scramble>HTML, CSS, JavaScript</dd></div>
+        <div class="fact rv"><dt>часовой пояс</dt><dd data-scramble>МСК, UTC+3</dd></div>
+        <div class="fact rv"><dt>у меня сейчас</dt><dd><time data-clock>--:--:--</time></dd></div>
+        <div class="fact rv"><dt>статус</dt><dd><i class="pulse"></i>беру новые проекты</dd></div>
+      </dl>
 
-  <section class="wrap">
-    <div class="section-title">О себе</div>
-    <p class="about reveal">Делаю сайты от макета до продакшена: вёрстка, простой бэкенд, если он нужен. Пишу на <strong>HTML/CSS/JS</strong>. Ещё пишу <strong>Telegram-ботов</strong> и Mini Apps к ним.</p>
-  </section>
-
-  <section id="contact" class="wrap">
-    <div class="section-title">Контакты</div>
-    <div class="contact-list">
-      <a class="contact-row reveal" href="https://t.me/holyfear" target="_blank" rel="noopener" data-copy="@holyfear">
-        <span class="contact-label mono">Telegram</span>
-        <span class="contact-value-wrap">
-          <span class="contact-value">@holyfear</span>
-          <span class="copy-hint mono">скопировать</span>
-        </span>
-      </a>
-      <a class="contact-row reveal" href="https://discord.com/users/1243462258395451487" target="_blank" rel="noopener" data-copy="die.ru">
-        <span class="contact-label mono">Discord</span>
-        <span class="contact-value-wrap">
-          <span class="contact-value">die.ru</span>
-          <span class="copy-hint mono">скопировать</span>
-        </span>
-      </a>
-      <a class="contact-row reveal" href="mailto:godcomplexxed@xyecoc.com" data-copy="godcomplexxed@xyecoc.com">
-        <span class="contact-label mono">Почта</span>
-        <span class="contact-value-wrap">
-          <span class="contact-value">godcomplexxed@xyecoc.com</span>
-          <span class="copy-hint mono">скопировать</span>
-        </span>
-      </a>
+      <div class="stats" data-stagger>
+        <div class="stat rv"><b data-count="3">03</b><span>живых сайта в портфолио</span></div>
+        <div class="stat rv"><b data-count="2">02</b><span>ремесла: дизайн и код</span></div>
+        <div class="stat rv"><b data-count="1">01</b><span>человек от макета до запуска</span></div>
+      </div>
     </div>
   </section>
+
+  <!-- 02 / услуги -->
+  <section class="sec services" id="services" data-name="услуги" data-idx="02">
+    <div class="sec-head wrap rv">
+      <span class="sec-head__idx">02</span><span class="sec-head__name" data-scramble>что делаю</span><span class="sec-head__line"></span><span class="sec-head__file">services.json</span>
+    </div>
+    <div class="wrap">
+      <h2 class="h-xl" data-split>Что делаю</h2>
+    </div>
+    <div class="wrap">
+    <div class="svc-grid" data-stagger>
+      <article class="svc rv" data-spot>
+        <div class="svc__top"><span class="svc__idx">01</span><span class="px-ico" data-icon="web"></span></div>
+        <h3 class="svc__title">Сайты</h3>
+        <p class="svc__text">Лендинги, сайты компаний, портфолио и визитки. Под любой экран и с нормальной скоростью загрузки.</p>
+        <ul class="tags"><li>лендинги</li><li>сайты компаний</li><li>портфолио</li></ul>
+      </article>
+      <article class="svc rv" data-spot>
+        <div class="svc__top"><span class="svc__idx">02</span><span class="px-ico" data-icon="design"></span></div>
+        <h3 class="svc__title">Дизайн</h3>
+        <p class="svc__text">Рисую интерфейс с нуля: сетка, шрифты, цвет, анимации. Макет сразу продуман под вёрстку, без сюрпризов.</p>
+        <ul class="tags"><li>UI</li><li>типографика</li><li>моушн</li></ul>
+      </article>
+      <article class="svc rv" data-spot>
+        <div class="svc__top"><span class="svc__idx">03</span><span class="px-ico" data-icon="bot"></span></div>
+        <h3 class="svc__title">Telegram-боты</h3>
+        <p class="svc__text">Боты, которые принимают заявки, записывают клиентов и присылают уведомления. Работают сами, пока ты занят делом.</p>
+        <ul class="tags"><li>Bot API</li><li>заявки</li><li>уведомления</li></ul>
+      </article>
+      <article class="svc rv" data-spot>
+        <div class="svc__top"><span class="svc__idx">04</span><span class="px-ico" data-icon="app"></span></div>
+        <h3 class="svc__title">Mini Apps</h3>
+        <p class="svc__text">Приложения прямо внутри Telegram. Открываются из чата с ботом, выглядят и работают как сайт.</p>
+        <ul class="tags"><li>Web Apps</li><li>интерфейсы</li><li>Telegram</li></ul>
+      </article>
+    </div>
+    </div>
+  </section>
+
+  <!-- 03 / работы -->
+  <section class="sec works" id="works" data-name="работы" data-idx="03">
+    <div class="sec-head wrap rv">
+      <span class="sec-head__idx">03</span><span class="sec-head__name" data-scramble>работы</span><span class="sec-head__line"></span><span class="sec-head__file">works/</span>
+    </div>
+    <div class="works__head wrap">
+      <h2 class="h-xl" data-split>Работы</h2>
+      <span class="works__count rv">(03)</span>
+    </div>
+
+    <div class="wrap">
+    <ol class="works__list" data-stagger>
+      <li class="work rv">
+        <a class="work__link" href="https://vibroexpertspb.ru/" target="_blank" rel="noopener" data-preview="0" data-cursor="открыть">
+          <span class="work__idx">01</span>
+          <span class="work__title">ВиброЭксперт СПб</span>
+          <span class="work__go"><svg viewBox="0 0 5 5" aria-hidden="true"><use href="#i-ne"/></svg></span>
+          <span class="work__desc">Сайт инженерного центра, который с 1992 года занимается балансировкой и виброналадкой. Тёмный интерфейс, 13 разделов и форма, которая собирает техзадание в письмо инженерам.</span>
+          <span class="work__meta"><span class="tags"><span>сайт компании</span><span>13 разделов</span><span>форма заявки</span></span><span class="work__url">vibroexpertspb.ru</span></span>
+          <img class="work__img" src="assets/works/vibroexpert.webp" alt="Главный экран сайта ВиброЭксперт СПб" width="1200" height="750" loading="lazy" decoding="async">
+        </a>
+      </li>
+      <li class="work rv">
+        <a class="work__link" href="https://vibrorotor.ru/" target="_blank" rel="noopener" data-preview="1" data-cursor="открыть">
+          <span class="work__idx">02</span>
+          <span class="work__title">ВиброРотор</span>
+          <span class="work__go"><svg viewBox="0 0 5 5" aria-hidden="true"><use href="#i-ne"/></svg></span>
+          <span class="work__desc">Сайт лаборатории вибраций «РОТОР СПб» имени А. А. Рубина. Услуги, контакты и отдельный онлайн-калькулятор для клиентов.</span>
+          <span class="work__meta"><span class="tags"><span>сайт лаборатории</span><span>калькулятор</span><span>светлая тема</span></span><span class="work__url">vibrorotor.ru</span></span>
+          <img class="work__img" src="assets/works/vibrorotor.webp" alt="Главный экран сайта лаборатории РОТОР СПб" width="1200" height="750" loading="lazy" decoding="async">
+        </a>
+      </li>
+      <li class="work rv">
+        <a class="work__link" href="https://hakune.blog/" target="_blank" rel="noopener" data-preview="2" data-cursor="открыть">
+          <span class="work__idx">03</span>
+          <span class="work__title">Hakune</span>
+          <span class="work__go"><svg viewBox="0 0 5 5" aria-hidden="true"><use href="#i-ne"/></svg></span>
+          <span class="work__desc">Личный сайт техноблогера haku reviews. Рекомендации, обзоры, промокоды, медиакит и все соцсети в одном месте.</span>
+          <span class="work__meta"><span class="tags"><span>личный сайт</span><span>линк-хаб</span><span>тёмная тема</span></span><span class="work__url">hakune.blog</span></span>
+          <img class="work__img" src="assets/works/hakune.webp" alt="Главный экран сайта haku reviews" width="1200" height="750" loading="lazy" decoding="async">
+        </a>
+      </li>
+      <li class="work work--you rv">
+        <a class="work__link" href="https://t.me/holyfear" target="_blank" rel="noopener" data-cursor="написать">
+          <span class="work__idx">04</span>
+          <span class="work__title">Твой проект<span class="blink">_</span></span>
+          <span class="work__go"><svg viewBox="0 0 5 5" aria-hidden="true"><use href="#i-ne"/></svg></span>
+          <span class="work__desc">Здесь может быть твой сайт. Расскажи, что нужно, и я прикину, как это сделать.</span>
+          <span class="work__meta"><span class="tags"><span>сайт</span><span>бот</span><span>mini app</span></span><span class="work__url">t.me/holyfear</span></span>
+        </a>
+      </li>
+    </ol>
+    </div>
+  </section>
+
+  <!-- 04 / процесс -->
+  <section class="process" id="process" data-name="процесс" data-idx="04">
+    <div class="process__pin">
+      <div class="process__track">
+        <div class="process__intro">
+          <div class="sec-head rv">
+            <span class="sec-head__idx">04</span><span class="sec-head__name" data-scramble>процесс</span><span class="sec-head__line"></span><span class="sec-head__file">process.md</span>
+          </div>
+          <h2 class="h-xl" data-split>Как работаю</h2>
+          <p class="process__lede rv">Четыре шага от первого сообщения до сайта на домене.</p>
+          <p class="process__hint rv">листай дальше <svg class="ico" viewBox="0 0 5 5" aria-hidden="true"><use href="#i-right"/></svg></p>
+        </div>
+        <article class="step rv">
+          <span class="step__num">01</span>
+          <span class="px-ico px-ico--lg" data-icon="chat"></span>
+          <h3 class="step__title">Разговор</h3>
+          <p class="step__text">Обсуждаем задачу: что за проект, для кого сайт и к какому сроку. Можно просто скинуть пару ссылок на то, что нравится.</p>
+        </article>
+        <article class="step rv">
+          <span class="step__num">02</span>
+          <span class="px-ico px-ico--lg" data-icon="grid"></span>
+          <h3 class="step__title">Дизайн</h3>
+          <p class="step__text">Собираю макет главного экрана, потом остальные. Показываю, вносим правки, пока всё не встанет на свои места.</p>
+        </article>
+        <article class="step rv">
+          <span class="step__num">03</span>
+          <span class="px-ico px-ico--lg" data-icon="code"></span>
+          <h3 class="step__title">Разработка</h3>
+          <p class="step__text">Верстаю, добавляю анимации, подключаю формы и бота, если он нужен. Проверяю на телефонах и в разных браузерах.</p>
+        </article>
+        <article class="step rv">
+          <span class="step__num">04</span>
+          <span class="px-ico px-ico--lg" data-icon="rocket"></span>
+          <h3 class="step__title">Запуск</h3>
+          <p class="step__text">Выкладываю сайт на домен и проверяю, что всё работает как надо. После запуска остаюсь на связи.</p>
+        </article>
+      </div>
+      <div class="process__bar" aria-hidden="true"><i></i></div>
+    </div>
+  </section>
+
+  <!-- 05 / терминал -->
+  <section class="sec term-sec" id="terminal" data-name="терминал" data-idx="05">
+    <div class="sec-head wrap rv">
+      <span class="sec-head__idx">05</span><span class="sec-head__name" data-scramble>терминал</span><span class="sec-head__line"></span><span class="sec-head__file">~/.zshrc</span>
+    </div>
+    <div class="term-sec__grid wrap">
+      <h2 class="h-xl" data-split>Терминал</h2>
+      <div class="term-sec__text">
+        <p class="term-sec__lede rv">Для тех, кто любит покопаться. Набери <code>help</code>, там есть пара секретов.</p>
+        <div class="term-sec__keys rv" aria-hidden="true">
+          <span><kbd>tab</kbd> дописать</span><span><kbd>↑</kbd><kbd>↓</kbd> история</span><span><kbd>ctrl</kbd>+<kbd>l</kbd> очистить</span>
+        </div>
+      </div>
+      <div class="term rv" data-term>
+        <div class="term__bar">
+          <span class="term__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="term__title">zipka@web: ~</span>
+          <span class="term__sh">zsh</span>
+        </div>
+        <div class="term__body" data-cursor-text>
+          <div class="term__out" role="log" aria-live="polite"></div>
+          <form class="term__line" autocomplete="off">
+            <label class="term__prompt" for="term-input">zipka@web:~$</label>
+            <input class="term__input" id="term-input" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="send">
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 / контакты -->
+  <section class="sec contact" id="contact" data-name="контакты" data-idx="06">
+    <canvas class="contact__dither" aria-hidden="true"></canvas>
+    <div class="sec-head wrap rv">
+      <span class="sec-head__idx">06</span><span class="sec-head__name" data-scramble>контакты</span><span class="sec-head__line"></span><span class="sec-head__file">contacts.vcf</span>
+    </div>
+    <div class="contact__grid wrap">
+      <h2 class="contact__title" data-split>Напиши <br>мне</h2>
+
+      <a class="round-cta" href="https://t.me/holyfear" target="_blank" rel="noopener" data-magnetic aria-label="Написать в Telegram">
+        <svg class="round-cta__ring" viewBox="0 0 200 200" aria-hidden="true">
+          <defs><path id="ring-path" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0"/></defs>
+          <text><textPath href="#ring-path" textLength="489" lengthAdjust="spacing">написать в telegram · написать в telegram ·</textPath></text>
+        </svg>
+        <svg class="round-cta__arrow" viewBox="0 0 5 5" aria-hidden="true"><use href="#i-ne"/></svg>
+      </a>
+
+      <p class="contact__lede rv">Есть проект или просто идея? Пиши, обсудим. Удобнее всего в Telegram.</p>
+
+      <ul class="clist" data-stagger>
+        <li class="crow rv">
+          <a class="crow__link" href="https://t.me/holyfear" target="_blank" rel="noopener" data-snap>
+            <span class="crow__label">telegram</span><span class="crow__value">@holyfear</span><svg class="crow__arr" viewBox="0 0 5 5" aria-hidden="true"><use href="#i-ne"/></svg>
+          </a>
+          <button class="crow__copy" type="button" data-copy="@holyfear" data-snap>копировать</button>
+        </li>
+        <li class="crow rv">
+          <a class="crow__link" href="https://discord.com/users/1243462258395451487" target="_blank" rel="noopener" data-snap>
+            <span class="crow__label">discord</span><span class="crow__value">die.ru</span><svg class="crow__arr" viewBox="0 0 5 5" aria-hidden="true"><use href="#i-ne"/></svg>
+          </a>
+          <button class="crow__copy" type="button" data-copy="die.ru" data-snap>копировать</button>
+        </li>
+        <li class="crow rv">
+          <a class="crow__link" href="mailto:godcomplexxed@xyecoc.com" data-snap>
+            <span class="crow__label">почта</span><span class="crow__value">godcomplexxed@xyecoc.com</span><svg class="crow__arr" viewBox="0 0 5 5" aria-hidden="true"><use href="#i-ne"/></svg>
+          </a>
+          <button class="crow__copy" type="button" data-copy="godcomplexxed@xyecoc.com" data-snap>копировать</button>
+        </li>
+      </ul>
+
+      <p class="contact__time rv">у меня сейчас <time data-clock-short>--:--</time> по Москве<span data-sleep></span></p>
+    </div>
+  </section>
+
 </main>
 
-<footer>
-  <div class="wrap footrow">
+<footer class="ftr">
+  <div class="ftr__row wrap">
+    <button class="ftr__top" type="button" data-totop data-snap>наверх <svg class="ico" viewBox="0 0 5 5" aria-hidden="true"><use href="#i-up"/></svg></button>
     <span class="counter-chip"><img class="counter" src="https://count.getloli.com/get/@whoiszipka?theme=moebooru" alt="счётчик посещений"></span>
   </div>
 </footer>
 
-<script>
-(function(){
-  var c = document.getElementById('grain');
-  if(!c || !c.getContext) return;
-  var ctx = c.getContext('2d');
-  var tile = 128;
-  c.width = tile; c.height = tile;
-  var img = ctx.createImageData(tile, tile);
-  for(var i=0;i<img.data.length;i+=4){
-    var v = Math.random()*255;
-    img.data[i] = v; img.data[i+1] = v; img.data[i+2] = v; img.data[i+3] = 255;
-  }
-  ctx.putImageData(img,0,0);
-  var url = c.toDataURL();
-  c.style.backgroundImage = 'url(' + url + ')';
-  c.style.backgroundRepeat = 'repeat';
-  c.style.backgroundSize = tile + 'px ' + tile + 'px';
-  c.removeAttribute('width');
-  c.removeAttribute('height');
-})();
+<div class="preview" aria-hidden="true">
+  <canvas class="preview__canvas"></canvas>
+  <span class="preview__bar"><span class="preview__url"></span><span class="preview__res"></span></span>
+</div>
 
-(function(){
-  var els = document.querySelectorAll('.reveal');
-  if(!els.length) return;
-  if(!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-    els.forEach(function(el){ el.classList.add('in'); });
-    return;
-  }
-  els.forEach(function(el, i){
-    el.style.transitionDelay = Math.min(i * 70, 210) + 'ms';
-  });
-  var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      if(entry.isIntersecting){
-        entry.target.classList.add('in');
-        io.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
-  els.forEach(function(el){ io.observe(el); });
-})();
+<div class="hud" aria-hidden="true">
+  <span class="hud__idx">00</span><span class="hud__name">старт</span><span class="hud__bar"><i></i></span><span class="hud__pct">0%</span>
+</div>
 
-(function(){
-  var rows = document.querySelectorAll('.contact-row[data-copy]');
-  rows.forEach(function(row){
-    row.addEventListener('click', function(e){
-      var value = row.getAttribute('data-copy');
-      if(!navigator.clipboard) return;
-      navigator.clipboard.writeText(value).then(function(){
-        var hint = row.querySelector('.copy-hint');
-        if(!hint) return;
-        var original = hint.textContent;
-        hint.textContent = 'скопировано';
-        hint.classList.add('copied');
-        setTimeout(function(){
-          hint.textContent = original;
-          hint.classList.remove('copied');
-        }, 1400);
-      }).catch(function(){});
-    });
-  });
-})();
-</script>
+<div class="toast" role="status" aria-live="polite"></div>
+<div class="grid-overlay" aria-hidden="true"><div class="wrap"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+<div class="grain" aria-hidden="true"></div>
 
 </body>
 </html>

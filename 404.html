@@ -1,153 +1,266 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>404 — Зипка</title>
-<link rel="icon" href="assets/favicon.png" type="image/png" sizes="64x64">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<title>404. Зипка</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/whoiszipka/assets/favicon.png" type="image/png" sizes="64x64">
+<link rel="apple-touch-icon" href="/whoiszipka/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Martian+Mono:wdth,wght@75..112.5,400..600&family=Onest:wght@400..600&family=Pixelify+Sans:wght@700&display=swap">
+<script>
+  try {
+    var t = localStorage.getItem('zipka-theme');
+    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,380..560&family=IBM+Plex+Mono:wght@400;500&display=swap');
+  :root {
+    --bg: #0b0b0a;
+    --ink: #f1efe9;
+    --ink-2: #a3a09a;
+    --ink-3: #85837c;
+    --line: #242422;
+    --line-2: #363531;
+    --accent: #ff4b1f;
+    --accent-ink: #ff6a44;
+    --on-accent: #0b0b0a;
+    color-scheme: dark;
+  }
+  :root[data-theme="light"] {
+    --bg: #eeece6;
+    --ink: #0e0e0d;
+    --ink-2: #4a4843;
+    --ink-3: #625f58;
+    --line: #d3cfc6;
+    --line-2: #bebab0;
+    --accent-ink: #b52e0c;
+    color-scheme: light;
+  }
 
-  :root{
-    --bg: #f2f1ee;
-    --ink: #171614;
-    --ink-soft: #6b6a65;
-    --line: #cfcdc7;
-  }
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --bg: #121211;
-      --ink: #efeee9;
-      --ink-soft: #928f87;
-      --line: #34332c;
-    }
-  }
-  :root[data-theme="dark"]{
-    --bg: #121211;
-    --ink: #efeee9;
-    --ink-soft: #928f87;
-    --line: #34332c;
-  }
-
-  *{ box-sizing: border-box; }
-  html, body{ height: 100%; }
-  body{
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
     margin: 0;
     background: var(--bg);
     color: var(--ink);
-    font-family: 'IBM Plex Mono', ui-monospace, monospace;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
+    font-family: 'Onest', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
     overflow: hidden;
-    position: relative;
+  }
+  ::selection { background: var(--accent); color: var(--on-accent); }
+
+  canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, var(--line-2) 1px, transparent 1.5px);
+    background-size: 40px 40px;
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, #000 20%, transparent 80%);
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, #000 20%, transparent 80%);
   }
 
-  .scene{
-    position: relative;
-    text-align: center;
-    max-width: 520px;
+  .ui {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: clamp(16px, 4vw, 48px);
+    pointer-events: none;
   }
-
-  .code{
-    font-family: 'Fraunces', Georgia, serif;
-    font-weight: 480;
-    font-size: clamp(110px, 26vw, 230px);
-    line-height: 0.9;
-    letter-spacing: -0.02em;
-    margin: 0;
-    position: relative;
-    display: inline-flex;
-  }
-  .code span{
-    display: inline-block;
-    animation: drop 2.6s cubic-bezier(.34,1.56,.64,1) infinite;
-  }
-  .code span:nth-child(1){ animation-delay: 0s; }
-  .code span:nth-child(2){ color: var(--ink-soft); animation-delay: .12s; }
-  .code span:nth-child(3){ animation-delay: .24s; }
-
-  @keyframes drop{
-    0%, 40%, 100%{ transform: translateY(0); }
-    20%{ transform: translateY(-14px); }
-  }
-
-  .snap{
-    position: absolute;
-    left: 50%;
-    top: 62%;
-    width: 3px;
-    height: 3px;
-    border-radius: 50%;
-    background: var(--ink-soft);
-    transform: translate(-50%, -50%);
-    opacity: 0;
-    animation: spark 2.6s ease-out infinite;
-  }
-  @keyframes spark{
-    0%, 38%{ opacity: 0; transform: translate(-50%,-50%) scale(0); }
-    42%{ opacity: .8; }
-    60%{ opacity: 0; transform: translate(-50%,-50%) scale(14); }
-    100%{ opacity: 0; }
-  }
-
-  .eyebrow{
-    font-size: 12px;
-    letter-spacing: 0.14em;
+  .ui a { pointer-events: auto; }
+  .top, .bottom { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+  .top { align-items: flex-start; }
+  .label {
+    font-family: 'Martian Mono', ui-monospace, monospace;
+    font-stretch: 87.5%;
+    font-size: 11px;
+    letter-spacing: .08em;
     text-transform: uppercase;
-    color: var(--ink-soft);
-    margin: 18px 0 0;
+    color: var(--ink-2);
   }
-  .msg{
-    font-family: 'IBM Plex Mono', ui-monospace, monospace;
-    font-size: 14px;
-    color: var(--ink-soft);
-    line-height: 1.6;
-    margin: 10px 0 0;
-  }
-  .msg code{
-    color: var(--ink);
-    background: color-mix(in srgb, var(--ink) 8%, transparent);
-    padding: 1px 6px;
-    border-radius: 3px;
-  }
+  .label b { color: var(--accent-ink); font-weight: 500; }
 
-  .home{
+  .term {
+    max-width: 560px;
+    font-family: 'Martian Mono', ui-monospace, monospace;
+    font-size: 12.5px;
+    line-height: 1.8;
+    color: var(--ink-2);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .term i { font-style: normal; color: var(--accent-ink); }
+  .term b { font-weight: 500; color: var(--ink); }
+  .msg { max-width: 38ch; margin: 14px 0 0; font-size: 16px; line-height: 1.5; color: var(--ink-2); }
+
+  .home {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    margin-top: 28px;
-    font-size: 12.5px;
-    letter-spacing: 0.02em;
-    color: var(--bg);
-    background: var(--ink);
-    padding: 11px 18px;
-    border-radius: 3px;
+    gap: 12px;
+    height: 54px;
+    padding: 0 24px;
+    font-family: 'Martian Mono', ui-monospace, monospace;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .06em;
+    text-transform: uppercase;
     text-decoration: none;
-    transition: transform .15s ease, opacity .15s ease;
+    color: var(--on-accent);
+    background: var(--accent);
+    clip-path: polygon(0 8px, 4px 8px, 4px 4px, 8px 4px, 8px 0, calc(100% - 8px) 0, calc(100% - 8px) 4px, calc(100% - 4px) 4px, calc(100% - 4px) 8px, 100% 8px, 100% calc(100% - 8px), calc(100% - 4px) calc(100% - 8px), calc(100% - 4px) calc(100% - 4px), calc(100% - 8px) calc(100% - 4px), calc(100% - 8px) 100%, 8px 100%, 8px calc(100% - 4px), 4px calc(100% - 4px), 4px calc(100% - 8px), 0 calc(100% - 8px));
+    transition: background-color .3s, color .3s;
   }
-  .home:hover, .home:focus-visible{ opacity: 0.8; transform: translateY(-1px); }
-  .home:focus-visible{ outline: 1px solid var(--ink); outline-offset: 3px; }
+  .home:hover, .home:focus-visible { background: var(--ink); color: var(--bg); outline: none; }
+  .home svg { width: 10px; height: 10px; fill: currentColor; shape-rendering: crispEdges; }
 
-  @media (prefers-reduced-motion: reduce){
-    .code span{ animation: none; }
-    .snap{ animation: none; opacity: 0; }
+  .fallback {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-family: 'Pixelify Sans', 'Martian Mono', monospace;
+    font-weight: 700;
+    font-size: clamp(120px, 30vw, 360px);
+    line-height: 1;
+    color: var(--ink);
+    pointer-events: none;
+  }
+  .live .fallback { visibility: hidden; }
+
+  @media (max-width: 600px) {
+    .bottom { flex-direction: column; align-items: stretch; }
+    .home { justify-content: center; }
   }
 </style>
 </head>
 <body>
 
-<div class="scene">
-  <p class="code" aria-label="404">
-    <span>4</span><span>0</span><span>4</span>
-  </p>
-  <span class="snap" aria-hidden="true"></span>
-  <p class="eyebrow">страница не найдена</p>
-  <p class="msg">такой страницы нет — проверь адрес, или это была <code>черновик</code>, который ещё не доехал.</p>
-  <a class="home" href="/whoiszipka/">На главную ↗</a>
+<div class="fallback" aria-hidden="true">404</div>
+<canvas aria-hidden="true"></canvas>
+
+<div class="ui">
+  <div class="top">
+    <span class="label"><b>[</b> ошибка 404 <b>]</b></span>
+    <span class="label">justzipka.zip</span>
+  </div>
+  <div class="bottom">
+    <div>
+      <div class="term" id="term"></div>
+      <p class="msg">Такой страницы нет. Возможно, её ещё не распаковали, или в адресе опечатка.</p>
+    </div>
+    <a class="home" href="/whoiszipka/">На главную <svg viewBox="0 0 5 5" aria-hidden="true"><path d="M2 0h3v1h-3zM3 1h2v1h-2zM2 2h1v1h-1zM4 2h1v1h-1zM1 3h1v1h-1zM0 4h1v1h-1z"/></svg></a>
+  </div>
 </div>
+
+<script>
+(function () {
+  var term = document.getElementById('term');
+  var path = decodeURIComponent(location.pathname.replace(/^\/whoiszipka/, '') || '/');
+  if (path.length > 48) path = path.slice(0, 45) + '...';
+  var esc = function (s) { return s.replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }); };
+  term.innerHTML = '<i>$</i> <b>unzip justzipka.zip ' + esc(path) + '</b>\nunzip: в архиве нет «' + esc(path) + '»';
+
+  var canvas = document.querySelector('canvas');
+  var ctx = canvas.getContext && canvas.getContext('2d');
+  if (!ctx) return;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var W, H, dpr, cell, size, N = 0, px, py, vx, vy, hx, hy, heat;
+  var mouse = { x: -1e4, y: -1e4, on: false };
+  var ink, accent;
+
+  function colors() {
+    var cs = getComputedStyle(document.documentElement);
+    ink = cs.getPropertyValue('--ink').trim();
+    accent = cs.getPropertyValue('--accent').trim();
+  }
+
+  function build() {
+    W = innerWidth; H = innerHeight;
+    dpr = Math.min(2, devicePixelRatio || 1);
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var cols = 90, rows = 34;
+    var g = document.createElement('canvas');
+    g.width = cols; g.height = rows;
+    var c = g.getContext('2d');
+    c.font = '700 40px "Pixelify Sans", monospace';
+    c.textAlign = 'center';
+    c.textBaseline = 'middle';
+    c.fillText('404', cols / 2, rows / 2 + 2);
+    var data = c.getImageData(0, 0, cols, rows).data;
+    cell = Math.max(3, Math.floor(Math.min(W * 0.9 / cols, H * 0.55 / rows) * dpr) / dpr);
+    size = cell - (cell > 6 ? 1 : 0);
+    var ox = Math.round((W - cols * cell) / 2), oy = Math.round((H - rows * cell) / 2 - H * 0.06);
+    var pts = [];
+    for (var y = 0; y < rows; y++) for (var x = 0; x < cols; x++) if (data[(y * cols + x) * 4 + 3] > 110) pts.push(ox + x * cell, oy + y * cell);
+    var first = !N;
+    N = pts.length / 2;
+    px = new Float32Array(N); py = new Float32Array(N); vx = new Float32Array(N); vy = new Float32Array(N);
+    hx = new Float32Array(N); hy = new Float32Array(N); heat = new Float32Array(N);
+    for (var i = 0; i < N; i++) {
+      hx[i] = pts[i * 2]; hy[i] = pts[i * 2 + 1];
+      px[i] = reduced ? hx[i] : hx[i] + (Math.random() - 0.5) * W * (first ? 1.2 : 0.2);
+      py[i] = reduced ? hy[i] : hy[i] + (Math.random() - 0.5) * H * (first ? 1.2 : 0.2);
+      heat[i] = reduced ? 0 : Math.random();
+    }
+    if (N) document.documentElement.classList.add('live');
+  }
+
+  function frame() {
+    var R = Math.max(80, cell * 14), R2 = R * R;
+    ctx.clearRect(0, 0, W, H);
+    ctx.beginPath();
+    var hot = [];
+    for (var i = 0; i < N; i++) {
+      var x = px[i], y = py[i];
+      vx[i] += (hx[i] - x) * 0.05; vy[i] += (hy[i] - y) * 0.05;
+      if (mouse.on) {
+        var dx = x - mouse.x, dy = y - mouse.y, d2 = dx * dx + dy * dy;
+        if (d2 < R2) {
+          var d = Math.sqrt(d2) || 1, f = 1 - d / R;
+          vx[i] += dx / d * f * f * 4; vy[i] += dy / d * f * f * 4;
+          heat[i] = Math.max(heat[i], f);
+        }
+      }
+      vx[i] *= 0.85; vy[i] *= 0.85;
+      px[i] = x + vx[i]; py[i] = y + vy[i];
+      heat[i] *= 0.95;
+      if (heat[i] > 0.15) hot.push(i); else ctx.rect(px[i], py[i], size, size);
+    }
+    ctx.fillStyle = ink;
+    ctx.fill();
+    ctx.beginPath();
+    for (var k = 0; k < hot.length; k++) ctx.rect(px[hot[k]], py[hot[k]], size, size);
+    ctx.fillStyle = accent;
+    ctx.fill();
+    if (!reduced) requestAnimationFrame(frame);
+  }
+
+  addEventListener('pointermove', function (e) { mouse.x = e.clientX; mouse.y = e.clientY; mouse.on = true; });
+  addEventListener('pointerleave', function () { mouse.on = false; });
+  addEventListener('pointerup', function (e) { if (e.pointerType !== 'mouse') mouse.on = false; });
+  var t;
+  addEventListener('resize', function () { clearTimeout(t); t = setTimeout(function () { build(); if (reduced) frame(); }, 150); });
+
+  colors();
+  var go = function () { build(); frame(); };
+  if (document.fonts && document.fonts.load) {
+    Promise.race([document.fonts.load('700 40px "Pixelify Sans"', '404'), new Promise(function (r) { setTimeout(r, 1500); })])
+      .then(go, go);
+  } else go();
+})();
+</script>
 
 </body>
 </html>
