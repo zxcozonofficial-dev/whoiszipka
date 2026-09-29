@@ -1,5 +1,5 @@
-// Пропуск на ленте: маятник, который можно раскачать мышкой или пальцем.
-// Двойной клик (или тап) переворачивает его, на обороте QR-код на Telegram.
+
+
 
 import { $, clamp, damp, tick, reduced, watchVisible } from './core.js';
 
@@ -22,7 +22,7 @@ export function initBadge() {
     return;
   }
 
-  // θ: угол от вертикали, ω: угловая скорость
+  
   let th = 0.18;
   let om = 0;
   let twist = 0;
@@ -104,7 +104,7 @@ export function initBadge() {
   });
 }
 
-// декоративный штрихкод из букв ника
+
 function buildBars(el, text) {
   if (!el) return;
   const frag = document.createDocumentFragment();

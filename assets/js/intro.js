@@ -1,5 +1,5 @@
-// Прелоадер: сайт «распаковывается» из justzipka.zip,
-// потом экран рассыпается на пиксели. Один раз за сессию.
+
+
 
 import { $, palette, rgbStr, sleep, clamp } from './core.js';
 
@@ -67,7 +67,7 @@ export async function runIntro(onReveal) {
   });
 
   if (!skip) await fontsReady;
-  try { sessionStorage.setItem('zipka-unzipped', '1'); } catch { /* приватный режим */ }
+  try { sessionStorage.setItem('zipka-unzipped', '1'); } catch {  }
 
   await dissolve(el, onReveal);
   el.remove();
@@ -107,7 +107,7 @@ function dissolve(el, onReveal) {
     const accent = rgbStr(p.accent);
     const frame = (now) => {
       const k = (now - t0) / dur;
-      // вспышка акцентом перед тем, как клетка исчезнет
+      
       const flashTo = Math.min(cells.length, Math.floor((k + 0.08) * cells.length));
       ctx.fillStyle = accent;
       for (let j = i; j < flashTo; j++) ctx.fillRect(cells[j].x, cells[j].y, S, S);

@@ -1,4 +1,4 @@
-// Пасхалки: zxc-режим, konami-код, сетка на G, привет в консоли, заголовок вкладки.
+
 
 import { $, tick, palette, rgbStr, themeChanged, toast, reduced, rand } from './core.js';
 import { rasterPath } from './hero.js';
@@ -134,5 +134,5 @@ function hello() {
     console.log(`%c${lines.join('\n')}`, `color: rgb(${a.join(',')}); font: 10px/10px monospace;`);
     console.log('%cпривет, разработчик. раз ты здесь, нам точно есть о чём поговорить: t.me/holyfear', 'font: 12px monospace; padding: 4px 0;');
     console.log('%cподсказка: в терминале на сайте есть команда unzip', 'font: 11px monospace; color: #888;');
-  } catch { /* консоль не главное */ }
+  } catch {  }
 }

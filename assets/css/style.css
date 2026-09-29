@@ -1,5 +1,4 @@
-/* justzipka / стили
-   Цвета живут в токенах ниже. Тёмная тема по умолчанию, светлая по кнопке. */
+
 
 :root {
   --bg-raw: #0b0b0a;
@@ -52,7 +51,7 @@
   color-scheme: light;
 }
 
-/* пасхалка: zxc */
+
 :root.zxc {
   --accent: #e5001c;
   --accent-ink: #ff3347;
@@ -64,7 +63,7 @@
   --accent-ink-inv: #ff3347;
 }
 
-/* ---------- база ---------- */
+
 
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -171,7 +170,7 @@ code, kbd { font-family: var(--f-mono); }
   to { transform: scale(3.2); opacity: 0; }
 }
 
-/* пиксельные углы */
+
 .pxc, .btn--accent, .toast {
   --s: 4px;
   clip-path: polygon(
@@ -182,7 +181,7 @@ code, kbd { font-family: var(--f-mono); }
   );
 }
 
-/* ---------- кнопки ---------- */
+
 
 .btn {
   position: relative;
@@ -234,7 +233,7 @@ code, kbd { font-family: var(--f-mono); }
 .icon-btn svg { width: 14px; height: 14px; shape-rendering: crispEdges; transition: transform .6s var(--ease); }
 [data-theme="light"] .theme-btn svg { transform: rotate(180deg); }
 
-/* ---------- шапка ---------- */
+
 
 .hdr {
   position: fixed;
@@ -375,7 +374,7 @@ code, kbd { font-family: var(--f-mono); }
   color: var(--ink-2);
 }
 
-/* ---------- hero ---------- */
+
 
 .hero {
   position: relative;
@@ -463,7 +462,7 @@ code, kbd { font-family: var(--f-mono); }
 .hero__hint .ico { color: var(--accent); animation: spinStep 3s steps(8) infinite; }
 @keyframes spinStep { to { transform: rotate(360deg); } }
 
-/* появление героя после распаковки */
+
 .js .hx {
   opacity: 0;
   transform: translateY(18px);
@@ -475,7 +474,7 @@ code, kbd { font-family: var(--f-mono); }
 .js.hero-in .hero__cta { transition-delay: .45s; }
 .js.hero-in .hero__row--foot .hx { transition-delay: .6s; }
 
-/* ---------- бегущие строки ---------- */
+
 
 .marquee {
   position: relative;
@@ -527,7 +526,7 @@ code, kbd { font-family: var(--f-mono); }
 }
 .marquee__track .ico { width: .55em; height: .55em; }
 
-/* ---------- секции ---------- */
+
 
 .sec { position: relative; padding-top: clamp(90px, 11vw, 170px); }
 
@@ -565,7 +564,7 @@ code, kbd { font-family: var(--f-mono); }
   text-transform: uppercase;
 }
 
-/* ---------- обо мне ---------- */
+
 
 .about__grid {
   display: grid;
@@ -634,7 +633,7 @@ code, kbd { font-family: var(--f-mono); }
   color: var(--ink-2);
 }
 
-/* пропуск на ленте */
+
 .badge-stage {
   position: relative;
   width: 100%;
@@ -809,7 +808,7 @@ code, kbd { font-family: var(--f-mono); }
   .hint-touch { display: inline; }
 }
 
-/* ---------- услуги ---------- */
+
 
 .svc-grid {
   display: grid;
@@ -896,7 +895,7 @@ code, kbd { font-family: var(--f-mono); }
   100% { transform: scale(1); }
 }
 
-/* ---------- работы ---------- */
+
 
 .works__head { display: flex; align-items: flex-start; gap: 16px; }
 .works__count {
@@ -1002,7 +1001,7 @@ code, kbd { font-family: var(--f-mono); }
 .work__link:hover .blink { color: inherit; }
 @keyframes blink { 50% { opacity: 0; } }
 
-/* превью, которое ездит за курсором */
+
 .preview {
   position: fixed;
   left: 0; top: 0;
@@ -1038,7 +1037,7 @@ code, kbd { font-family: var(--f-mono); }
 }
 .preview__res { color: var(--accent-ink); font-variant-numeric: tabular-nums; }
 
-/* ---------- процесс (инверсия) ---------- */
+
 
 .process {
   --bg: var(--ink-raw);
@@ -1094,7 +1093,7 @@ code, kbd { font-family: var(--f-mono); }
   font-size: clamp(72px, 13vw, 200px);
   line-height: .8;
   letter-spacing: -.06em;
-  /* заливка цветом фона поверх обводки прячет внутренние контуры вариативного шрифта */
+  
   color: var(--bg);
   -webkit-text-stroke: 3px var(--ink);
   paint-order: stroke fill;
@@ -1113,7 +1112,7 @@ code, kbd { font-family: var(--f-mono); }
 
 .process__bar { display: none; }
 
-/* горизонтальный режим включает JS на широких экранах */
+
 .process.is-h .process__pin {
   position: sticky;
   top: 0;
@@ -1170,7 +1169,7 @@ code, kbd { font-family: var(--f-mono); }
   transform: scaleX(var(--p, 0));
 }
 
-/* ---------- терминал ---------- */
+
 
 .term-sec__grid {
   display: grid;
@@ -1266,7 +1265,7 @@ kbd {
 }
 @media (hover: none) { .term__input { font-size: 16px; } }
 
-/* ---------- контакты ---------- */
+
 
 .contact { overflow: hidden; padding-bottom: clamp(60px, 8vw, 120px); }
 .contact__dither {
@@ -1391,7 +1390,7 @@ kbd {
 }
 .contact__time time { color: var(--ink); }
 
-/* ---------- подвал ---------- */
+
 
 .ftr { border-top: 1px solid var(--line); padding-block: 20px calc(20px + env(safe-area-inset-bottom)); }
 .ftr__row { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
@@ -1415,9 +1414,9 @@ kbd {
 }
 .counter { display: block; height: 40px; width: auto; border-radius: 2px; }
 
-/* ---------- служебное ---------- */
 
-/* индикатор раздела живёт в левом поле, вертикально, и не лезет на контент */
+
+
 .hud {
   position: fixed;
   left: calc(var(--pad) / 2 - 7px);
@@ -1515,7 +1514,7 @@ kbd {
 
 .px-rain { position: fixed; inset: 0; z-index: 9994; pointer-events: none; }
 
-/* ---------- курсор ---------- */
+
 
 .cursor, .cursor-label { display: none; }
 .has-cursor, .has-cursor * { cursor: none !important; }
@@ -1579,7 +1578,7 @@ kbd {
 }
 .cursor-label.is-on span { transform: translate(-50%, -50%) scale(1); }
 
-/* ---------- распаковка ---------- */
+
 
 .intro { display: none; }
 .js .intro {
@@ -1648,7 +1647,7 @@ kbd {
 }
 .intro.is-leaving .intro__term, .intro.is-leaving .intro__big, .intro.is-leaving .intro__skip { opacity: 0; transition: opacity .2s; }
 
-/* ---------- появление при скролле ---------- */
+
 
 .js .rv {
   opacity: 0;
@@ -1678,7 +1677,7 @@ kbd {
 
 ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
 
-/* ---------- адаптив ---------- */
+
 
 @media (max-width: 1180px) {
   .hdr { grid-template-columns: auto 1fr; }

@@ -1,5 +1,5 @@
-// Терминал: настоящая командная строка с историей, автодополнением
-// и парой секретов. Сам печатает первые команды, когда его видно.
+
+
 
 import { $, sleep, msk, watchVisible, reduced } from './core.js';
 
@@ -203,7 +203,7 @@ export function initTerminal(api = {}) {
 
   input.addEventListener('keydown', (e) => {
     userTyped = true;
-    // если автопечать ещё идёт, убираем её недописанную команду
+    
     if (autotyping) { autotyping = false; input.value = ''; }
     if (e.key === 'ArrowUp') {
       e.preventDefault();
@@ -245,7 +245,7 @@ export function initTerminal(api = {}) {
 
   print(dim(`zipka shell 1.0. последний вход: сегодня, ${msk().h}:${msk().m}`));
 
-  // автопечать при первом появлении
+  
   let played = false;
   watchVisible(root, async (v) => {
     if (!v || played) return;

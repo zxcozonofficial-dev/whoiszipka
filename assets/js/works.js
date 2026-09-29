@@ -1,5 +1,5 @@
-// Работы: при наведении за курсором едет превью сайта,
-// которое «распаковывается» из крупных пикселей в чёткую картинку.
+
+
 
 import { $, $$, clamp, damp, tick, media, reduced } from './core.js';
 
@@ -27,7 +27,7 @@ export function initWorks() {
     return { a, img, load, isLoaded: () => loaded, url: a.querySelector('.work__url')?.textContent || '' };
   });
 
-  // картинки подтягиваем заранее, когда секция уже близко
+  
   const works = $('#works');
   if ('IntersectionObserver' in window && works) {
     const io = new IntersectionObserver((es) => {

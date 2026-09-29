@@ -1,4 +1,4 @@
-// Интерфейс: шапка, меню, тема, часы, активный раздел, копирование контактов.
+
 
 import { $, $$, tick, scroll, msk, toast, themeChanged, reduced, clamp, debounce } from './core.js';
 import { scramble } from './fx.js';
@@ -31,7 +31,7 @@ export function initTheme() {
   };
   const apply = (t) => {
     root.setAttribute('data-theme', t);
-    try { localStorage.setItem('zipka-theme', t); } catch { /* без хранилища */ }
+    try { localStorage.setItem('zipka-theme', t); } catch {  }
     themeChanged();
     syncMeta();
   };

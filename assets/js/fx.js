@@ -1,9 +1,9 @@
-// Мелкие эффекты: скрамбл, разбивка заголовков на слова, появление при скролле,
-// подсветка текста, счётчики, бегущие строки, магнитные кнопки, пиксельные иконки.
+
+
 
 import { $, $$, clamp, damp, tick, scroll, reduced, media, watchVisible, debounce } from './core.js';
 
-/* ---------- скрамбл ---------- */
+
 
 const UPPER = 'АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЭЮЯ0123456789#%&*+=<>/';
 const LOWER = 'абвгдежзиклмнопрстуфхцчшщэюя0123456789#%&*+=<>/';
@@ -47,7 +47,7 @@ export function initScrambleHover() {
   });
 }
 
-/* ---------- заголовки по словам ---------- */
+
 
 export function splitWords(el) {
   if (el.dataset.splitDone) return;
@@ -79,7 +79,7 @@ export function splitWords(el) {
   walk(el);
 }
 
-/* ---------- появление ---------- */
+
 
 export function initReveal() {
   $$('[data-split]').forEach(splitWords);
@@ -122,7 +122,7 @@ function countUp(el) {
   requestAnimationFrame(step);
 }
 
-/* ---------- текст, который загорается при скролле ---------- */
+
 
 export function initLitText() {
   const el = $('[data-lit]');
@@ -164,7 +164,7 @@ export function initLitText() {
   });
 }
 
-/* ---------- бегущие строки ---------- */
+
 
 export function initMarquee() {
   $$('.marquee__track').forEach((track) => {
@@ -199,7 +199,7 @@ export function initMarquee() {
   });
 }
 
-/* ---------- магнитные кнопки ---------- */
+
 
 export function initMagnetic() {
   if (!media.fine.matches || reduced()) return;
@@ -229,7 +229,7 @@ export function initMagnetic() {
   });
 }
 
-/* ---------- круглая кнопка: вращение текста ---------- */
+
 
 export function initRoundCta() {
   const cta = $('.round-cta');
@@ -247,7 +247,7 @@ export function initRoundCta() {
   });
 }
 
-/* ---------- подсветка карточек ---------- */
+
 
 export function initSpotlight() {
   $$('[data-spot]').forEach((el) => {
@@ -260,7 +260,7 @@ export function initSpotlight() {
   });
 }
 
-/* ---------- пиксельные иконки 12×12 ---------- */
+
 
 const ICONS = {
   web: [

@@ -1,5 +1,5 @@
-// Общие утилиты: один requestAnimationFrame на весь сайт, состояние скролла,
-// цвета текущей темы, тосты и московское время.
+
+
 
 export const $ = (sel, root = document) => root.querySelector(sel);
 export const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -24,7 +24,7 @@ export function debounce(fn, ms = 150) {
   };
 }
 
-/* ---------- тикер ---------- */
+
 
 const subs = new Set();
 let last = 0;
@@ -48,7 +48,7 @@ export function tick(fn) {
   return () => subs.delete(fn);
 }
 
-/* ---------- скролл ---------- */
+
 
 export const scroll = { y: window.scrollY, v: 0, dir: 1 };
 let prevY = window.scrollY;
@@ -62,7 +62,7 @@ tick((dt) => {
   scroll.y = y;
 });
 
-/* ---------- цвета темы для canvas ---------- */
+
 
 let colors = null;
 
@@ -104,7 +104,7 @@ export function themeChanged() {
 
 export const onTheme = (fn) => document.addEventListener('zipka:theme', fn);
 
-/* ---------- тост ---------- */
+
 
 let toastTimer = 0;
 export function toast(msg, ms = 2200) {
@@ -116,7 +116,7 @@ export function toast(msg, ms = 2200) {
   toastTimer = setTimeout(() => el.classList.remove('is-on'), ms);
 }
 
-/* ---------- время по Москве ---------- */
+
 
 const mskFmt = new Intl.DateTimeFormat('ru-RU', {
   timeZone: 'Europe/Moscow',
@@ -132,7 +132,7 @@ export function msk() {
   return { h: parts.hour, m: parts.minute, s: parts.second };
 }
 
-/* ---------- видимость ---------- */
+
 
 export function watchVisible(el, cb, rootMargin = '0px') {
   if (!el) return;

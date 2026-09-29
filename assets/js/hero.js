@@ -1,19 +1,19 @@
-// Герой: логотип justzipka, собранный из частиц-пикселей.
-// Курсор расталкивает пиксели, клик пересобирает их в другое слово,
-// на старте логотип «застёгивается» сверху и снизу, как молния.
+
+
+
 
 import { $, clamp, rand, tick, palette, onTheme, mix, rgbStr, reduced, watchVisible, debounce } from './core.js';
 
 const LOGO_W = 168;
 const LOGO_H = 43;
-const SPLIT_A = [0, 75];   // "just"
-const SPLIT_B = [77, 168]; // "zipka"
+const SPLIT_A = [0, 75];   
+const SPLIT_B = [77, 168]; 
 const WORDS = ['ДИЗАЙН', 'КОД', 'БОТЫ', 'САЙТЫ'];
 const WORD_FONT = '"Pixelify Sans", "Unbounded", system-ui, sans-serif';
 
-const K = 0.055;       // пружина к дому
-const DAMP = 0.84;     // трение
-const BUCKETS = 6;     // оттенки от ink к accent
+const K = 0.055;       
+const DAMP = 0.84;     
+const BUCKETS = 6;     
 
 export function initHero() {
   const section = $('.hero');
@@ -60,7 +60,7 @@ export function initHero() {
     dirty = true;
   }
 
-  /* ---------- раскладка ---------- */
+  
 
   function layout() {
     const r = section.getBoundingClientRect();
@@ -97,7 +97,7 @@ export function initHero() {
     const snap = (v) => Math.round(v * dpr) / dpr;
     targets.set('_dims', { cols, rows, ox: snap(box.x + (box.w - cols * cell) / 2), oy: snap(box.y + (box.h - rows * cell) / 2) });
 
-    // фоновая сетка с «следом» от курсора
+    
     T = Math.max(32, Math.round(cell * 6));
     tOx = ((ox % T) + T) % T - T;
     tOy = ((oy % T) + T) % T - T;
@@ -146,7 +146,7 @@ export function initHero() {
     return t;
   }
 
-  // раздаём частицам новые «дома»; сортировка по x даёт плавный морф без каши
+  
   function assign(t, instant) {
     const M = t.length / 2;
     if (!M) return;
@@ -165,7 +165,7 @@ export function initHero() {
     dirty = true;
   }
 
-  /* ---------- старт: застёгиваем молнию ---------- */
+  
 
   function start() {
     if (started) return;
@@ -193,7 +193,7 @@ export function initHero() {
     dirty = true;
   }
 
-  /* ---------- взаимодействие ---------- */
+  
 
   function shock(x, y, power = 1) {
     const R = Math.max(220, cell * 42) * power;
@@ -274,7 +274,7 @@ export function initHero() {
   });
   section.addEventListener('pointercancel', () => { down = null; mouse.inside = false; });
 
-  /* ---------- кадр ---------- */
+  
 
   function step(dt, now) {
     if (!started || !visible || still) return;
@@ -390,7 +390,7 @@ export function initHero() {
     }
   }
 
-  /* ---------- жизненный цикл ---------- */
+  
 
   buildColors();
   layout();
@@ -411,7 +411,7 @@ export function initHero() {
   return { start, morph, nextWord, shock: (x, y) => shock(x, y) };
 }
 
-/* ---------- растры ---------- */
+
 
 export function rasterPath(d, w, h) {
   const c = document.createElement('canvas');

@@ -1,5 +1,5 @@
-// Контакты: 1-битная планета с кольцом, нарисованная шейдером с дизерингом Байера.
-// Свет падает оттуда, где курсор. Рендер в низком разрешении и растяжение без сглаживания.
+
+
 
 import { $, tick, palette, onTheme, damp, reduced, watchVisible, debounce } from './core.js';
 
@@ -48,7 +48,6 @@ void main(){
     float band=.3+.6*fbm(vec2(er*13.,3.));
     float gap=step(1.62,er)*step(er,1.69);
     float lit=.45+.55*clamp(dot(normalize(vec3(q.x,0.,.4)),L)+.35,0.,1.);
-    // тень планеты на кольце: полоса за планетой по направлению света
     vec2 ld=normalize(L.xy+vec2(1e-4));
     float shadow=step(abs(p.x*ld.y-p.y*ld.x),.96)*step(dot(p,ld),0.);
     shade=band*(1.-gap)*lit*(1.-shadow*.8);
