@@ -28,7 +28,7 @@ const WORKS = [
 const CONTACTS = [
   ['telegram', 'https://t.me/holyfear', '@holyfear'],
   ['discord', 'https://discord.com/users/1243462258395451487', 'die.ru'],
-  ['почта', 'mailto:godcomplex@xyecoc.com', 'godcomplex@xyecoc.com'],
+  ['почта', 'mailto:justzipka@gmail.com', 'justzipka@gmail.com'],
 ];
 
 const FILES = ['about.txt', 'stack.txt', 'contacts.vcf', 'works/', 'secret.zip'];
@@ -493,7 +493,7 @@ export function initTerminal(api = {}) {
       if (!f) { print('cat: какой файл? попробуй ls'); return; }
       if (f === 'about.txt') print(esc(ABOUT));
       else if (f === 'stack.txt') print(listStack());
-      else if (f === 'contacts.vcf') print(dim(['BEGIN:VCARD', 'VERSION:4.0', 'FN:Зипка', 'NICKNAME:justzipka', 'ROLE:веб-дизайнер и разработчик', 'URL:https://t.me/holyfear', 'EMAIL:godcomplex@xyecoc.com', 'END:VCARD'].join('\n')));
+      else if (f === 'contacts.vcf') print(dim(['BEGIN:VCARD', 'VERSION:4.0', 'FN:Зипка', 'NICKNAME:justzipka', 'ROLE:веб-дизайнер и разработчик', 'URL:https://t.me/holyfear', 'EMAIL:justzipka@gmail.com', 'END:VCARD'].join('\n')));
       else if (f.replace(/\/$/, '') === 'works') print('cat: works: это папка. попробуй ls works');
       else if (f === 'secret.zip') print('это архив, его надо распаковать: unzip secret.zip');
       else if (f === '.zsh_history') print(ZSH_HISTORY.map((h, i) => `${dim(String(i + 1).padStart(3, ' '))}  ${esc(h)}`).join('\n'));
