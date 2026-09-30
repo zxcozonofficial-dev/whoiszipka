@@ -1880,18 +1880,9 @@ kbd {
   padding: 12px 12px 12px 14px;
   border-bottom: 1px solid var(--line);
 }
-.chat__avatar {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  background: var(--accent);
-  color: var(--on-accent);
-}
-.chat__avatar svg { width: 14px; height: auto; fill: currentColor; }
-.chat__who { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.chat__who b { font-family: var(--f-display); font-size: 15px; font-weight: 700; letter-spacing: -.01em; }
+.chat__who { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; padding-left: 2px; }
+.chat__logo { display: block; color: var(--ink); }
+.chat__logo svg { display: block; width: 104px; height: auto; aspect-ratio: 168 / 43; fill: currentColor; }
 .chat__status { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
 .chat__close {
   flex: none;
