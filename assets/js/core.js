@@ -87,12 +87,13 @@ export function palette() {
     return v.startsWith('#') ? hexToRgb(v) : hexToRgb(fallback);
   };
   colors = {
-    bg: get('--bg-raw', '#0b0b0a'),
-    ink: get('--ink-raw', '#f1efe9'),
-    ink3: get('--ink-3', '#7c7a74'),
-    line: get('--line', '#242422'),
-    line2: get('--line-2', '#363531'),
-    accent: get('--accent', '#ff4b1f'),
+    bg: get('--bg-raw', '#0a0a0a'),
+    ink: get('--ink-raw', '#f2f2f2'),
+    ink3: get('--ink-3', '#858585'),
+    line: get('--line', '#242424'),
+    line2: get('--line-2', '#363636'),
+    accent: get('--accent', '#f2f2f2'),
+    heat: get('--heat', '#6e6e6e'),
   };
   return colors;
 }

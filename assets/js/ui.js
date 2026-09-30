@@ -27,7 +27,7 @@ export function initTheme() {
   const meta = $('meta[name="theme-color"]');
   const current = () => (root.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
   const syncMeta = () => {
-    if (meta) meta.setAttribute('content', getComputedStyle(root).getPropertyValue('--bg-raw').trim() || '#0b0b0a');
+    if (meta) meta.setAttribute('content', getComputedStyle(root).getPropertyValue('--bg-raw').trim() || '#0a0a0a');
   };
   const apply = (t) => {
     root.setAttribute('data-theme', t);
