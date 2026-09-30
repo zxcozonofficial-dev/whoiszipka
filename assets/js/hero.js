@@ -10,6 +10,91 @@ const SPLIT_A = [0, 75];
 const SPLIT_B = [77, 168]; 
 const WORDS = ['ДИЗАЙН', 'КОД', 'БОТЫ', 'САЙТЫ'];
 const WORD_FONT = '"Pixelify Sans", "Unbounded", system-ui, sans-serif';
+const SHAPES = {
+  arrow: [
+    '....#####....',
+    '....#####....',
+    '....#####....',
+    '....#####....',
+    '....#####....',
+    '....#####....',
+    '#############',
+    '.###########.',
+    '..#########..',
+    '...#######...',
+    '....#####....',
+    '.....###.....',
+    '......#......',
+  ],
+  smile: [
+    '......#######......',
+    '....###########....',
+    '...#############...',
+    '..###############..',
+    '.#################.',
+    '.#####..###..#####.',
+    '######..###..######',
+    '######..###..######',
+    '###################',
+    '###################',
+    '###..#########..###',
+    '.###..#######..###.',
+    '.####.........####.',
+    '..######...######..',
+    '...#############...',
+    '....###########....',
+    '......#######......',
+  ],
+  wink: [
+    '......#######......',
+    '....###########....',
+    '...#############...',
+    '..###############..',
+    '.#################.',
+    '.#################.',
+    '#####....##..######',
+    '###########..######',
+    '###################',
+    '###################',
+    '###..#########..###',
+    '.###..#######..###.',
+    '.####.........####.',
+    '..######...######..',
+    '...#############...',
+    '....###########....',
+    '......#######......',
+  ],
+  heart: [
+    '..#####...#####..',
+    '.#######.#######.',
+    '#################',
+    '#################',
+    '#################',
+    '#################',
+    '.###############.',
+    '..#############..',
+    '...###########...',
+    '....#########....',
+    '.....#######.....',
+    '......#####......',
+    '.......###.......',
+    '........#........',
+  ],
+  code: [
+    '.....##........##..##.....',
+    '....##........##....##....',
+    '...##.........##.....##...',
+    '..##.........##.......##..',
+    '.##..........##........##.',
+    '##..........##..........##',
+    '.##........##..........##.',
+    '..##.......##.........##..',
+    '...##.....##.........##...',
+    '....##....##........##....',
+    '.....##..##........##.....',
+  ],
+};
+const IDLE = ['smile', 'heart', 'code'];
 
 const K = 0.055;       
 const DAMP = 0.84;     
@@ -50,6 +135,12 @@ export function initHero() {
   let dirty = true;
   let nextGlitch = 0;
   let fontReady = null;
+  let show = null;
+  let nextIdle = 0;
+  let lastScroll = 0;
+  let scrolledAway = false;
+  let lastShape = '';
+  let bag = [];
   let trailColor = [242, 242, 242];
 
   function buildColors() {
@@ -139,7 +230,7 @@ export function initHero() {
     if (key === 'logo') return targets.get('logo');
     const d = targets.get('_dims');
     if (!d) return null;
-    const grid = textGrid(key, d.cols, d.rows);
+    const grid = SHAPES[key] ? shapeGrid(SHAPES[key], d.cols, d.rows) : textGrid(key, d.cols, d.rows);
     if (!grid) return null;
     const t = gridToTarget(grid, d.ox, d.oy, cell);
     targets.set(key, t);
@@ -186,6 +277,8 @@ export function initHero() {
     }
     dirty = true;
     nextGlitch = performance.now() + 3500;
+    lastScroll = performance.now();
+    nextIdle = lastScroll + 6500;
   }
 
   function snapHome() {
@@ -212,7 +305,7 @@ export function initHero() {
 
   async function morph(key, at) {
     if (!started) return;
-    if (key !== 'logo' && !targets.has(key)) {
+    if (key !== 'logo' && !SHAPES[key] && !targets.has(key)) {
       await loadFont();
     }
     const t = targetFor(key) || targets.get('logo');
@@ -220,6 +313,56 @@ export function initHero() {
     if (still) { assign(t, true); render(); return; }
     shock(at ? at.x : box.x + box.w / 2, at ? at.y : box.y + box.h / 2, at ? 1 : 1.4);
     setTimeout(() => assign(t, false), 90);
+  }
+
+  function pulse(amp) {
+    const cx = box.x + box.w / 2;
+    const cy = box.y + box.h / 2;
+    for (let i = 0; i < N; i++) {
+      vx[i] += (hx[i] - cx) * amp;
+      vy[i] += (hy[i] - cy) * amp;
+    }
+    dirty = true;
+  }
+
+  function play(key, now) {
+    show = { key, start: now, until: now + (key === 'arrow' ? 4800 : 3800), beat: 0, dub: 0 };
+    lastShape = key;
+    morph(key);
+  }
+
+  function settle(now) {
+    if (!show) return;
+    show = null;
+    nextIdle = now + rand(11000, 16000);
+    if (SHAPES[currentKey]) morph('logo');
+  }
+
+  function idle(now) {
+    if (show) {
+      if (now > show.until) { settle(now); return; }
+      if (show.dub && now > show.dub) { show.dub = 0; pulse(0.018); }
+      const t = now - show.start;
+      if (t < 900 || Math.floor((t - 900) / 1000) < show.beat) return;
+      show.beat += 1;
+      if (show.key === 'arrow') {
+        for (let i = 0; i < N; i++) vy[i] += cell * 0.55;
+        dirty = true;
+      } else if (show.key === 'heart') {
+        pulse(0.03);
+        show.dub = now + 190;
+      } else if (show.key === 'smile' && show.beat === 1) {
+        assign(targetFor('wink'), false);
+      } else if (show.key === 'smile' && show.beat === 2) {
+        assign(targetFor('smile'), false);
+      }
+      return;
+    }
+    if (!nextIdle || now < nextIdle) return;
+    if ((mouse.inside && now - mouse.t < 2500) || now - lastScroll < 2500 || currentKey !== 'logo') { nextIdle = now + 3000; return; }
+    const hint = !scrolledAway && window.scrollY < 40 && now - lastScroll > 5000 && lastShape !== 'arrow';
+    if (!bag.length) bag = IDLE.slice().sort(() => Math.random() - 0.5);
+    play(hint ? 'arrow' : bag.pop(), now);
   }
 
   function nextWord(at) {
@@ -269,7 +412,10 @@ export function initHero() {
     const moved = Math.hypot(e.clientX - down.x, e.clientY - down.y);
     const quick = performance.now() - down.t < 450;
     down = null;
-    if (moved < 12 && quick) nextWord(local(e));
+    if (moved < 12 && quick) {
+      if (show) { show = null; nextIdle = performance.now() + 15000; }
+      nextWord(local(e));
+    }
     if (e.pointerType !== 'mouse') mouse.inside = false;
   });
   section.addEventListener('pointercancel', () => { down = null; mouse.inside = false; });
@@ -291,6 +437,7 @@ export function initHero() {
     let active = false;
 
     if (now > nextGlitch) glitch(now);
+    idle(now);
 
     for (let i = 0; i < N; i++) {
       if (delay[i] > 0) {
@@ -406,6 +553,11 @@ export function initHero() {
     if (still) render();
   }, 180));
   document.fonts?.ready.then(() => { if (!started) layout(); });
+  window.addEventListener('scroll', () => {
+    lastScroll = performance.now();
+    if (window.scrollY > 200) scrolledAway = true;
+    settle(lastScroll);
+  }, { passive: true });
   tick(step);
 
   return { start, morph, nextWord, shock: (x, y) => shock(x, y) };
@@ -464,6 +616,23 @@ function gridToTarget(grid, ox, oy, cell) {
     }
   }
   return Float32Array.from(pts);
+}
+
+function shapeGrid(shape, cols, rows) {
+  const w = shape[0].length;
+  const h = shape.length;
+  const s = Math.floor(Math.min(cols / w, (rows * 0.92) / h));
+  if (s < 1) return null;
+  const x0 = Math.floor((cols - w * s) / 2);
+  const y0 = Math.floor((rows - h * s) / 2);
+  const bits = new Uint8Array(cols * rows);
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      if (shape[y][x] !== '#') continue;
+      for (let dy = 0; dy < s; dy++) bits.fill(1, (y0 + y * s + dy) * cols + x0 + x * s, (y0 + y * s + dy) * cols + x0 + x * s + s);
+    }
+  }
+  return { w: cols, h: rows, bits };
 }
 
 function textGrid(text, cols, rows) {
