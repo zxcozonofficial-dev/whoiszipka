@@ -755,8 +755,8 @@ code, kbd { font-family: var(--f-mono); }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 10px 10px 14px;
+  gap: 2px;
+  padding: 10px 10px 8px;
   border-radius: 14px;
   background: #fff;
   color: #0a0a0a;
@@ -764,13 +764,19 @@ code, kbd { font-family: var(--f-mono); }
 .zxc .badge__qr { --qr-logo: var(--accent); }
 .badge__qr svg { display: block; width: 100%; height: auto; aspect-ratio: 1; }
 .badge__handle {
+  align-self: stretch;
+  padding: 2px 0 6px;
   font-family: var(--f-display);
   font-size: 19px;
   font-weight: 700;
   letter-spacing: -.01em;
+  text-align: center;
   text-transform: uppercase;
-  cursor: pointer;
+  text-decoration: underline 2px transparent;
+  text-underline-offset: 5px;
+  transition: text-decoration-color .2s;
 }
+.badge__handle.is-hot { text-decoration-color: currentColor; }
 .zxc .badge__handle { color: var(--accent); }
 .badge__qr-cap {
   font-family: var(--f-mono);

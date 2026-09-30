@@ -10,6 +10,8 @@ export function initBadge() {
 
   buildBars(card.querySelector('.badge__bars'), 'JUSTZIPKA');
   const glares = card.querySelectorAll('.badge__glare');
+  const handle = card.querySelector('.badge__handle');
+  const stage = rig.parentElement;
   const still = reduced();
   const TG = 'https://t.me/holyfear';
 
@@ -26,6 +28,8 @@ export function initBadge() {
   let hoverY = 0;
   let visible = false;
   let drag = null;
+  let hot = false;
+  let press = null;
   const K = 15;
   const C = 1.05;
 
@@ -35,25 +39,57 @@ export function initBadge() {
     if (still) card.classList.toggle('show-back', turns % 2 === 1);
     else om = clamp(om + 0.7, -9, 9);
   };
-  const onHandle = (t) => t instanceof Element && !!t.closest('.badge__handle') && card.classList.contains('show-back');
+  const pivot = () => {
+    const r = stage.getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + rig.offsetTop };
+  };
+
+  const onHandle = (x, y) => {
+    if (!handle || !card.classList.contains('show-back')) return false;
+    const p = pivot();
+    const a = still ? 0 : th;
+    const dx = x - p.x;
+    const dy = y - p.y;
+    const lx = dx * Math.cos(a) + dy * Math.sin(a) + rig.offsetWidth / 2;
+    const ly = -dx * Math.sin(a) + dy * Math.cos(a);
+    const face = handle.offsetParent;
+    const left = card.offsetLeft + face.offsetLeft + handle.offsetLeft;
+    const top = card.offsetTop + face.offsetTop + handle.offsetTop;
+    const pad = 6;
+    return lx > left - pad && lx < left + handle.offsetWidth + pad && ly > top - pad && ly < top + handle.offsetHeight + pad;
+  };
+
+  const setHot = (on) => {
+    if (on === hot) return;
+    hot = on;
+    handle?.classList.toggle('is-hot', on);
+    if (on) card.removeAttribute('data-cursor');
+    else card.setAttribute('data-cursor', 'тяни');
+  };
+
+  stage.addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse') setHot(onHandle(e.clientX, e.clientY)); });
+  stage.addEventListener('pointerleave', () => setHot(false));
+  stage.addEventListener('pointerdown', (e) => {
+    press = e.button === 0 && onHandle(e.clientX, e.clientY) ? { id: e.pointerId, x: e.clientX, y: e.clientY } : null;
+  });
+  stage.addEventListener('pointerup', (e) => {
+    if (!press || e.pointerId !== press.id) return;
+    const open = Math.hypot(e.clientX - press.x, e.clientY - press.y) < 8;
+    press = null;
+    if (open) window.open(TG, '_blank', 'noopener');
+  });
+  stage.addEventListener('pointercancel', () => { press = null; });
+
   card.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); }
   });
 
   if (still) {
-    card.addEventListener('click', (e) => {
-      if (onHandle(e.target)) window.open(TG, '_blank', 'noopener');
-      else flip();
-    });
+    card.addEventListener('click', (e) => { if (!onHandle(e.clientX, e.clientY)) flip(); });
     return;
   }
 
-  card.addEventListener('dblclick', (e) => { if (!onHandle(e.target)) flip(); });
-
-  const pivot = () => {
-    const r = rig.parentElement.getBoundingClientRect();
-    return { x: r.left + r.width / 2, y: r.top + rig.offsetTop };
-  };
+  card.addEventListener('dblclick', (e) => { if (!onHandle(e.clientX, e.clientY)) flip(); });
 
   const angleAt = (x, y) => {
     const p = pivot();
@@ -74,7 +110,7 @@ export function initBadge() {
       sx: e.clientX,
       sy: e.clientY,
       type: e.pointerType,
-      link: onHandle(e.target),
+      link: onHandle(e.clientX, e.clientY),
     };
     om = 0;
   });
@@ -99,13 +135,10 @@ export function initBadge() {
     const first = drag.samples[0];
     const lastT = drag.samples[drag.samples.length - 1].t;
     om = now - lastT > 90 || now - first.t < 8 ? 0 : clamp((th - first.th) / ((now - first.t) / 1000), -9, 9);
-    const tapped = drag.moved < 6 && e?.type !== 'pointercancel';
-    const tap = tapped && drag.type !== 'mouse';
-    const link = tapped && drag.link;
+    const tap = drag.moved < 6 && e?.type !== 'pointercancel' && drag.type !== 'mouse' && !drag.link;
     if (drag.type !== 'mouse') { hoverX = 0; hoverY = 0; }
     drag = null;
-    if (link) window.open(TG, '_blank', 'noopener');
-    else if (tap) flip();
+    if (tap) flip();
   };
   card.addEventListener('keydown', (e) => {
     if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
@@ -125,8 +158,10 @@ export function initBadge() {
       om += (-K * Math.sin(th) - C * om + breeze) * dt;
       th += om * dt;
     }
-    twist = damp(twist, clamp(-om * 9, -40, 40) + hoverX * 10, 8, dt);
-    tiltX = damp(tiltX, -hoverY * 8, 8, dt);
+    const hx = hot ? 0 : hoverX;
+    const hy = hot ? 0 : hoverY;
+    twist = damp(twist, clamp(-om * 9, -40, 40) + hx * 10, 8, dt);
+    tiltX = damp(tiltX, -hy * 8, 8, dt);
     tiltY = damp(tiltY, twist, 10, dt);
     fv += ((turns * Math.PI - fa) * 70 - fv * 12) * dt;
     fa += fv * dt;
