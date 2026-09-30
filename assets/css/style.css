@@ -364,6 +364,7 @@ code, kbd { font-family: var(--f-mono); }
 .hero {
   position: relative;
   isolation: isolate;
+  touch-action: manipulation;
   display: flex;
   min-height: 100vh;
   min-height: 100svh;
@@ -401,7 +402,6 @@ code, kbd { font-family: var(--f-mono); }
 
 .hero__row { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; }
 .hero__row--top { align-items: flex-start; }
-.label--r { text-align: right; }
 
 .hero__mark { position: relative; min-height: 120px; color: var(--ink); }
 .hero__mark svg { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -454,7 +454,6 @@ code, kbd { font-family: var(--f-mono); }
   transition: opacity 1s var(--ease), transform 1s var(--ease);
 }
 .js.hero-in .hx { opacity: 1; transform: none; }
-.js.hero-in .hero__row--top .hx:nth-child(2) { transition-delay: .1s; }
 .js.hero-in .hero__lede { transition-delay: .35s; }
 .js.hero-in .hero__cta { transition-delay: .45s; }
 .js.hero-in .hero__row--foot .hx { transition-delay: .6s; }
@@ -1737,7 +1736,6 @@ kbd {
   .hero__row--bottom { flex-direction: column; align-items: stretch; }
   .hero__cta .btn { flex: 1 1 auto; }
   .hero__scroll { display: none; }
-  .label--r { display: none; }
 
   .about__badge, .facts { grid-column: 1 / -1; grid-row: auto; }
   .badge-stage { height: 500px; }

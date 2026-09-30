@@ -103,7 +103,7 @@ export function initHero() {
   let wordIdx = -1;
 
   let N = 0;
-  let px, py, vx, vy, hx, hy, heat, delay;
+  let px, py, vx, vy, hx, hy, heat, delay, wake;
   let bucketIdx = [];
   let bucketLen = new Int32Array(BUCKETS);
   let colors = [];
@@ -119,6 +119,9 @@ export function initHero() {
   let nextGlitch = 0;
   let fontReady = null;
   let show = null;
+  let blast = 0;
+  let taps = [];
+  let morphSeq = 0;
   let nextIdle = 0;
   let lastScroll = 0;
   let scrolledAway = false;
@@ -200,7 +203,7 @@ export function initHero() {
     };
     const prevN = N;
     px = grow(px); py = grow(py); vx = grow(vx); vy = grow(vy);
-    hx = grow(hx); hy = grow(hy); heat = grow(heat); delay = grow(delay);
+    hx = grow(hx); hy = grow(hy); heat = grow(heat); delay = grow(delay); wake = grow(wake);
     for (let i = prevN; i < count; i++) {
       const src = prevN ? Math.floor(Math.random() * prevN) : -1;
       if (started && src >= 0) { px[i] = px[src]; py[i] = py[src]; }
@@ -290,15 +293,42 @@ export function initHero() {
 
   async function morph(key, at, soft = false) {
     if (!started) return;
+    const seq = ++morphSeq;
     if (key !== 'logo' && !SHAPES[key] && !targets.has(key)) {
       await loadFont();
+      if (seq !== morphSeq) return;
     }
     const t = targetFor(key) || targets.get('logo');
     currentKey = targets.has(key) ? key : 'logo';
     if (still) { assign(t, true); render(); return; }
     if (soft) { assign(t, false); return; }
     shock(at ? at.x : box.x + box.w / 2, at ? at.y : box.y + box.h / 2, at ? 1 : 1.4);
-    setTimeout(() => assign(t, false), 90);
+    setTimeout(() => { if (seq === morphSeq) assign(t, false); }, 90);
+  }
+
+  function explode(at) {
+    const now = performance.now();
+    morphSeq += 1;
+    show = null;
+    nextIdle = now + 20000;
+    currentKey = 'logo';
+    wordIdx = -1;
+    assign(targets.get('logo'), false);
+    blast = now + 2600;
+    const power = Math.sqrt(Math.max(cell, 2) / 6);
+    for (let i = 0; i < N; i++) {
+      const dx = px[i] + size / 2 - at.x;
+      const dy = py[i] + size / 2 - at.y;
+      const d = Math.hypot(dx, dy) || 1;
+      const speed = rand(10, 30) * power;
+      vx[i] = (dx / d) * speed + rand(-4, 4);
+      vy[i] = (dy / d) * speed - rand(6, 16) * power;
+      heat[i] = 1;
+      delay[i] = 0;
+      wake[i] = blast + ((hx[i] - box.x) / Math.max(1, box.w)) * 750 + rand(0, 250);
+    }
+    navigator.vibrate?.(35);
+    dirty = true;
   }
 
   function pulse(amp) {
@@ -399,8 +429,16 @@ export function initHero() {
     const quick = performance.now() - down.t < 450;
     down = null;
     if (moved < 12 && quick) {
-      if (show) { show = null; nextIdle = performance.now() + 15000; }
-      nextWord(local(e));
+      const now = performance.now();
+      const at = local(e);
+      taps = taps.filter((t) => now - t < 1600);
+      taps.push(now);
+      if (blast) shock(at.x, at.y, 0.7);
+      else if (taps.length >= 5 && !still) { taps = []; explode(at); }
+      else {
+        if (show) { show = null; nextIdle = now + 15000; }
+        nextWord(at);
+      }
     }
     if (e.pointerType !== 'mouse') mouse.inside = false;
   });
@@ -420,10 +458,16 @@ export function initHero() {
     const mIn = mouse.inside;
     const mx = mouse.x; const my = mouse.y;
     const mvx = mouse.vx; const mvy = mouse.vy;
+    const air = Math.pow(0.985, f);
+    const gravity = 0.7 * f;
+    const floor = H - size;
     let active = false;
 
-    if (now > nextGlitch) glitch(now);
-    idle(now);
+    if (blast && now > blast + 1100) blast = 0;
+    if (!blast) {
+      if (now > nextGlitch) glitch(now);
+      idle(now);
+    }
 
     for (let i = 0; i < N; i++) {
       if (delay[i] > 0) {
@@ -432,10 +476,14 @@ export function initHero() {
         if (delay[i] > 0) continue;
       }
       let x = px[i]; let y = py[i]; let ux = vx[i]; let uy = vy[i];
+      const free = blast && now < wake[i];
       const dx = hx[i] - x;
       const dy = hy[i] - y;
-      ux += dx * K * f;
-      uy += dy * K * f;
+      if (free) uy += gravity;
+      else {
+        ux += dx * K * f;
+        uy += dy * K * f;
+      }
       if (mIn) {
         const ex = x + half - mx;
         const ey = y + half - my;
@@ -449,11 +497,20 @@ export function initHero() {
           if (fall > heat[i]) heat[i] = fall;
         }
       }
-      ux *= damp; uy *= damp;
-      x += ux * f; y += uy * f;
-      if (Math.abs(ux) + Math.abs(uy) < 0.02 && Math.abs(dx) + Math.abs(dy) < 0.08) {
-        x = hx[i]; y = hy[i]; ux = 0; uy = 0;
-      } else active = true;
+      if (free) {
+        ux *= air; uy *= air;
+        x += ux * f; y += uy * f;
+        const ground = floor - (i % 5) * size * 0.6;
+        if (y > ground) { y = ground; uy = uy > 3 ? -uy * 0.4 : 0; ux *= 0.8; }
+        if (x < 0) { x = 0; ux = Math.abs(ux) * 0.5; } else if (x > W - size) { x = W - size; ux = -Math.abs(ux) * 0.5; }
+        active = true;
+      } else {
+        ux *= damp; uy *= damp;
+        x += ux * f; y += uy * f;
+        if (Math.abs(ux) + Math.abs(uy) < 0.02 && Math.abs(dx) + Math.abs(dy) < 0.08) {
+          x = hx[i]; y = hy[i]; ux = 0; uy = 0;
+        } else active = true;
+      }
       px[i] = x; py[i] = y; vx[i] = ux; vy[i] = uy;
       if (heat[i] > 0.003) { heat[i] *= cool; active = true; } else heat[i] = 0;
     }
