@@ -26,43 +26,26 @@ const SHAPES = {
     '.....###.....',
     '......#......',
   ],
-  smile: [
-    '......#######......',
-    '....###########....',
-    '...#############...',
-    '..###############..',
-    '.#################.',
-    '.#####..###..#####.',
-    '######..###..######',
-    '######..###..######',
-    '###################',
-    '###################',
-    '###..#########..###',
-    '.###..#######..###.',
-    '.####.........####.',
-    '..######...######..',
-    '...#############...',
-    '....###########....',
-    '......#######......',
-  ],
-  wink: [
-    '......#######......',
-    '....###########....',
-    '...#############...',
-    '..###############..',
-    '.#################.',
-    '.#################.',
-    '#####....##..######',
-    '###########..######',
-    '###################',
-    '###################',
-    '###..#########..###',
-    '.###..#######..###.',
-    '.####.........####.',
-    '..######...######..',
-    '...#############...',
-    '....###########....',
-    '......#######......',
+  cat: [
+    '.....##.................##.....',
+    '.....###...............###.....',
+    '.....####.............####.....',
+    '.....#####...........#####.....',
+    '.....######.........######.....',
+    '.....#####################.....',
+    '....#######################....',
+    '....#######################....',
+    '....#####..#########..#####....',
+    '....#####..#########..#####....',
+    '....#####..#########..#####....',
+    '###.#######################.###',
+    '....##########...##########....',
+    '.##############.##############.',
+    '....#######################....',
+    '###..#####################..###',
+    '......###################......',
+    '........###############........',
+    '..........###########..........',
   ],
   heart: [
     '..#####...#####..',
@@ -94,7 +77,7 @@ const SHAPES = {
     '.....##..##........##.....',
   ],
 };
-const IDLE = ['smile', 'heart', 'code'];
+const IDLE = ['cat', 'heart', 'code'];
 
 const K = 0.055;       
 const DAMP = 0.84;     
@@ -219,7 +202,9 @@ export function initHero() {
     px = grow(px); py = grow(py); vx = grow(vx); vy = grow(vy);
     hx = grow(hx); hy = grow(hy); heat = grow(heat); delay = grow(delay);
     for (let i = prevN; i < count; i++) {
-      px[i] = rand(0, W); py[i] = started ? rand(0, H) : -9999;
+      const src = prevN ? Math.floor(Math.random() * prevN) : -1;
+      if (started && src >= 0) { px[i] = px[src]; py[i] = py[src]; }
+      else { px[i] = rand(0, W); py[i] = started ? rand(0, H) : -9999; }
     }
     N = count;
     bucketIdx = Array.from({ length: BUCKETS }, () => new Int32Array(N));
@@ -303,7 +288,7 @@ export function initHero() {
     dirty = true;
   }
 
-  async function morph(key, at) {
+  async function morph(key, at, soft = false) {
     if (!started) return;
     if (key !== 'logo' && !SHAPES[key] && !targets.has(key)) {
       await loadFont();
@@ -311,6 +296,7 @@ export function initHero() {
     const t = targetFor(key) || targets.get('logo');
     currentKey = targets.has(key) ? key : 'logo';
     if (still) { assign(t, true); render(); return; }
+    if (soft) { assign(t, false); return; }
     shock(at ? at.x : box.x + box.w / 2, at ? at.y : box.y + box.h / 2, at ? 1 : 1.4);
     setTimeout(() => assign(t, false), 90);
   }
@@ -328,14 +314,14 @@ export function initHero() {
   function play(key, now) {
     show = { key, start: now, until: now + (key === 'arrow' ? 4800 : 3800), beat: 0, dub: 0 };
     lastShape = key;
-    morph(key);
+    morph(key, null, true);
   }
 
   function settle(now) {
     if (!show) return;
     show = null;
     nextIdle = now + rand(11000, 16000);
-    if (SHAPES[currentKey]) morph('logo');
+    if (SHAPES[currentKey]) morph('logo', null, true);
   }
 
   function idle(now) {
@@ -351,10 +337,10 @@ export function initHero() {
       } else if (show.key === 'heart') {
         pulse(0.03);
         show.dub = now + 190;
-      } else if (show.key === 'smile' && show.beat === 1) {
-        assign(targetFor('wink'), false);
-      } else if (show.key === 'smile' && show.beat === 2) {
-        assign(targetFor('smile'), false);
+      } else if (show.key === 'cat') {
+        const push = cell * 0.35 * (show.beat % 2 ? 1 : -1);
+        for (let i = 0; i < N; i++) vx[i] += push;
+        dirty = true;
       }
       return;
     }
