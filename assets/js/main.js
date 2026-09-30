@@ -15,6 +15,7 @@ import { initTerminal } from './terminal.js';
 import { initDither } from './dither.js';
 import { initClock, initTheme, initHeader, initMenu, initSections, initCopy, initToTop } from './ui.js';
 import { initEggs } from './eggs.js';
+import { initChat } from './chat.js';
 
 const root = document.documentElement;
 root.classList.add('ready');
@@ -54,9 +55,11 @@ safe('dither', initDither);
 safe('copy', initCopy);
 safe('to top', initToTop);
 const eggs = safe('eggs', () => initEggs({ hero })) || {};
+const chat = safe('chat', initChat);
 safe('terminal', () => initTerminal({
   toggleTheme: () => toggleTheme?.(),
   toggleZxc: () => eggs.toggleZxc?.(),
   toggleGrid: () => eggs.toggleGrid?.(),
   glitch: () => eggs.glitch?.(),
+  openChat: () => chat?.open(),
 }));

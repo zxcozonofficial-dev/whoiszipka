@@ -461,6 +461,7 @@ export function initTerminal(api = {}) {
       `  ${acc(pad('stack', 11))}на чём пишу`,
       `  ${acc(pad('works', 11))}работы`,
       `  ${acc(pad('contact', 11))}как связаться`,
+      `  ${acc(pad('chat', 11))}написать мне прямо тут`,
       `  ${acc(pad('neofetch', 11))}инфа о системе`,
       `  ${acc(pad('ls, cat', 11))}файлы`,
       `  ${acc(pad('theme', 11))}сменить тему`,
@@ -475,6 +476,7 @@ export function initTerminal(api = {}) {
     projects: () => COMMANDS.works(),
     contact: () => print(listContacts()),
     contacts: () => COMMANDS.contact(),
+    chat: () => { print('открываю чат. пиши, отвечу прямо туда.'); api.openChat?.(); },
     tg: () => { print(`открываю telegram... ${link('https://t.me/holyfear', 't.me/holyfear')}`); window.open('https://t.me/holyfear', '_blank', 'noopener'); },
     telegram: () => COMMANDS.tg(),
     neofetch,
@@ -582,7 +584,7 @@ export function initTerminal(api = {}) {
     coffee: () => print('кофе закончился. зато сайт работает.'),
     'кофе': () => COMMANDS.coffee(),
   };
-  const PUBLIC = ['help', 'whoami', 'about', 'stack', 'works', 'contact', 'neofetch', 'ls', 'cat', 'unzip', 'echo', 'date', 'clear', 'theme', 'grid', 'history', 'tg'];
+  const PUBLIC = ['help', 'whoami', 'about', 'stack', 'works', 'contact', 'chat', 'neofetch', 'ls', 'cat', 'unzip', 'echo', 'date', 'clear', 'theme', 'grid', 'history', 'tg'];
 
   async function run(raw) {
     const line = raw.trim();
