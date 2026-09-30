@@ -40,16 +40,21 @@ export function initBadge() {
     return { x: r.left + r.width / 2, y: r.top + rig.offsetTop };
   };
 
+  const angleAt = (x, y) => {
+    const p = pivot();
+    return Math.atan2(p.x - x, Math.max(1, y - p.y));
+  };
+
   card.addEventListener('pointerdown', (e) => {
     if (e.button !== 0) return;
     card.setPointerCapture(e.pointerId);
-    const p = pivot();
+    const a = angleAt(e.clientX, e.clientY);
+    const now = performance.now();
     drag = {
       id: e.pointerId,
-      a0: Math.atan2(e.clientX - p.x, e.clientY - p.y),
+      a0: a,
       th0: th,
-      last: th,
-      t: performance.now(),
+      samples: [{ t: now, th }],
       moved: 0,
       sx: e.clientX,
       sy: e.clientY,
@@ -59,29 +64,35 @@ export function initBadge() {
   });
 
   card.addEventListener('pointermove', (e) => {
-    const r = card.getBoundingClientRect();
-    hoverX = ((e.clientX - r.left) / r.width - 0.5) * 2;
-    hoverY = ((e.clientY - r.top) / r.height - 0.5) * 2;
+    if (e.pointerType === 'mouse' || drag) {
+      const r = card.getBoundingClientRect();
+      hoverX = clamp(((e.clientX - r.left) / r.width - 0.5) * 2, -1, 1);
+      hoverY = clamp(((e.clientY - r.top) / r.height - 0.5) * 2, -1, 1);
+    }
     if (!drag || e.pointerId !== drag.id) return;
-    const p = pivot();
-    const a = Math.atan2(e.clientX - p.x, e.clientY - p.y);
     const now = performance.now();
-    const next = clamp(drag.th0 + (a - drag.a0) * 1.15, -1.25, 1.25);
-    const dt = Math.max(1, now - drag.t) / 1000;
-    om = damp(om, (next - drag.last) / dt, 30, dt);
-    drag.last = next;
-    drag.t = now;
+    th = clamp(drag.th0 + angleAt(e.clientX, e.clientY) - drag.a0, -1.3, 1.3);
+    drag.samples.push({ t: now, th });
+    while (drag.samples.length > 2 && now - drag.samples[0].t > 90) drag.samples.shift();
     drag.moved = Math.max(drag.moved, Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy));
-    th = next;
   });
 
   const release = (e) => {
     if (!drag || (e && e.pointerId !== drag.id)) return;
+    const now = performance.now();
+    const first = drag.samples[0];
+    const lastT = drag.samples[drag.samples.length - 1].t;
+    om = now - lastT > 90 || now - first.t < 8 ? 0 : clamp((th - first.th) / ((now - first.t) / 1000), -9, 9);
     const tap = drag.moved < 6 && drag.type !== 'mouse';
+    if (drag.type !== 'mouse') { hoverX = 0; hoverY = 0; }
     drag = null;
-    om = clamp(om, -9, 9);
     if (tap) flip();
   };
+  card.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    e.preventDefault();
+    om = clamp(om + (e.key === 'ArrowLeft' ? 2.4 : -2.4), -9, 9);
+  });
   card.addEventListener('pointerup', release);
   card.addEventListener('pointercancel', release);
   card.addEventListener('pointerleave', () => { hoverX = 0; hoverY = 0; });
