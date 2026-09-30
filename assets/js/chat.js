@@ -16,8 +16,7 @@ const TEMPLATE = `
 <p class="chat__nudge" aria-hidden="true">есть задача? пиши сюда</p>
 <section class="chat__panel" id="chat-panel" role="dialog" aria-label="Чат с Зипкой">
   <div class="chat__bar">
-    <span class="chat__avatar" aria-hidden="true"><svg viewBox="0 0 7 9"><path d="M0 0h7v1h-7zM0 1h7v1h-7zM4 2h3v1h-3zM3 3h3v1h-3zM2 4h3v1h-3zM1 5h3v1h-3zM0 6h3v1h-3zM0 7h7v1h-7zM0 8h7v1h-7z"/></svg></span>
-    <span class="chat__who"><b>зипка</b><small class="chat__status">ответ придёт прямо сюда</small></span>
+    <span class="chat__who"><b class="chat__logo"><svg viewBox="0 0 168 43" role="img" aria-label="justzipka"><use href="#logo-path"/></svg></b><small class="chat__status">ответ придёт прямо сюда</small></span>
     <button class="chat__close" type="button" aria-label="Закрыть чат"><svg viewBox="0 0 7 7" aria-hidden="true"><path d="M0 0h1v1h-1zM6 0h1v1h-1zM1 1h1v1h-1zM5 1h1v1h-1zM2 2h1v1h-1zM4 2h1v1h-1zM3 3h1v1h-1zM2 4h1v1h-1zM4 4h1v1h-1zM1 5h1v1h-1zM5 5h1v1h-1zM0 6h1v1h-1zM6 6h1v1h-1z"/></svg></button>
   </div>
   <div class="chat__list" role="log" aria-live="polite" aria-relevant="additions">
