@@ -1381,6 +1381,7 @@ kbd {
   transition: color .3s, transform .6s var(--ease);
 }
 .crow__link:hover .crow__value { color: var(--accent-ink); transform: translateX(10px); }
+.crow__j { display: inline-block; width: 0.506em; height: .997em; margin: 0 -.035em 0 -0.201em; vertical-align: -.181em; fill: currentColor; }
 .crow__arr { width: 16px; height: 16px; color: var(--ink-3); shape-rendering: crispEdges; transition: transform .5s var(--ease), color .3s; }
 .crow__link:hover .crow__arr { color: var(--accent-ink); transform: translate(4px, -4px); }
 .crow__copy {
