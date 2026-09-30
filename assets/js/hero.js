@@ -431,10 +431,10 @@ export function initHero() {
     if (moved < 12 && quick) {
       const now = performance.now();
       const at = local(e);
-      taps = taps.filter((t) => now - t < 1600);
+      taps = taps.filter((t) => now - t < 3000);
       taps.push(now);
       if (blast) shock(at.x, at.y, 0.7);
-      else if (taps.length >= 5 && !still) { taps = []; explode(at); }
+      else if (taps.length >= 10 && !still) { taps = []; explode(at); }
       else {
         if (show) { show = null; nextIdle = now + 15000; }
         nextWord(at);
