@@ -21,25 +21,7 @@ export function initCursor() {
   let mode = '';
   let seen = false;
 
-  window.addEventListener('pointermove', (e) => {
-    if (e.pointerType !== 'mouse') return;
-    m.x = e.clientX;
-    m.y = e.clientY;
-    if (!seen) {
-      seen = true;
-      b.x = m.x - 13; b.y = m.y - 13;
-      l.x = m.x; l.y = m.y;
-    }
-    document.documentElement.classList.remove('cursor-out');
-  }, { passive: true });
-
-  document.addEventListener('pointerleave', () => document.documentElement.classList.add('cursor-out'));
-  document.documentElement.addEventListener('mouseleave', () => document.documentElement.classList.add('cursor-out'));
-  window.addEventListener('pointerdown', () => root.classList.add('is-down'));
-  window.addEventListener('pointerup', () => root.classList.remove('is-down'));
-
-  document.addEventListener('pointerover', (e) => {
-    const t = e.target;
+  const sense = (t) => {
     if (!(t instanceof Element)) return;
     const labeled = t.closest('[data-cursor]');
     const text = t.closest('input, textarea, [data-cursor-text]');
@@ -47,7 +29,8 @@ export function initCursor() {
     if (labeled) {
       mode = 'label';
       snap = null;
-      labelText.textContent = labeled.getAttribute('data-cursor');
+      const v = labeled.getAttribute('data-cursor');
+      if (labelText.textContent !== v) labelText.textContent = v;
     } else if (text) {
       mode = 'text';
       snap = null;
@@ -61,7 +44,27 @@ export function initCursor() {
     root.classList.toggle('is-text', mode === 'text');
     root.classList.toggle('is-label', mode === 'label');
     label.classList.toggle('is-on', mode === 'label');
-  });
+  };
+
+  window.addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    m.x = e.clientX;
+    m.y = e.clientY;
+    if (!seen) {
+      seen = true;
+      b.x = m.x - 13; b.y = m.y - 13;
+      l.x = m.x; l.y = m.y;
+    }
+    document.documentElement.classList.remove('cursor-out');
+    sense(e.target);
+  }, { passive: true });
+
+  document.addEventListener('pointerleave', () => document.documentElement.classList.add('cursor-out'));
+  document.documentElement.addEventListener('mouseleave', () => document.documentElement.classList.add('cursor-out'));
+  window.addEventListener('pointerdown', () => root.classList.add('is-down'));
+  window.addEventListener('pointerup', () => root.classList.remove('is-down'));
+
+  document.addEventListener('pointerover', (e) => sense(e.target));
 
   tick((dt) => {
     let tx, ty, tw, th;
