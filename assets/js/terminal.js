@@ -240,7 +240,7 @@ export function initTerminal(api = {}) {
     }
     print(acc('доступ получен.'));
     await sleep(reduced() ? 0 : 600);
-    print(`шучу. тут только портфолио. но такой сайт сделать могу: ${acc('contact')}`);
+    print(`шучу, никто ничего не взломал.\nвзламывать я не умею, зато делаю сайты и ботов. пиши: ${acc('contact')}`);
   }
 
   async function ping(args) {
@@ -254,7 +254,7 @@ export function initTerminal(api = {}) {
   }
 
   function matrix() {
-    if (reduced()) { print(`${dim('проснись, зипка...')} матрица отдыхает, у тебя выключены анимации.`); return undefined; }
+    if (reduced()) { print(`${dim('проснись, нео...')} матрица отдыхает, у тебя выключены анимации.`); return undefined; }
     return new Promise((resolve) => {
       const p = palette();
       const w = body.clientWidth;
@@ -307,7 +307,7 @@ export function initTerminal(api = {}) {
       });
       window.addEventListener('keydown', quit, true);
       root.addEventListener('pointerdown', quit);
-    }).then(() => print(`${dim('проснись, зипка...')} следуй за белым кроликом: ${acc('contact')}`));
+    }).then(() => print(`${dim('проснись, нео...')} следуй за белым кроликом: ${acc('contact')}`));
   }
 
   function snake() {
