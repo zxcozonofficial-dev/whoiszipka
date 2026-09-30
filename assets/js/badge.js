@@ -10,21 +10,15 @@ export function initBadge() {
 
   buildBars(card.querySelector('.badge__bars'), 'JUSTZIPKA');
   const glares = card.querySelectorAll('.badge__glare');
+  const still = reduced();
+  const TG = 'https://t.me/holyfear';
 
-  const flip = () => card.classList.toggle('is-flipped');
-  card.addEventListener('dblclick', flip);
-  card.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); }
-  });
-
-  if (reduced()) {
-    card.addEventListener('click', flip);
-    return;
-  }
-
-  
   let th = 0.18;
   let om = 0;
+  let fa = 0;
+  let fv = 0;
+  let turns = 0;
+  let back = false;
   let twist = 0;
   let tiltX = 0;
   let tiltY = 0;
@@ -34,6 +28,27 @@ export function initBadge() {
   let drag = null;
   const K = 15;
   const C = 1.05;
+
+  const flip = () => {
+    turns += 1;
+    card.classList.toggle('is-flipped', turns % 2 === 1);
+    if (still) card.classList.toggle('show-back', turns % 2 === 1);
+    else om = clamp(om + 0.7, -9, 9);
+  };
+  const onHandle = (t) => t instanceof Element && !!t.closest('.badge__handle') && card.classList.contains('show-back');
+  card.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); }
+  });
+
+  if (still) {
+    card.addEventListener('click', (e) => {
+      if (onHandle(e.target)) window.open(TG, '_blank', 'noopener');
+      else flip();
+    });
+    return;
+  }
+
+  card.addEventListener('dblclick', (e) => { if (!onHandle(e.target)) flip(); });
 
   const pivot = () => {
     const r = rig.parentElement.getBoundingClientRect();
@@ -59,6 +74,7 @@ export function initBadge() {
       sx: e.clientX,
       sy: e.clientY,
       type: e.pointerType,
+      link: onHandle(e.target),
     };
     om = 0;
   });
@@ -83,10 +99,13 @@ export function initBadge() {
     const first = drag.samples[0];
     const lastT = drag.samples[drag.samples.length - 1].t;
     om = now - lastT > 90 || now - first.t < 8 ? 0 : clamp((th - first.th) / ((now - first.t) / 1000), -9, 9);
-    const tap = drag.moved < 6 && drag.type !== 'mouse';
+    const tapped = drag.moved < 6 && e?.type !== 'pointercancel';
+    const tap = tapped && drag.type !== 'mouse';
+    const link = tapped && drag.link;
     if (drag.type !== 'mouse') { hoverX = 0; hoverY = 0; }
     drag = null;
-    if (tap) flip();
+    if (link) window.open(TG, '_blank', 'noopener');
+    else if (tap) flip();
   };
   card.addEventListener('keydown', (e) => {
     if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
@@ -109,7 +128,17 @@ export function initBadge() {
     twist = damp(twist, clamp(-om * 9, -40, 40) + hoverX * 10, 8, dt);
     tiltX = damp(tiltX, -hoverY * 8, 8, dt);
     tiltY = damp(tiltY, twist, 10, dt);
+    fv += ((turns * Math.PI - fa) * 70 - fv * 12) * dt;
+    fa += fv * dt;
     rig.style.transform = `rotate(${th.toFixed(4)}rad) rotateY(${tiltY.toFixed(2)}deg) rotateX(${tiltX.toFixed(2)}deg)`;
+    card.style.transform = `rotateY(${fa.toFixed(4)}rad)`;
+    const ty = tiltY * Math.PI / 180;
+    const tx = tiltX * Math.PI / 180;
+    const facing = Math.cos(ty) * Math.cos(tx) * Math.cos(fa) - Math.sin(ty) * Math.sin(fa);
+    if ((facing < 0) !== back) {
+      back = facing < 0;
+      card.classList.toggle('show-back', back);
+    }
     const g = `${(-30 + th * 90 + tiltY * 1.6).toFixed(1)}%`;
     glares.forEach((el) => el.style.setProperty('--glare', g));
   });
