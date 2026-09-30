@@ -83,7 +83,7 @@ export function initTerminal(api = {}) {
       ['статус', 'беру новые проекты'],
     ];
     const info = [`${acc('zipka')}@${acc('web')}`, dim('-'.repeat(16)), ...rows.map(([k, v]) => `${acc(pad(k, 8))}${esc(v)}`)].join('\n');
-    const swatches = ['var(--accent)', 'var(--ink)', 'var(--ink-2)', 'var(--ink-3)', 'var(--line-2)']
+    const swatches = ['var(--ink)', 'var(--ink-2)', 'var(--ink-3)', 'var(--line-2)', 'var(--line)']
       .map((c) => `<i style="display:inline-block;width:18px;height:10px;background:${c};margin-right:4px"></i>`).join('');
     print(`<div class="t-neo"><svg class="t-neo__logo" viewBox="0 0 168 43" aria-hidden="true"><use href="#logo-path"/></svg><div>${info}\n\n${swatches}</div></div>`);
   }

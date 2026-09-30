@@ -50,12 +50,12 @@ export function initHero() {
   let dirty = true;
   let nextGlitch = 0;
   let fontReady = null;
-  let trailColor = [255, 75, 31];
+  let trailColor = [242, 242, 242];
 
   function buildColors() {
     const p = palette();
     colors = [];
-    for (let b = 0; b < BUCKETS; b++) colors.push(rgbStr(mix(p.ink, p.accent, b / (BUCKETS - 1))));
+    for (let b = 0; b < BUCKETS; b++) colors.push(rgbStr(mix(p.ink, p.heat, b / (BUCKETS - 1))));
     trailColor = p.accent;
     dirty = true;
   }
