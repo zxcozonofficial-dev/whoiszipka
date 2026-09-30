@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>404. Зипка</title>
 <meta name="robots" content="noindex">
-<link rel="icon" href="/whoiszipka/assets/favicon.png" type="image/png" sizes="64x64">
-<link rel="apple-touch-icon" href="/whoiszipka/assets/apple-touch-icon.png">
+<link rel="icon" href="/assets/favicon.png" type="image/png" sizes="64x64">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Martian+Mono:wdth,wght@75..112.5,400..600&family=Onest:wght@400..600&family=Pixelify+Sans:wght@700&display=swap">
@@ -163,14 +163,14 @@
       <div class="term" id="term"></div>
       <p class="msg">Такой страницы нет. Возможно, её ещё не распаковали, или в адресе опечатка.</p>
     </div>
-    <a class="home" href="/whoiszipka/">На главную <svg viewBox="0 0 5 5" aria-hidden="true"><path d="M2 0h3v1h-3zM3 1h2v1h-2zM2 2h1v1h-1zM4 2h1v1h-1zM1 3h1v1h-1zM0 4h1v1h-1z"/></svg></a>
+    <a class="home" href="/">На главную <svg viewBox="0 0 5 5" aria-hidden="true"><path d="M2 0h3v1h-3zM3 1h2v1h-2zM2 2h1v1h-1zM4 2h1v1h-1zM1 3h1v1h-1zM0 4h1v1h-1z"/></svg></a>
   </div>
 </div>
 
 <script>
 (function () {
   var term = document.getElementById('term');
-  var path = decodeURIComponent(location.pathname.replace(/^\/whoiszipka/, '') || '/');
+  var path = decodeURIComponent(location.pathname || '/');
   if (path.length > 48) path = path.slice(0, 45) + '...';
   var esc = function (s) { return s.replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }); };
   term.innerHTML = '<i>$</i> <b>unzip justzipka.zip ' + esc(path) + '</b>\nunzip: в архиве нет «' + esc(path) + '»';
