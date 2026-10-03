@@ -8,6 +8,7 @@ const FILES = [
   'works/vibroexpertspb.ru',
   'works/vibrorotor.ru',
   'works/hakune.blog',
+  'works/sobrise.uk',
   'bots/telegram.bot',
   'contacts.vcf',
 ];

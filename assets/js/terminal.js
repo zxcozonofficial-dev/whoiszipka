@@ -23,6 +23,7 @@ const WORKS = [
   ['01', 'ВиброЭксперт СПб', 'https://vibroexpertspb.ru/', 'vibroexpertspb.ru'],
   ['02', 'ВиброРотор', 'https://vibrorotor.ru/', 'vibrorotor.ru'],
   ['03', 'Hakune', 'https://hakune.blog/', 'hakune.blog'],
+  ['04', 'Sobrise', 'https://sobrise.uk/', 'sobrise.uk'],
 ];
 
 const CONTACTS = [
