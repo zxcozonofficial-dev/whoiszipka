@@ -4,6 +4,7 @@ const API = 'https://84.22.149.210.sslip.io/api/site';
 const KEY = { session: 'zipka-chat-session', nick: 'zipka-chat-nick', seen: 'zipka-chat-seen', nudge: 'zipka-chat-nudge' };
 const NICK = /^@?[A-Za-z0-9_]{0,32}$/;
 const URL_RE = /(https?:\/\/[^\s<>"']+[^\s<>"'.,;:!?)\]])/g;
+const QUICK = ['сколько стоит сайт?', 'нужен бот', 'нужна mini app', 'есть вопрос'];
 
 const read = (k, store = localStorage) => { try { return store.getItem(k); } catch { return null; } };
 const write = (k, v, store = localStorage) => { try { store.setItem(k, v); } catch { return; } };
@@ -21,6 +22,7 @@ const TEMPLATE = `
   </div>
   <div class="chat__list" role="log" aria-live="polite" aria-relevant="additions">
     <div class="chat__msg chat__msg--me chat__msg--greet"><p class="chat__text">привет! я зипка. напиши, что нужно: сайт, бот или дизайн. отвечу прямо сюда, а если ты уже уйдёшь, напишу в telegram, так что оставь ник.</p></div>
+    <div class="chat__quick" role="group" aria-label="Быстрые сообщения">${QUICK.map((q) => `<button type="button">${q}</button>`).join('')}</div>
     <p class="chat__note" hidden></p>
     <div class="chat__typing" hidden><span class="chat__pix" aria-hidden="true"><i></i><i></i><i></i></span>зипка печатает</div>
   </div>
@@ -72,6 +74,7 @@ export function initChat() {
   const fab = $('.chat__fab', root);
   const badge = $('.chat__badge', root);
   const list = $('.chat__list', root);
+  const quick = $('.chat__quick', root);
   const note = $('.chat__note', root);
   const typingEl = $('.chat__typing', root);
   const form = $('.chat__form', root);
@@ -96,6 +99,7 @@ export function initChat() {
   const known = new Map();
 
   nickIn.value = read(KEY.nick) || '';
+  if (session) quick.remove();
 
   const nearBottom = () => list.scrollHeight - list.scrollTop - list.clientHeight < 80;
   const toBottom = () => { list.scrollTop = list.scrollHeight; };
@@ -268,23 +272,42 @@ export function initChat() {
     ta.style.height = `${Math.min(ta.scrollHeight, 140)}px`;
   }
 
+  function ready() {
+    if (!NICK.test(nickIn.value.trim())) { say('ник: только латиница, цифры и _'); nickIn.focus(); return false; }
+    if (Date.now() - lastSend < 5000) { say('подожди пару секунд'); return false; }
+    return true;
+  }
+
+  function post(text) {
+    quick.remove();
+    const el = bubble({ from: 'visitor', text, ts: Date.now() });
+    el.dataset.text = text;
+    place(el, 0);
+    toBottom();
+    send(text, el);
+  }
+
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const text = ta.value.trim();
     if (!text) { ta.focus(); return; }
-    if (!NICK.test(nickIn.value.trim())) { say('ник: только латиница, цифры и _'); nickIn.focus(); return; }
-    if (Date.now() - lastSend < 5000) { say('подожди пару секунд'); return; }
-    const el = bubble({ from: 'visitor', text, ts: Date.now() });
-    el.dataset.text = text;
-    place(el, 0);
+    if (!ready()) return;
     ta.value = '';
     grow();
-    toBottom();
-    send(text, el);
+    post(text);
   });
 
   list.addEventListener('click', (e) => {
-    const el = e.target instanceof Element ? e.target.closest('.chat__msg--you.is-failed') : null;
+    if (!(e.target instanceof Element)) return;
+    const q = e.target.closest('.chat__quick button');
+    if (q) {
+      if (!ready()) return;
+      post(q.textContent);
+      ta.placeholder = 'расскажи подробнее';
+      ta.focus({ preventScroll: true });
+      return;
+    }
+    const el = e.target.closest('.chat__msg--you.is-failed');
     if (el) send(el.dataset.text, el);
   });
 
