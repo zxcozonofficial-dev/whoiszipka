@@ -5,6 +5,7 @@ const LINKS = 12;
 const STICK = 300;
 const G = 2600;
 const W = 270;
+const PAD = 1200;
 
 export function initBadge() {
   const rig = $('[data-badge]');
@@ -48,6 +49,12 @@ export function initBadge() {
   let press = null;
   let ropeTop = 0;
 
+  const fit = () => {
+    rope.style.left = `${-PAD}px`;
+    rope.style.width = `${stage.clientWidth + PAD * 2}px`;
+    rope.style.height = `${stage.clientHeight - ropeTop + PAD}px`;
+  };
+
   const point = (x, y, m) => ({ x, y, px: x, py: y, m });
   const top = () => pts[pts.length - 1];
 
@@ -62,7 +69,7 @@ export function initBadge() {
     bot = point(t.x + (still ? 0 : 90), t.y + Math.sqrt(STICK * STICK - (still ? 0 : 8100)), 3);
     ropeTop = anchor.y - 30;
     rope.style.top = `${ropeTop}px`;
-    rope.style.height = `${stage.clientHeight - ropeTop}px`;
+    fit();
     rope.style.setProperty('--fade', `${Math.round(L * 0.45 + 30)}px`);
   };
 
@@ -153,11 +160,12 @@ export function initBadge() {
       const len = Math.hypot(b.x - a.x, b.y - a.y) || 1;
       const nx = -(b.y - a.y) / len * 7;
       const ny = (b.x - a.x) / len * 7;
+      const x = p.x + PAD;
       const y = p.y - ropeTop;
       const c = i ? 'L' : 'M';
-      d += `${c}${p.x.toFixed(1)} ${y.toFixed(1)}`;
-      sa += `${c}${(p.x + nx).toFixed(1)} ${(y + ny).toFixed(1)}`;
-      sb += `${c}${(p.x - nx).toFixed(1)} ${(y - ny).toFixed(1)}`;
+      d += `${c}${x.toFixed(1)} ${y.toFixed(1)}`;
+      sa += `${c}${(x + nx).toFixed(1)} ${(y + ny).toFixed(1)}`;
+      sb += `${c}${(x - nx).toFixed(1)} ${(y - ny).toFixed(1)}`;
     }
     band.setAttribute('d', d);
     stitchA.setAttribute('d', sa);
@@ -191,7 +199,7 @@ export function initBadge() {
     anchor = { x: stage.clientWidth / 2, y: 80 - L };
     const dx = anchor.x - old.x;
     for (const p of [...pts, bot]) { p.x += dx; p.px += dx; }
-    rope.style.height = `${stage.clientHeight - ropeTop}px`;
+    fit();
     render();
   });
 

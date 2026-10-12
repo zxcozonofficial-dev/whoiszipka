@@ -525,6 +525,7 @@ code, kbd { font-family: var(--f-mono); }
 
 
 
+.about { overflow-x: clip; }
 .about__grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -587,8 +588,6 @@ code, kbd { font-family: var(--f-mono); }
 }
 .badge-rope {
   position: absolute;
-  left: 0;
-  width: 100%;
   overflow: visible;
   pointer-events: none;
   fill: none;
