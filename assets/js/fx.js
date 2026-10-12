@@ -124,48 +124,6 @@ function countUp(el) {
 
 
 
-export function initLitText() {
-  const el = $('[data-lit]');
-  if (!el || reduced()) return;
-  const words = [];
-  const walk = (node) => {
-    for (const ch of Array.from(node.childNodes)) {
-      if (ch.nodeType === 3) {
-        const frag = document.createDocumentFragment();
-        for (const part of ch.textContent.split(/(\s+)/)) {
-          if (!part) continue;
-          if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); continue; }
-          const s = document.createElement('span');
-          s.className = 'lw';
-          s.textContent = part;
-          words.push(s);
-          frag.appendChild(s);
-        }
-        ch.replaceWith(frag);
-      } else if (ch.nodeType === 1) walk(ch);
-    }
-  };
-  walk(el);
-
-  let lastN = -1;
-  let visible = false;
-  watchVisible(el, (v) => { visible = v; }, '20% 0px 20% 0px');
-  tick(() => {
-    if (!visible) return;
-    const r = el.getBoundingClientRect();
-    const vh = window.innerHeight;
-    const start = vh * 0.88;
-    const end = vh * 0.42;
-    const p = clamp((start - r.top) / (r.height + start - end), 0, 1);
-    const n = Math.round(p * words.length);
-    if (n === lastN) return;
-    lastN = n;
-    words.forEach((w, i) => w.classList.toggle('on', i < n));
-  });
-}
-
-
-
 export function initMarquee() {
   $$('.marquee__track').forEach((track) => {
     const dir = parseFloat(track.dataset.dir) || 1;

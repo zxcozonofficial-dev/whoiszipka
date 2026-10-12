@@ -5,7 +5,7 @@ import { initHero } from './hero.js';
 import { runIntro } from './intro.js';
 import { initCursor } from './cursor.js';
 import {
-  initReveal, initLitText, initMarquee, initMagnetic, initRoundCta,
+  initReveal, initMarquee, initMagnetic, initRoundCta,
   initSpotlight, initIcons, initScrambleHover,
 } from './fx.js';
 import { initBadge } from './badge.js';
@@ -41,7 +41,6 @@ safe('menu', initMenu);
 safe('sections', initSections);
 safe('icons', initIcons);
 safe('reveal', initReveal);
-safe('lit', initLitText);
 safe('marquee', initMarquee);
 safe('cursor', initCursor);
 safe('magnetic', initMagnetic);

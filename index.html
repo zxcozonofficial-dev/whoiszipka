@@ -180,21 +180,13 @@
 
   
   <div class="marquee" aria-hidden="true">
-    <div class="marquee__band marquee__band--b">
-      <div class="marquee__track" data-dir="1">
-        <span>от макета до продакшена</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-star"/></svg>
-        <span>justzipka</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-star"/></svg>
-        <span>дизайн</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-right"/></svg><span>код</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-right"/></svg><span>запуск</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-star"/></svg>
-      </div>
-    </div>
-    <div class="marquee__band marquee__band--a">
+    <div class="marquee__band">
       <div class="marquee__track" data-dir="-1">
-        <span>Сайты</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-star"/></svg>
-        <span>Дизайн</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-star"/></svg>
-        <span>Telegram-боты</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-star"/></svg>
-        <span>Mini Apps</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-star"/></svg>
-        <span>Лендинги</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-star"/></svg>
-        <span>Анимации</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-star"/></svg>
+        <span>сайты</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-star"/></svg>
+        <span>дизайн</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-star"/></svg>
+        <span>telegram-боты</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-star"/></svg>
+        <span>mini apps</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-star"/></svg>
+        <span>лендинги</span><svg class="ico" viewBox="0 0 5 5"><use href="#i-star"/></svg>
       </div>
     </div>
   </div>
@@ -206,7 +198,10 @@
     </div>
 
     <div class="about__grid wrap">
-      <p class="about__text" data-lit>Привет, я Зипка. Делаю сайты <em>целиком</em>: придумываю, рисую, верстаю и выкладываю в сеть. Люблю, когда сайт быстро открывается, удобно листается с телефона и чем-то <em>цепляет</em> с первого экрана. Если к сайту нужен бот в <em>Telegram</em> или <em>Mini App</em>, это тоже ко мне.</p>
+      <div class="about__text">
+        <p class="about__lede">Привет, я Зипка. Делаю сайты от идеи до запуска.</p>
+        <p class="about__body">Сам придумываю, рисую, верстаю и выкладываю в сеть. Слежу, чтобы сайт быстро открывался и удобно листался с телефона. Ещё пишу Telegram-ботов и Mini Apps.</p>
+      </div>
 
       <div class="about__badge">
         <div class="badge-stage">
@@ -216,17 +211,10 @@
             <div class="badge" tabindex="0" role="button" aria-label="Пропуск Зипки, на обороте QR-код на Telegram @holyfear. Enter переворачивает, стрелки раскачивают" data-cursor="тяни">
               <div class="badge__face badge__front">
                 <div class="badge__hole"></div>
-                <div class="badge__top"><span>пропуск</span><span>#001</span></div>
-                <div class="badge__photo">
-                  <svg viewBox="0 0 168 43" aria-hidden="true"><use href="#logo-path"/></svg>
-                </div>
-                <dl class="badge__rows">
-                  <div><dt>имя</dt><dd>Зипка</dd></div>
-                  <div><dt>роль</dt><dd>дизайн + код</dd></div>
-                  <div><dt>доступ</dt><dd>от макета до запуска</dd></div>
-                </dl>
-                <div class="badge__code"><span class="badge__bars" aria-hidden="true"></span><span class="badge__id">JUSTZIPKA-<span data-year>2026</span></span></div>
-                <span class="badge__glare"></span>
+                <svg class="badge__logo" viewBox="0 0 168 43" aria-hidden="true"><use href="#logo-path"/></svg>
+                <p class="badge__name">Зипка</p>
+                <p class="badge__role">сайты, боты<br>и mini apps</p>
+                <p class="badge__foot"><span>@holyfear</span><span>justzipka.fun</span></p>
               </div>
               <div class="badge__face badge__back">
                 <div class="badge__hole"></div>
@@ -236,7 +224,6 @@
                   <span class="badge__handle">@holyfear</span>
                 </div>
                 <p class="badge__qr-cap">наведи камеру<br>или нажми на ник</p>
-                <span class="badge__glare"></span>
               </div>
             </div>
           </div>
