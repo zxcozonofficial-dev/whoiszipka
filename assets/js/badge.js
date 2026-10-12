@@ -8,8 +8,6 @@ export function initBadge() {
   const card = rig?.querySelector('.badge');
   if (!rig || !card) return;
 
-  buildBars(card.querySelector('.badge__bars'), 'JUSTZIPKA');
-  const glares = card.querySelectorAll('.badge__glare');
   const handle = card.querySelector('.badge__handle');
   const stage = rig.parentElement;
   const still = reduced();
@@ -174,31 +172,5 @@ export function initBadge() {
       back = facing < 0;
       card.classList.toggle('show-back', back);
     }
-    const g = `${(-30 + th * 90 + tiltY * 1.6).toFixed(1)}%`;
-    glares.forEach((el) => el.style.setProperty('--glare', g));
   });
-}
-
-
-function buildBars(el, text) {
-  if (!el) return;
-  const frag = document.createDocumentFragment();
-  let total = 0;
-  const pieces = [];
-  for (const ch of text) {
-    const c = ch.charCodeAt(0);
-    for (let k = 0; k < 4; k++) {
-      const bar = 1 + ((c >> k) & 1) + ((c >> (k + 3)) & 1);
-      const gap = 1 + ((c >> (k + 1)) & 1);
-      pieces.push([bar, gap]);
-      total += bar + gap;
-    }
-  }
-  for (const [bar, gap] of pieces) {
-    const i = document.createElement('i');
-    i.style.width = `${(bar / total) * 100}%`;
-    i.style.marginRight = `${(gap / total) * 100}%`;
-    frag.appendChild(i);
-  }
-  el.appendChild(frag);
 }
