@@ -578,36 +578,39 @@ code, kbd { font-family: var(--f-mono); }
 .fact dd { font-size: 16px; font-variant-numeric: tabular-nums; }
 
 .badge-stage {
+  --rope: 330;
   position: relative;
   width: 100%;
   height: 560px;
   perspective: 1400px;
+  touch-action: pan-y;
 }
+.badge-rope {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  overflow: visible;
+  pointer-events: none;
+  fill: none;
+  stroke-linejoin: round;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 var(--fade, 160px));
+  mask-image: linear-gradient(to bottom, transparent, #000 var(--fade, 160px));
+}
+.badge-rope__band { stroke: var(--accent); stroke-width: 26; opacity: .9; }
+.badge-rope__stitch { stroke: var(--on-accent); stroke-width: 2; stroke-dasharray: 4 4; opacity: .9; }
 .badge-rig {
   position: absolute;
-  left: 50%;
-  top: -250px;
+  left: 0;
+  top: 0;
   width: 270px;
-  margin-left: -135px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  transform-origin: 50% 0;
+  transform-origin: 135px 0;
   will-change: transform;
   pointer-events: none;
 }
 .badge-wrap { margin-top: -14px; perspective: 1400px; pointer-events: none; }
-.badge-strap {
-  width: 26px;
-  height: 330px;
-  background:
-    repeating-linear-gradient(to bottom, var(--on-accent) 0 4px, transparent 4px 8px) 5px 0 / 2px 100% no-repeat,
-    repeating-linear-gradient(to bottom, var(--on-accent) 0 4px, transparent 4px 8px) 19px 0 / 2px 100% no-repeat,
-    var(--accent);
-  opacity: .9;
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 45%);
-  mask-image: linear-gradient(to bottom, transparent, #000 45%);
-}
 .badge-clip {
   position: relative;
   z-index: 2;
@@ -1636,9 +1639,7 @@ kbd {
   .round-cta { grid-column: 9 / -1; }
   .term-sec__text, .term { grid-column: 1 / -1; }
   .term-sec__lede { max-width: 48ch; }
-  .badge-rig { top: -70px; }
-  .badge-strap { height: 150px; }
-  .badge-stage { height: 540px; }
+  .badge-stage { --rope: 150; height: 540px; }
 }
 
 @media (max-width: 760px) {
@@ -1662,9 +1663,7 @@ kbd {
   .hero__scroll { display: none; }
 
   .about__badge, .facts { grid-column: 1 / -1; grid-row: auto; }
-  .badge-stage { height: 500px; }
-  .badge-rig { top: -34px; }
-  .badge-strap { height: 110px; }
+  .badge-stage { --rope: 110; height: 500px; }
   .svc-grid { grid-template-columns: minmax(0, 1fr); }
   .svc { min-height: 300px; }
 
