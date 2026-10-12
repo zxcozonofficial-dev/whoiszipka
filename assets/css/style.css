@@ -600,23 +600,13 @@ code, kbd { font-family: var(--f-mono); }
 .badge-strap {
   width: 26px;
   height: 330px;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  background: var(--accent);
-  color: var(--on-accent);
+  background:
+    repeating-linear-gradient(to bottom, var(--on-accent) 0 4px, transparent 4px 8px) 5px 0 / 2px 100% no-repeat,
+    repeating-linear-gradient(to bottom, var(--on-accent) 0 4px, transparent 4px 8px) 19px 0 / 2px 100% no-repeat,
+    var(--accent);
+  opacity: .9;
   -webkit-mask-image: linear-gradient(to bottom, transparent, #000 45%);
   mask-image: linear-gradient(to bottom, transparent, #000 45%);
-}
-.badge-strap span {
-  writing-mode: vertical-rl;
-  font-family: var(--f-mono);
-  font-size: 10px;
-  font-weight: 600;
-  line-height: 26px;
-  letter-spacing: .32em;
-  text-transform: uppercase;
-  white-space: nowrap;
 }
 .badge-clip {
   position: relative;
@@ -675,34 +665,18 @@ code, kbd { font-family: var(--f-mono); }
   text-transform: uppercase;
   color: var(--ink-2);
 }
-.badge__front { padding: 44px 22px 18px; gap: 0; }
-.badge__logo { width: 92px; height: auto; aspect-ratio: 168 / 43; fill: var(--ink-3); }
-.badge__name {
-  margin: auto 0 10px;
-  font-family: var(--f-display);
-  font-weight: 700;
-  font-size: 54px;
-  line-height: .95;
-  letter-spacing: -.04em;
-  color: var(--ink);
+.badge__front {
+  justify-content: center;
+  align-items: center;
+  background:
+    radial-gradient(circle, var(--line-2) 1px, transparent 1.5px) 0 0 / 14px 14px,
+    var(--bg-3);
 }
-.badge__role {
-  margin: 0;
-  font-size: 17px;
-  line-height: 1.3;
-  color: var(--ink-2);
-}
-.badge__foot {
-  display: flex;
-  justify-content: space-between;
-  margin: 26px 0 0;
-  padding-top: 12px;
-  border-top: 1px solid var(--line-2);
-  font-family: var(--f-mono);
-  font-size: 10px;
-  letter-spacing: .08em;
-  color: var(--ink-3);
-}
+.badge__cat { width: 78%; height: auto; overflow: visible; fill: var(--ink); }
+.badge__lids { opacity: 0; animation: badge-blink 4.2s steps(1) infinite; }
+.badge:hover .badge__lids, .badge:active .badge__lids { animation: none; opacity: 1; }
+@keyframes badge-blink { 0%, 94% { opacity: 0; } 95%, 98% { opacity: 1; } }
+.zxc .badge__cat { fill: var(--accent); }
 .badge__qr {
   --qr-logo: #0a0a0a;
   display: flex;
