@@ -593,10 +593,10 @@ code, kbd { font-family: var(--f-mono); }
   flex-direction: column;
   align-items: center;
   transform-origin: 50% 0;
-  transform-style: preserve-3d;
   will-change: transform;
   pointer-events: none;
 }
+.badge-wrap { margin-top: -14px; perspective: 1400px; pointer-events: none; }
 .badge-strap {
   width: 26px;
   height: 330px;
@@ -622,7 +622,6 @@ code, kbd { font-family: var(--f-mono); }
   position: relative;
   width: 270px;
   height: 400px;
-  margin-top: -14px;
   transform-style: preserve-3d;
   pointer-events: none;
   cursor: grab;

@@ -51,8 +51,9 @@ export function initBadge() {
     const lx = dx * Math.cos(a) + dy * Math.sin(a) + rig.offsetWidth / 2;
     const ly = -dx * Math.sin(a) + dy * Math.cos(a);
     const face = handle.offsetParent;
-    const left = card.offsetLeft + face.offsetLeft + handle.offsetLeft;
-    const top = card.offsetTop + face.offsetTop + handle.offsetTop;
+    const box = card.offsetParent === rig ? card : card.parentElement;
+    const left = box.offsetLeft + (box === card ? 0 : card.offsetLeft) + face.offsetLeft + handle.offsetLeft;
+    const top = box.offsetTop + (box === card ? 0 : card.offsetTop) + face.offsetTop + handle.offsetTop;
     const pad = 6;
     return lx > left - pad && lx < left + handle.offsetWidth + pad && ly > top - pad && ly < top + handle.offsetHeight + pad;
   };
