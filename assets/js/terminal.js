@@ -24,6 +24,7 @@ const WORKS = [
   ['02', 'ВиброРотор', 'https://vibrorotor.ru/', 'vibrorotor.ru'],
   ['03', 'Hakune', 'https://hakune.blog/', 'hakune.blog'],
   ['04', 'Sobrise', 'https://sobrise.uk/', 'sobrise.uk'],
+  ['05', 'psinna55', 'https://zxcozonofficial-dev.github.io/psinna55/', 'psinna55'],
 ];
 
 const CONTACTS = [
