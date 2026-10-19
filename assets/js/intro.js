@@ -9,6 +9,7 @@ const FILES = [
   'works/vibrorotor.ru',
   'works/hakune.blog',
   'works/sobrise.uk',
+  'works/psinna55',
   'bots/telegram.bot',
   'contacts.vcf',
 ];
@@ -45,7 +46,7 @@ export async function runIntro(onReveal) {
   let shown = 0;
   const events = [
     { at: 480, line: 'Archive:  justzipka.zip' },
-    ...FILES.map((f, i) => ({ at: 600 + i * 130, line: `  <i>inflating:</i> ${f}` })),
+    ...FILES.map((f, i) => ({ at: 600 + i * 110, line: `  <i>inflating:</i> ${f}` })),
     { at: 1480, line: `<b>готово.</b> ${FILES.length} файлов, 0 ошибок` },
   ];
 
