@@ -67,14 +67,12 @@
     }, { passive: true });
   }
 
-  var seasonBtn = document.querySelector('.season');
   var snow = document.getElementById('snow');
   var winter = function () { return doc.dataset.season === 'winter'; };
   var startSnow = initSnow(snow);
   function setSeason(on) {
     if (on) doc.dataset.season = 'winter'; else delete doc.dataset.season;
     delete doc.dataset.tone;
-    seasonBtn.setAttribute('aria-pressed', String(on));
     try { localStorage.setItem('zipka-season', on ? 'on' : 'off'); localStorage.removeItem('zipka-tone'); } catch (e) {}
     if (on && startSnow) startSnow();
   }
@@ -94,10 +92,6 @@
       try { localStorage.setItem('zipka-tone', nx); } catch (e) {}
     }
     repaint();
-  }
-  if (seasonBtn) {
-    seasonBtn.setAttribute('aria-pressed', String(winter()));
-    seasonBtn.addEventListener('click', function () { setSeason(!winter()); });
   }
   if (winter() && startSnow) startSnow();
 
@@ -389,7 +383,6 @@
   toneLabel();
   var toneBtn = document.querySelector('.end__tone');
   if (toneBtn) toneBtn.addEventListener('click', nextTone);
-  if (seasonBtn) seasonBtn.addEventListener('click', repaint);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (zip) zip(); });
 
   (function hem() {
