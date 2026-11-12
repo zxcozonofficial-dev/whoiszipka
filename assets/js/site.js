@@ -73,9 +73,27 @@
   var startSnow = initSnow(snow);
   function setSeason(on) {
     if (on) doc.dataset.season = 'winter'; else delete doc.dataset.season;
+    delete doc.dataset.tone;
     seasonBtn.setAttribute('aria-pressed', String(on));
-    try { localStorage.setItem('zipka-season', on ? 'on' : 'off'); } catch (e) {}
+    try { localStorage.setItem('zipka-season', on ? 'on' : 'off'); localStorage.removeItem('zipka-tone'); } catch (e) {}
     if (on && startSnow) startSnow();
+  }
+  var TONES = [['pink', 'розовая'], ['winter', 'зимняя'], ['acid', 'кислотная'], ['rust', 'ржавая']];
+  function curTone() { return doc.dataset.tone || (winter() ? 'winter' : 'pink'); }
+  function toneLabel() {
+    var el = document.querySelector('.end__tone b'), id = curTone();
+    if (el) TONES.forEach(function (t) { if (t[0] === id) el.textContent = t[1]; });
+  }
+  function nextTone() {
+    var id = curTone(), i = 0;
+    TONES.forEach(function (t, k) { if (t[0] === id) i = k; });
+    var nx = TONES[(i + 1) % TONES.length][0];
+    setSeason(nx === 'winter');
+    if (nx === 'acid' || nx === 'rust') {
+      doc.dataset.tone = nx;
+      try { localStorage.setItem('zipka-tone', nx); } catch (e) {}
+    }
+    repaint();
   }
   if (seasonBtn) {
     seasonBtn.setAttribute('aria-pressed', String(winter()));
@@ -366,8 +384,11 @@
   }
 
   var zip = initZip();
-  var endZip = initEnd();
-  function repaint() { if (zip) zip(); if (endZip) endZip(); }
+  var cord = initCord();
+  function repaint() { if (zip) zip(); if (cord) cord(); toneLabel(); }
+  toneLabel();
+  var toneBtn = document.querySelector('.end__tone');
+  if (toneBtn) toneBtn.addEventListener('click', nextTone);
   if (seasonBtn) seasonBtn.addEventListener('click', repaint);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (zip) zip(); });
 
@@ -591,226 +612,155 @@
     return build;
   }
 
-  function initEnd() {
-    var cv = document.getElementById('endzip'), hintEl = document.querySelector('.end__hint');
-    if (!cv) return null;
-    var ctx = cv.getContext('2d'), W = 0, Hh = 0, dpr = 1, pal = null, raf = 0;
-    var ZY = 52, MIN = 36, S = 3;
-    var ys = MIN, ang = 0, angV = 0, drag = null, held = null, mx = null, my = null;
-    var SPR = {
-      coin: ['...dddd...', '..dmmmmd..', '.dmiimmmd.', 'dmimmmmmmd', 'dmimmddmmd', 'dmmmdmmmmd', 'dmmmmdmmmd', '.dmmddmmd.', '..dmmmmd..', '...dddd...'],
-      button: ['..aaaaaa..', '.aAAAAAAa.', 'aAAAAAAAAa', 'aAAoAAoAAa', 'aAAAAAAAAa', 'aAAAAAAAAa', 'aAAoAAoAAa', 'aAAAAAAAAa', '.aAAAAAAa.', '..aaaaaa..'],
-      candy: ['aa..AAAAAA..aa', '.aaAAiAAiAAaa.', '..aAiAAiAAAa..', '.aaAAAiAAiAaa.', 'aa..AAAAAA..aa'],
-      receipt: ['iiiiiiii', 'igggggii', 'iiiiiiii', 'iggggiii', 'iiiiiiii', 'igggggii', 'iiiiiiii', 'iiiggggi', 'iiiiiiii', 'i.i.i.i.'],
-    };
-    var POCKET = ['coin', 'button', 'coin', 'candy', 'coin', 'receipt', 'button', 'coin', 'candy', 'coin', 'button'];
-    var stock = POCKET.slice(), items = [], baked = {}, lastSpawn = 0;
+  function initCord() {
+    var foot = document.querySelector('.end'), cv = document.getElementById('cord');
+    var grab = foot && foot.querySelector('.end__grab'), toneBtn = foot && foot.querySelector('.end__tone');
+    if (!foot || !cv || !grab || !toneBtn) return null;
+    var ctx = cv.getContext('2d'), W = 0, H = 0, dpr = 1, pal = null, raf = 0;
+    var N = 14, pts = [], seg = 10, ax = 0, ay = 0, len = 0, HANDLE = 92;
+    var drag = null, armed = false, label = toneBtn.querySelector('span'), idle = label.textContent;
 
-    function op() { return clamp((ys - MIN) / 140, 0, 1); }
-    function amp() { return 34 * op(); }
-    function wf(y) { return y >= ys ? 0 : amp() * (1 - Math.exp(-(ys - y) / 70)); }
-    function df(y) { return y >= ys ? 0 : -amp() / 70 * Math.exp(-(ys - y) / 70); }
-
-    function bake() {
-      var cols = { m: pal.metal, d: pal.metalD, i: pal.ink, g: pal.ink3, A: pal.acc, a: mix(pal.acc, [0, 0, 0], .3), o: pal.out };
-      Object.keys(SPR).forEach(function (k) {
-        var sp = SPR[k], h = sp.length, w = sp[0].length, c = document.createElement('canvas');
-        c.width = w * S * dpr; c.height = h * S * dpr;
-        var g = c.getContext('2d');
-        g.scale(dpr * S, dpr * S);
-        for (var r = 0; r < h; r++) for (var q = 0; q < w; q++) {
-          var ch = sp[r][q];
-          if (ch === '.') continue;
-          g.fillStyle = rgb(cols[ch]);
-          g.fillRect(q, r, 1, 1);
-        }
-        baked[k] = { c: c, w: w * S, h: h * S };
-      });
+    function place() {
+      var fr = foot.getBoundingClientRect(), tr = toneBtn.getBoundingClientRect();
+      ax = tr.left - fr.left + 22;
+      ay = 0;
+      len = Math.max(50, tr.top - fr.top - HANDLE - 18);
+      seg = len / (N - 1);
+      pts = [];
+      for (var i = 0; i < N; i++) pts.push({ x: ax, y: ay + i * seg, px: ax, py: ay + i * seg });
     }
 
-    function spawn(t) {
-      if (op() < .45 || !stock.length || t - lastSpawn < 110) return;
-      var fy = 6 + Math.random() * Math.min(ys * .45, 160);
-      if (wf(fy) < 12) return;
-      lastSpawn = t;
-      var k = stock.shift(), b = baked[k];
-      items.push({
-        k: k, x: W - fy, y: ZY, R: Math.max(b.w, b.h) * .42,
-        vx: -1 - Math.random() * 5, vy: -2.5 - Math.random() * 3.5,
-        r: Math.random() * 6.28, vr: (Math.random() - .5) * .3, rest: false,
-      });
+    function physics() {
+      var i, p, energy = 0, last = pts[N - 1];
+      for (i = 1; i < N; i++) {
+        p = pts[i];
+        if (drag && i === N - 1) continue;
+        var vx = (p.x - p.px) * .975, vy = (p.y - p.py) * .975;
+        p.px = p.x; p.py = p.y;
+        p.x += vx; p.y += vy + .45;
+        energy += Math.abs(vx) + Math.abs(vy);
+      }
+      if (drag) { last.px = last.x; last.py = last.y; last.x = drag.x; last.y = drag.y; }
+      for (var k = 0; k < 12; k++) {
+        for (i = 0; i < N - 1; i++) {
+          var a = pts[i], b = pts[i + 1], dx = b.x - a.x, dy = b.y - a.y, d = Math.sqrt(dx * dx + dy * dy) || .001;
+          var f = (d - seg) / d;
+          var wa = i === 0 ? 0 : (drag && i + 1 === N - 1 ? 1 : .5), wb = drag && i + 1 === N - 1 ? 0 : (i === 0 ? 1 : .5);
+          a.x += dx * f * wa; a.y += dy * f * wa;
+          b.x -= dx * f * wb; b.y -= dy * f * wb;
+        }
+      }
+      pts[0].x = ax; pts[0].y = ay;
+      return energy;
     }
 
-    function step() {
-      var floor = Hh - 4, moving = false, i, j, a, b;
-      for (i = 0; i < items.length; i++) {
-        a = items[i];
-        if (a === held) { moving = true; continue; }
-        a.vy += .35;
-        a.x += a.vx; a.y += a.vy; a.r += a.vr;
-        if (a.y > floor - a.R) {
-          a.y = floor - a.R;
-          if (a.vy > 0) a.vy = a.vy > 1.2 ? -a.vy * .38 : 0;
-          a.vx *= .9;
-          a.vr = a.vx / a.R;
-        }
-        if (a.x < a.R) { a.x = a.R; a.vx = Math.abs(a.vx) * .5; }
-        if (a.x > W - a.R) { a.x = W - a.R; a.vx = -Math.abs(a.vx) * .5; }
-        if (a.y < a.R) { a.y = a.R; a.vy = Math.abs(a.vy) * .3; }
-      }
-      for (i = 0; i < items.length; i++) for (j = i + 1; j < items.length; j++) {
-        a = items[i]; b = items[j];
-        var dx = b.x - a.x, dy = b.y - a.y, d2 = dx * dx + dy * dy, rr2 = a.R + b.R;
-        if (d2 >= rr2 * rr2 || d2 === 0) continue;
-        var d = Math.sqrt(d2), nx = dx / d, ny = dy / d, ov = (rr2 - d) / 2;
-        if (a !== held) { a.x -= nx * ov; a.y -= ny * ov; }
-        if (b !== held) { b.x += nx * ov; b.y += ny * ov; }
-        var rv = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
-        if (rv < 0) {
-          var imp = -rv * .6;
-          if (a !== held) { a.vx -= nx * imp; a.vy -= ny * imp; }
-          if (b !== held) { b.vx += nx * imp; b.vy += ny * imp; }
-        }
-      }
-      for (i = 0; i < items.length; i++) {
-        a = items[i];
-        var grounded = a.y >= floor - a.R - .5;
-        if (grounded && Math.abs(a.vx) < .06 && Math.abs(a.vy) < .4) { a.vx = 0; a.vy = 0; a.vr = 0; }
-        else moving = true;
-      }
-      return moving;
+    function drawPull(x, y, angle) {
+      var out = rgb(pal.out), acc = rgb(pal.acc);
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+      ctx.scale(1.15, 1.15);
+      ctx.strokeStyle = rgb(pal.metal);
+      ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.arc(0, 2, 4, 0, 6.283); ctx.stroke();
+      ctx.translate(0, 7);
+      ctx.fillStyle = out; rr(ctx, -11.5, -2.5, 23, 77, 6);
+      ctx.fillStyle = acc; rr(ctx, -9, 0, 18, 72, 4);
+      ctx.fillStyle = rgb(mix(pal.acc, [255, 255, 255], .55)); ctx.fillRect(-6.5, 24, 2, 20);
+      ctx.fillStyle = rgb(mix(pal.acc, [0, 0, 0], .3)); ctx.fillRect(5, 4, 2.5, 64);
+      ctx.fillStyle = out; rr(ctx, -4.5, 5, 9, 14, 2); rr(ctx, -4, 49, 8, 15, 2);
+      ctx.restore();
     }
 
     function draw() {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.clearRect(0, 0, W, Hh);
-      ctx.save();
-      ctx.translate(W, ZY);
-      ctx.rotate(Math.PI / 2);
-      var y;
-      if (amp() > .5) {
-        ctx.fillStyle = rgb(pal.acc);
-        ctx.beginPath();
-        ctx.moveTo(0, ys);
-        for (y = ys; y > 0; y -= 6) ctx.lineTo(-wf(y), y);
-        ctx.lineTo(-wf(0), 0); ctx.lineTo(wf(0), 0);
-        for (y = 0; y < ys; y += 6) ctx.lineTo(wf(y), y);
-        ctx.closePath();
-        ctx.fill();
-        ctx.fillStyle = rgb(mix(pal.acc, [0, 0, 0], .45));
-        ctx.beginPath();
-        ctx.moveTo(0, ys);
-        for (y = ys; y > 0; y -= 6) ctx.lineTo(-wf(y) * .45, y);
-        ctx.lineTo(-wf(0) * .45, 0); ctx.lineTo(wf(0) * .45, 0);
-        for (y = 0; y < ys; y += 6) ctx.lineTo(wf(y) * .45, y);
-        ctx.closePath();
-        ctx.fill();
+      ctx.clearRect(0, 0, W, H);
+      var i, acc = 0, metal = rgb(pal.metal), shine = rgb(pal.ink), dark = rgb(pal.metalD);
+      ctx.fillStyle = dark;
+      ctx.fillRect(ax - 7, 0, 14, 4);
+      for (i = 0; i < N - 1; i++) {
+        var a = pts[i], b = pts[i + 1], dx = b.x - a.x, dy = b.y - a.y, d = Math.sqrt(dx * dx + dy * dy);
+        for (; acc < d; acc += 6.5) {
+          var t = acc / d, x = a.x + dx * t, y = a.y + dy * t;
+          ctx.fillStyle = metal; ctx.beginPath(); ctx.arc(x, y, 2.6, 0, 6.283); ctx.fill();
+          ctx.fillStyle = shine; ctx.fillRect(x - 1.4, y - 1.6, 1.2, 1.2);
+        }
+        acc -= d;
       }
-      ctx.strokeStyle = rgb(pal.ink3);
-      ctx.lineWidth = 1.5;
-      ctx.setLineDash([7, 5]);
-      [-1, 1].forEach(function (sd) {
-        ctx.beginPath();
-        for (y = 0; y <= W; y += 8) ctx[y ? 'lineTo' : 'moveTo'](sd * (wf(y) + 14), y);
-        ctx.stroke();
-      });
-      ctx.setLineDash([]);
-      zipTeeth(ctx, W, wf, df, 0, 1e9, pal);
-      ctx.translate(0, ys);
-      zipSlider(ctx, ang, pal);
-      ctx.restore();
-      ctx.imageSmoothingEnabled = false;
-      items.forEach(function (it) {
-        var b = baked[it.k];
-        ctx.save();
-        ctx.translate(it.x, it.y);
-        ctx.rotate(it.r);
-        ctx.drawImage(b.c, -b.w / 2, -b.h / 2, b.w, b.h);
-        ctx.restore();
-      });
+      var l = pts[N - 1], q = pts[N - 2], ang = Math.atan2(-(l.x - q.x), l.y - q.y);
+      drawPull(l.x, l.y, ang);
+      var cx = l.x - Math.sin(ang) * HANDLE / 2, cy = l.y + Math.cos(ang) * HANDLE / 2;
+      grab.style.transform = 'translate(' + (cx - 40).toFixed(1) + 'px,' + (cy - 62).toFixed(1) + 'px)';
     }
 
-    function frame(t) {
+    var still = 0;
+    function frame() {
       raf = 0;
-      if (!W) return;
-      angV += -ang * .05 - angV * .08;
-      ang = clamp(ang + angV, -1.1, 1.1);
-      spawn(t);
-      var moving = step();
+      var e = physics();
       draw();
-      if (drag || held || moving || Math.abs(ang) > .003 || Math.abs(angV) > .003 || (op() > .45 && stock.length)) kick();
+      still = e > .06 ? 0 : still + 1;
+      if (drag || still < 30) raf = requestAnimationFrame(frame);
     }
-    function kick() { if (!raf) raf = requestAnimationFrame(frame); }
+    function kick() { still = 0; if (!raf) raf = requestAnimationFrame(frame); }
 
-    function pos(e) { var r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
-    function onSlider(x, y) { var sx = W - ys; return Math.abs(y - ZY) < 30 && x > sx - 90 && x < sx + 38; }
-    function itemAt(x, y) {
-      for (var i = items.length - 1; i >= 0; i--) {
-        var it = items[i], dx = x - it.x, dy = y - it.y;
-        if (dx * dx + dy * dy < (it.R + 8) * (it.R + 8)) return it;
-      }
-      return null;
-    }
-    cv.addEventListener('pointerdown', function (e) {
-      var p = pos(e), it;
-      if (onSlider(p[0], p[1])) drag = { dx: (W - p[0]) - ys };
-      else if ((it = itemAt(p[0], p[1]))) { held = it; it.vx = it.vy = 0; }
-      else return;
-      mx = p[0]; my = p[1];
-      cv.setPointerCapture(e.pointerId);
+    function rel(e) { var r = foot.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+    grab.addEventListener('pointerdown', function (e) {
+      var p = rel(e), l = pts[N - 1];
+      drag = { ox: l.x - p.x, oy: l.y - p.y, x: l.x, y: l.y };
+      grab.setPointerCapture(e.pointerId);
       doc.classList.add('is-zipping');
       e.preventDefault();
       kick();
     });
-    cv.addEventListener('pointermove', function (e) {
-      var p = pos(e), vx = mx === null ? 0 : p[0] - mx, vy = my === null ? 0 : p[1] - my;
-      mx = p[0]; my = p[1];
-      if (drag) {
-        var n = clamp(W - p[0] - drag.dx, MIN, W - 60);
-        angV += clamp(n - ys, -30, 30) * .003;
-        ys = n;
-        if (hintEl && ys > MIN + 30) hintEl.classList.add('is-gone');
-      } else if (held) {
-        held.vx = clamp(vx, -25, 25); held.vy = clamp(vy, -25, 25);
-        held.x = clamp(p[0], held.R, W - held.R); held.y = clamp(p[1], held.R, Hh - 4 - held.R);
-        held.vr = held.vx * .02;
-      } else {
-        items.forEach(function (it) {
-          var dx = p[0] - it.x, dy = p[1] - it.y;
-          if (dx * dx + dy * dy < (it.R + 6) * (it.R + 6)) {
-            it.vx += clamp(vx, -20, 20) * .3;
-            it.vy += clamp(vy, -20, 20) * .3 - 1.2;
-            it.vr += vx * .01;
-          }
-        });
-        cv.style.cursor = onSlider(p[0], p[1]) || itemAt(p[0], p[1]) ? 'grab' : '';
-      }
+    grab.addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      var p = rel(e);
+      drag.x = clamp(p.x + drag.ox, 10, W - 10);
+      drag.y = clamp(p.y + drag.oy, 10, H + 120);
+      var dx = drag.x - ax, dy = drag.y - ay;
+      var was = armed;
+      armed = Math.sqrt(dx * dx + dy * dy) - len > 34;
+      if (armed !== was) { label.textContent = armed ? 'отпускай' : idle; toneBtn.classList.toggle('is-armed', armed); }
       kick();
     });
     var drop = function () {
-      if (!drag && !held) return;
-      drag = null; held = null;
+      if (!drag) return;
+      drag = null;
       doc.classList.remove('is-zipping');
+      if (armed) {
+        armed = false;
+        toneBtn.classList.remove('is-armed');
+        label.textContent = idle;
+        nextTone();
+        var side = Math.random() < .5 ? -1 : 1;
+        for (var i = 1; i < N; i++) { pts[i].py = pts[i].y + 8 * i / N; pts[i].px = pts[i].x - side * (1.5 + Math.random()) * i / N; }
+      }
       kick();
     };
-    cv.addEventListener('pointerup', drop);
-    cv.addEventListener('pointercancel', drop);
-    cv.addEventListener('pointerleave', function () { if (!drag && !held) { mx = my = null; } });
+    grab.addEventListener('pointerup', drop);
+    grab.addEventListener('pointercancel', drop);
+    foot.addEventListener('pointermove', function (e) {
+      if (drag) return;
+      var p = rel(e), hit = false;
+      for (var i = 1; i < N; i++) {
+        var dx = p.x - pts[i].x, dy = p.y - pts[i].y;
+        if (dx * dx + dy * dy < 20 * 20) { pts[i].px -= clamp(e.movementX || 0, -14, 14) * .35; hit = true; }
+      }
+      if (hit) kick();
+    }, { passive: true });
 
     function size() {
       dpr = Math.min(devicePixelRatio || 1, 2);
-      W = cv.clientWidth; Hh = cv.clientHeight;
-      cv.width = Math.round(W * dpr); cv.height = Math.round(Hh * dpr);
-      ys = clamp(ys, MIN, W - 60);
+      W = foot.clientWidth; H = foot.clientHeight;
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
       pal = readPal();
-      bake();
-      items.forEach(function (it) { it.x = clamp(it.x, it.R, W - it.R); });
+      place();
       draw();
-      kick();
     }
     addEventListener('resize', debounce(size, 150));
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(size);
     size();
-    return size;
+    return function () { pal = readPal(); draw(); };
   }
 
   var peek = document.querySelector('.peek');
