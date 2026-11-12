@@ -74,27 +74,45 @@
 
 <main id="main">
   <section class="hero" id="top">
-    <canvas class="baubles" id="baubles" aria-hidden="true"></canvas>
-    <div class="hands" aria-hidden="true">
-      <img class="hand hand--l" src="assets/hands/hand-left.png" alt="" width="1422" height="800">
-      <img class="hand hand--r" src="assets/hands/hand-right.png" alt="" width="1458" height="800">
-    </div>
-    <div class="hero__body">
-      <h1 class="mark" aria-label="justzipka.fun"><svg class="mark__svg" viewBox="0 -726 3717 926" aria-hidden="true"><path d="M122 -560H316V200H100L0 100V40H122ZM122 -606V-726H316V-606Z M814 -560V0H488L360 -128V-560H554V-168H620V-560Z M857 0V-152H1065V-233H857V-448L969 -560H1259V-408H1051V-329H1259V-111L1148 0Z M1302 -650 1496 -700V-540H1620V-380H1496V-160H1620V0H1430L1302 -128Z M1640 0V-140L1784 -400H1644V-560H1994V-420L1850 -160H1998V0Z M2030 0V-560H2224V0ZM2030 -606V-726H2224V-606Z M2268 140V-560H2594L2722 -432V-128L2594 0H2462V140ZM2528 -400H2462V-160H2528Z M2765 0V-700H2959V-371H2989L3033 -560H3234L3150 -301L3243 0H3040L2992 -211H2959V0Z M3257 -112V-328L3499 -338V-400H3267V-560H3557L3685 -432V0H3369ZM3443 -233V-152H3499V-252Z"/></svg><span class="mark__px" aria-hidden="true">.fun</span></h1>
-      <a class="hero__link" href="https://t.me/holyfear" target="_blank" rel="noopener">Написать в Telegram <span>@holyfear</span></a>
+    <div class="zip__stage">
+      <div class="lining">
+        <div class="lining__in">
+          <div class="neck">
+            <h1 class="mark" aria-label="justzipka.fun"><svg class="mark__svg" viewBox="0 -726 3717 926" aria-hidden="true"><path d="M122 -560H316V200H100L0 100V40H122ZM122 -606V-726H316V-606Z M814 -560V0H488L360 -128V-560H554V-168H620V-560Z M857 0V-152H1065V-233H857V-448L969 -560H1259V-408H1051V-329H1259V-111L1148 0Z M1302 -650 1496 -700V-540H1620V-380H1496V-160H1620V0H1430L1302 -128Z M1640 0V-140L1784 -400H1644V-560H1994V-420L1850 -160H1998V0Z M2030 0V-560H2224V0ZM2030 -606V-726H2224V-606Z M2268 140V-560H2594L2722 -432V-128L2594 0H2462V140ZM2528 -400H2462V-160H2528Z M2765 0V-700H2959V-371H2989L3033 -560H3234L3150 -301L3243 0H3040L2992 -211H2959V0Z M3257 -112V-328L3499 -338V-400H3267V-560H3557L3685 -432V0H3369ZM3443 -233V-152H3499V-252Z"/></svg><span class="mark__px" aria-hidden="true">.fun</span></h1>
+            <p class="neck__meta"><span>веб-дизайнер и разработчик</span><span>размер: под любой экран</span></p>
+          </div>
+          <p class="lining__big">Привет, я Зипка.<br>Делаю сайты<br>от идеи до запуска.</p>
+          <a class="hero__link" href="https://t.me/holyfear" target="_blank" rel="noopener">Написать в Telegram <span>@holyfear</span></a>
+        </div>
+      </div>
+      <canvas class="zip__cv" id="zip" aria-hidden="true"></canvas>
+      <div class="hands" aria-hidden="true">
+        <img class="hand hand--l" src="assets/hands/hand-left.png" alt="" width="1422" height="800">
+        <img class="hand hand--r" src="assets/hands/hand-right.png" alt="" width="1458" height="800">
+      </div>
+      <div class="zip__grab" aria-hidden="true"></div>
+      <p class="zip__hint" aria-hidden="true"><b>расстегни</b>листай или тяни бегунок <i>↓</i></p>
     </div>
   </section>
 
   <section class="sec" id="about">
     <header class="sec__head"><h2>Обо мне</h2></header>
     <div class="about">
-      <p class="about__big">Привет, я Зипка. Делаю сайты от идеи до запуска: сам придумываю, рисую, верстаю и выкладываю в сеть.</p>
-      <dl class="specs">
-        <div><dt>ник</dt><dd>Зипка / justzipka</dd></div>
-        <div><dt>стек</dt><dd>HTML, CSS, JavaScript, Python</dd></div>
-        <div><dt>часовой пояс</dt><dd>МСК, UTC+3</dd></div>
-        <div><dt>статус</dt><dd class="ok">беру новые проекты</dd></div>
-      </dl>
+      <p class="about__big">Каждый сайт сам придумываю, рисую, верстаю и выкладываю в сеть. Ещё пишу Telegram-ботов и Mini Apps.</p>
+      <div class="care">
+        <p class="care__h">состав</p>
+        <p class="care__big">100% ручная работа</p>
+        <dl class="specs">
+          <div><dt>ник</dt><dd>Зипка / justzipka</dd></div>
+          <div><dt>стек</dt><dd>HTML, CSS, JavaScript, Python</dd></div>
+          <div><dt>часовой пояс</dt><dd>МСК, UTC+3</dd></div>
+          <div><dt>статус</dt><dd class="ok">беру новые проекты</dd></div>
+        </dl>
+        <div class="care__foot">
+          <svg viewBox="0 0 124 28" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"><path d="M3 8h22l-2.5 14h-17zM4 4l20 20M24 4L4 24"/><path d="M46 4l11 19H35zM36 5l20 19M56 5L36 24"/><path d="M68 4h20v20H68z"/><circle cx="78" cy="14" r="6"/><path d="M100 22h21c0-7-3-11-9-11h-8M100 22l4-11"/><circle cx="112" cy="17.5" r=".9" fill="currentColor"/></svg>
+          <p>стирать нельзя,<br>править можно</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -150,31 +168,37 @@
     <header class="sec__head"><h2>Работы</h2></header>
     <ol class="works">
       <li><a class="work" href="https://vibroexpertspb.ru/" target="_blank" rel="noopener">
+        <span class="work__n">01</span>
         <img class="work__img" src="assets/works/vibroexpert.webp" alt="" loading="lazy" width="640" height="400">
         <span class="work__main"><b>ВиброЭксперт СПб</b><span>Сайт инженерного центра: тёмный интерфейс, 13 разделов и форма, которая собирает техзадание в письмо инженерам.</span></span>
         <span class="work__meta">сайт компании<br>vibroexpertspb.ru ↗</span>
       </a></li>
       <li><a class="work" href="https://vibrorotor.ru/" target="_blank" rel="noopener">
+        <span class="work__n">02</span>
         <img class="work__img" src="assets/works/vibrorotor.webp" alt="" loading="lazy" width="640" height="400">
         <span class="work__main"><b>ВиброРотор</b><span>Сайт лаборатории вибраций «РОТОР СПб»: услуги, контакты и онлайн-калькулятор для клиентов.</span></span>
         <span class="work__meta">сайт + калькулятор<br>vibrorotor.ru ↗</span>
       </a></li>
       <li><a class="work" href="https://hakune.blog/" target="_blank" rel="noopener">
+        <span class="work__n">03</span>
         <img class="work__img" src="assets/works/hakune.webp" alt="" loading="lazy" width="640" height="400">
         <span class="work__main"><b>Hakune</b><span>Личный сайт техноблогера haku reviews: обзоры, промокоды, медиакит и все соцсети в одном месте.</span></span>
         <span class="work__meta">личный сайт<br>hakune.blog ↗</span>
       </a></li>
       <li><a class="work" href="https://sobrise.uk/" target="_blank" rel="noopener">
+        <span class="work__n">04</span>
         <img class="work__img" src="assets/works/sobrise.webp" alt="" loading="lazy" width="640" height="400">
         <span class="work__main"><b>Sobrise</b><span>Сайт сообщества трезвого образа жизни: афиша событий, подписка на новости и три языка.</span></span>
         <span class="work__meta">сайт сообщества<br>sobrise.uk ↗</span>
       </a></li>
       <li><a class="work" href="https://zxcozonofficial-dev.github.io/psinna55/" target="_blank" rel="noopener">
+        <span class="work__n">05</span>
         <img class="work__img" src="assets/works/psinna55.webp" alt="" loading="lazy" width="640" height="400">
         <span class="work__main"><b>psinna55</b><span>Визитка игрока в Minecraft PvP: экран входа со звуком, ник из живых частиц на фоне помех.</span></span>
         <span class="work__meta">визитка<br>psinna55 ↗</span>
       </a></li>
       <li><a class="work work--you" href="https://t.me/holyfear" target="_blank" rel="noopener">
+        <span class="work__n">??</span>
         <span class="work__main"><b>Твой проект<span class="caret">_</span></b><span>Расскажи, что нужно, и я прикину, как это сделать.</span></span>
         <span class="work__meta">сайт · бот · mini app<br>t.me/holyfear ↗</span>
       </a></li>
@@ -201,6 +225,12 @@
     </ul>
   </section>
 </main>
+
+<footer class="end">
+  <canvas class="end__zip" id="endzip" aria-hidden="true"></canvas>
+  <div class="end__row"><span>justzipka.fun</span><a href="#top">наверх ↑</a></div>
+</footer>
+<div class="peek" aria-hidden="true"><img alt="" width="640" height="400"></div>
 
 </body>
 </html>
