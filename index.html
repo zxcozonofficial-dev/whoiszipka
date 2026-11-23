@@ -28,9 +28,9 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tektur:wdth,wght@75..100,500..900&family=JetBrains+Mono:ital,wght@0,400..600;1,400&family=Pixelify+Sans:wght@500..700&display=swap">
-<link rel="stylesheet" href="assets/css/site.css?v=a3494633">
-<script defer src="assets/js/site.js?v=a3494633"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=JetBrains+Mono:wght@400..600&display=swap">
+<link rel="stylesheet" href="assets/css/site.css?v=c0ab9b5f">
+<script defer src="assets/js/site.js?v=c0ab9b5f"></script>
 
 <script type="application/ld+json">
 {
@@ -47,8 +47,6 @@
 </script>
 </head>
 <body>
-
-<div class="progress" aria-hidden="true"><span id="progress"></span></div>
 
 <header class="nav">
   <a class="brand" href="#top" aria-label="justzipka, наверх">
@@ -70,91 +68,69 @@
     <button class="hero__skip" type="button">пропустить</button>
   </section>
 
-  <div class="nfo">
-    <section class="part" id="about">
-      <h2 class="rule"><span class="rule__n">01</span>обо мне<i class="rule__tail" aria-hidden="true"></i></h2>
-      <p class="nfo__lead">Каждый сайт сам придумываю, рисую, верстаю и выкладываю в сеть. Ещё пишу Telegram-ботов и Mini Apps.</p>
-      <dl class="kv">
-        <div><dt>стек</dt><dd>HTML, CSS, JavaScript, Python</dd></div>
-        <div><dt>часовой пояс</dt><dd>МСК, UTC+3</dd></div>
-        <div><dt>статус</dt><dd class="ok">беру новые проекты</dd></div>
-      </dl>
+  <div class="sky">
+    <section class="hello" id="about">
+      <p class="hello__txt">Привет. Я&nbsp;сам придумываю сайты, рисую их, собираю и&nbsp;выкладываю в&nbsp;сеть. Каждый делаю с&nbsp;нуля, под&nbsp;<em>конкретного человека</em>, а&nbsp;не&nbsp;под&nbsp;шаблон.</p>
+
+      <p class="say" id="services">Могу сделать <button class="w is-on" type="button" aria-expanded="true">сайт</button>, нарисовать <button class="w" type="button" aria-expanded="false">дизайн</button>, написать <button class="w" type="button" aria-expanded="false">бота</button> для&nbsp;Telegram или собрать <button class="w" type="button" aria-expanded="false">Mini App</button>.</p>
+      <div class="say__out">
+        <div class="say__item is-on"><p>Лендинги, сайты компаний, портфолио и&nbsp;визитки. Под&nbsp;любой экран и&nbsp;с&nbsp;нормальной скоростью загрузки.</p><span>адаптив под телефоны · заявки в почту или Telegram · выкладка на домен</span></div>
+        <div class="say__item"><p>Рисую интерфейс с&nbsp;нуля: сетка, шрифты, цвет, анимации. Макет сразу продуман под&nbsp;вёрстку, без&nbsp;сюрпризов.</p><span>UI и типографика · моушн и микроанимации</span></div>
+        <div class="say__item"><p>Боты, которые принимают заявки, записывают клиентов и&nbsp;присылают уведомления. Работают сами, пока ты&nbsp;занят делом.</p><span>заявки и запись · уведомления и рассылки · связка с сайтом</span></div>
+        <div class="say__item"><p>Приложения прямо внутри Telegram. Открываются из&nbsp;чата с&nbsp;ботом, выглядят и&nbsp;работают как сайт.</p><span>каталоги, запись, личные кабинеты · вход без регистрации</span></div>
+      </div>
+
+      <p class="meta">пишу на HTML, CSS, JavaScript и Python <i>·</i> живу по Москве <i>·</i> <span class="ok">сейчас беру новые проекты</span></p>
     </section>
 
-    <section class="part" id="services">
-      <h2 class="rule"><span class="rule__n">02</span>что делаю<i class="rule__tail" aria-hidden="true"></i></h2>
-      <details class="tree" open>
-        <summary>сайты</summary>
-        <p>Лендинги, сайты компаний, портфолио и визитки. Под любой экран и с нормальной скоростью загрузки.</p>
-        <ul><li>адаптив под телефоны</li><li>формы заявок в почту или Telegram</li><li>выкладка на домен</li></ul>
-      </details>
-      <details class="tree">
-        <summary>дизайн</summary>
-        <p>Рисую интерфейс с нуля: сетка, шрифты, цвет, анимации. Макет сразу продуман под вёрстку, без сюрпризов.</p>
-        <ul><li>UI и типографика</li><li>моушн и микроанимации</li></ul>
-      </details>
-      <details class="tree">
-        <summary>telegram-боты</summary>
-        <p>Боты, которые принимают заявки, записывают клиентов и присылают уведомления. Работают сами, пока ты занят делом.</p>
-        <ul><li>заявки и запись</li><li>уведомления и рассылки</li><li>связка с сайтом</li></ul>
-      </details>
-      <details class="tree">
-        <summary>mini apps</summary>
-        <p>Приложения прямо внутри Telegram. Открываются из чата с ботом, выглядят и работают как сайт.</p>
-        <ul><li>каталоги, запись, личные кабинеты</li><li>вход без регистрации</li></ul>
-      </details>
-    </section>
-
-    <section class="part" id="works">
-      <h2 class="rule"><span class="rule__n">03</span>работы<i class="rule__tail" aria-hidden="true"></i></h2>
-      <p class="nfo__note"><span class="h">наведи на картинку, и она проявится</span><span class="t">картинка проявится, когда докрутишь до неё</span></p>
-      <ol class="rel">
-        <li><a class="rel__a" href="https://vibroexpertspb.ru/" target="_blank" rel="noopener">
-          <span class="rel__pic"><img src="assets/works/vibroexpert.webp" alt="" loading="lazy" width="640" height="400"><canvas class="rel__ascii" aria-hidden="true"></canvas></span>
-          <span class="rel__txt"><span class="rel__n">01</span><b>ВиброЭксперт СПб</b><span class="rel__d">Сайт инженерного центра: тёмный интерфейс, 13 разделов и форма, которая собирает техзадание в письмо инженерам.</span><span class="rel__m">сайт компании · vibroexpertspb.ru ↗</span></span>
+    <section class="works" id="works">
+      <h2 class="h">Работы <small><span class="h-hov">наведи на планету, и она развернётся в сайт</span><span class="h-tap">планета развернётся в сайт, когда докрутишь до неё</span></small></h2>
+      <ol class="orbs">
+        <li class="orb" data-ring data-tilt="-.18"><a href="https://vibroexpertspb.ru/" target="_blank" rel="noopener">
+          <span class="orb__pic"><canvas class="orb__cv" aria-hidden="true"></canvas><img src="assets/works/vibroexpert.webp" alt="Скриншот сайта ВиброЭксперт СПб" width="640" height="400"></span>
+          <span class="orb__txt"><b>ВиброЭксперт СПб</b><span class="orb__d">Сайт инженерного центра: тёмный интерфейс, 13&nbsp;разделов и&nbsp;форма, которая собирает техзадание в&nbsp;письмо инженерам.</span><span class="orb__m">сайт компании · vibroexpertspb.ru ↗</span></span>
         </a></li>
-        <li><a class="rel__a" href="https://vibrorotor.ru/" target="_blank" rel="noopener">
-          <span class="rel__pic"><img src="assets/works/vibrorotor.webp" alt="" loading="lazy" width="640" height="400"><canvas class="rel__ascii" aria-hidden="true"></canvas></span>
-          <span class="rel__txt"><span class="rel__n">02</span><b>ВиброРотор</b><span class="rel__d">Сайт лаборатории вибраций «РОТОР СПб»: услуги, контакты и онлайн-калькулятор для клиентов.</span><span class="rel__m">сайт + калькулятор · vibrorotor.ru ↗</span></span>
+        <li class="orb" data-moon data-tilt=".12"><a href="https://vibrorotor.ru/" target="_blank" rel="noopener">
+          <span class="orb__pic"><canvas class="orb__cv" aria-hidden="true"></canvas><img src="assets/works/vibrorotor.webp" alt="Скриншот сайта ВиброРотор" width="640" height="400"></span>
+          <span class="orb__txt"><b>ВиброРотор</b><span class="orb__d">Сайт лаборатории вибраций «РОТОР СПб»: услуги, контакты и&nbsp;онлайн-калькулятор для&nbsp;клиентов.</span><span class="orb__m">сайт + калькулятор · vibrorotor.ru ↗</span></span>
         </a></li>
-        <li><a class="rel__a" href="https://hakune.blog/" target="_blank" rel="noopener">
-          <span class="rel__pic"><img src="assets/works/hakune.webp" alt="" loading="lazy" width="640" height="400"><canvas class="rel__ascii" aria-hidden="true"></canvas></span>
-          <span class="rel__txt"><span class="rel__n">03</span><b>Hakune</b><span class="rel__d">Личный сайт техноблогера haku reviews: обзоры, промокоды, медиакит и все соцсети в одном месте.</span><span class="rel__m">личный сайт · hakune.blog ↗</span></span>
+        <li class="orb" data-tilt="-.08"><a href="https://hakune.blog/" target="_blank" rel="noopener">
+          <span class="orb__pic"><canvas class="orb__cv" aria-hidden="true"></canvas><img src="assets/works/hakune.webp" alt="Скриншот сайта Hakune" width="640" height="400"></span>
+          <span class="orb__txt"><b>Hakune</b><span class="orb__d">Личный сайт техноблогера haku reviews: обзоры, промокоды, медиакит и&nbsp;все соцсети в&nbsp;одном месте.</span><span class="orb__m">личный сайт · hakune.blog ↗</span></span>
         </a></li>
-        <li><a class="rel__a" href="https://sobrise.uk/" target="_blank" rel="noopener">
-          <span class="rel__pic"><img src="assets/works/sobrise.webp" alt="" loading="lazy" width="640" height="400"><canvas class="rel__ascii" aria-hidden="true"></canvas></span>
-          <span class="rel__txt"><span class="rel__n">04</span><b>Sobrise</b><span class="rel__d">Сайт сообщества трезвого образа жизни: афиша событий, подписка на новости и три языка.</span><span class="rel__m">сайт сообщества · sobrise.uk ↗</span></span>
+        <li class="orb" data-ring data-tilt=".22"><a href="https://sobrise.uk/" target="_blank" rel="noopener">
+          <span class="orb__pic"><canvas class="orb__cv" aria-hidden="true"></canvas><img src="assets/works/sobrise.webp" alt="Скриншот сайта Sobrise" width="640" height="400"></span>
+          <span class="orb__txt"><b>Sobrise</b><span class="orb__d">Сайт сообщества трезвого образа жизни: афиша событий, подписка на&nbsp;новости и&nbsp;три языка.</span><span class="orb__m">сайт сообщества · sobrise.uk ↗</span></span>
         </a></li>
-        <li><a class="rel__a" href="https://zxcozonofficial-dev.github.io/psinna55/" target="_blank" rel="noopener">
-          <span class="rel__pic"><img src="assets/works/psinna55.webp" alt="" loading="lazy" width="640" height="400"><canvas class="rel__ascii" aria-hidden="true"></canvas></span>
-          <span class="rel__txt"><span class="rel__n">05</span><b>psinna55</b><span class="rel__d">Визитка игрока в Minecraft PvP: экран входа со звуком, ник из живых частиц на фоне помех.</span><span class="rel__m">визитка · psinna55 ↗</span></span>
+        <li class="orb" data-moon data-tilt="-.2"><a href="https://zxcozonofficial-dev.github.io/psinna55/" target="_blank" rel="noopener">
+          <span class="orb__pic"><canvas class="orb__cv" aria-hidden="true"></canvas><img src="assets/works/psinna55.webp" alt="Скриншот сайта psinna55" width="640" height="400"></span>
+          <span class="orb__txt"><b>psinna55</b><span class="orb__d">Визитка игрока в&nbsp;Minecraft PvP: экран входа со&nbsp;звуком, ник из&nbsp;живых частиц на&nbsp;фоне помех.</span><span class="orb__m">визитка · psinna55 ↗</span></span>
         </a></li>
-        <li><a class="rel__a rel__a--you" href="https://t.me/holyfear" target="_blank" rel="noopener">
-          <span class="rel__pic"><canvas class="rel__ascii" data-empty aria-hidden="true"></canvas></span>
-          <span class="rel__txt"><span class="rel__n">06</span><b>Твой проект<span class="caret">_</span></b><span class="rel__d">Расскажи, что нужно, и я прикину, как это сделать.</span><span class="rel__m">сайт · бот · mini app · t.me/holyfear ↗</span></span>
+        <li class="orb orb--you"><a href="https://t.me/holyfear" target="_blank" rel="noopener">
+          <span class="orb__pic"><canvas class="orb__cv" aria-hidden="true"></canvas></span>
+          <span class="orb__txt"><b>Здесь будет твой</b><span class="orb__d">Эта планета пока пустая. Расскажи, что нужно, и&nbsp;я&nbsp;прикину, как это сделать.</span><span class="orb__m">сайт · бот · mini app · t.me/holyfear ↗</span></span>
         </a></li>
       </ol>
     </section>
 
-    <section class="part" id="process">
-      <h2 class="rule"><span class="rule__n">04</span>как работаю<i class="rule__tail" aria-hidden="true"></i></h2>
-      <ol class="flow">
-        <li><b>разговор</b><p>Обсуждаем задачу: что за проект, для кого и к какому сроку. Можно просто скинуть пару ссылок на то, что нравится.</p></li>
-        <li><b>дизайн</b><p>Собираю макет главного экрана, потом остальные. Вносим правки, пока всё не встанет на места.</p></li>
-        <li><b>разработка</b><p>Верстаю, добавляю анимации, подключаю формы и бота. Проверяю на телефонах и в разных браузерах.</p></li>
-        <li><b>запуск</b><p>Выкладываю сайт на домен и проверяю, что всё работает. После запуска остаюсь на связи.</p></li>
+    <section class="phases" id="process">
+      <h2 class="h">Как всё идёт</h2>
+      <ol class="moons">
+        <li><canvas class="moon" data-phase="2.45" aria-hidden="true"></canvas><small>молодая луна</small><b>Разговор</b><p>Обсуждаем задачу: что за&nbsp;проект, для&nbsp;кого и&nbsp;к&nbsp;какому сроку. Можно просто скинуть пару ссылок на&nbsp;то, что нравится.</p></li>
+        <li><canvas class="moon" data-phase="1.57" aria-hidden="true"></canvas><small>первая четверть</small><b>Дизайн</b><p>Собираю макет главного экрана, потом остальные. Вносим правки, пока всё не&nbsp;встанет на&nbsp;места.</p></li>
+        <li><canvas class="moon" data-phase=".8" aria-hidden="true"></canvas><small>растущая</small><b>Разработка</b><p>Верстаю, добавляю анимации, подключаю формы и&nbsp;бота. Проверяю на&nbsp;телефонах и&nbsp;в&nbsp;разных браузерах.</p></li>
+        <li><canvas class="moon" data-phase="0" aria-hidden="true"></canvas><small>полнолуние</small><b>Запуск</b><p>Выкладываю сайт на&nbsp;домен и&nbsp;проверяю, что всё работает. После запуска остаюсь на&nbsp;связи.</p></li>
       </ol>
     </section>
 
-    <section class="part" id="contact">
-      <h2 class="rule"><span class="rule__n">05</span>связь<i class="rule__tail" aria-hidden="true"></i></h2>
-      <p class="nfo__lead">Есть проект или просто идея?</p>
-      <a class="call" href="https://t.me/holyfear" target="_blank" rel="noopener">Пиши в Telegram <span>↗</span></a>
-      <dl class="kv kv--links">
-        <div><dt>telegram</dt><dd><a href="https://t.me/holyfear" target="_blank" rel="noopener">@holyfear</a><button type="button" data-copy="@holyfear">копировать</button></dd></div>
-        <div><dt>discord</dt><dd><a href="https://discord.com/users/1243462258395451487" target="_blank" rel="noopener">die.ru</a><button type="button" data-copy="die.ru">копировать</button></dd></div>
-        <div><dt>почта</dt><dd><a href="mailto:justzipka@gmail.com">justzipka@gmail.com</a><button type="button" data-copy="justzipka@gmail.com">копировать</button></dd></div>
-      </dl>
+    <section class="contact" id="contact">
+      <h2 class="h">Есть идея?</h2>
+      <p class="contact__lead">Напиши мне в&nbsp;Telegram, даже если пока непонятно, что именно нужно.</p>
+      <a class="big" href="https://t.me/holyfear" target="_blank" rel="noopener">@holyfear<span>↗</span></a>
+      <ul class="alt">
+        <li>discord <button type="button" data-copy="die.ru">die.ru</button></li>
+        <li>почта <button type="button" data-copy="justzipka@gmail.com">justzipka@gmail.com</button></li>
+      </ul>
     </section>
   </div>
 </main>

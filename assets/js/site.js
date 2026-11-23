@@ -5,20 +5,13 @@
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   doc.classList.add('js');
 
-  var bar = document.getElementById('progress');
-  function onScroll() {
-    var max = doc.scrollHeight - innerHeight;
-    bar.style.width = (max > 0 ? scrollY / max * 100 : 0) + '%';
-  }
-  addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-
   document.querySelectorAll('[data-copy]').forEach(function (btn) {
+    var label = btn.textContent;
     btn.addEventListener('click', function () {
       var done = function () {
         btn.textContent = 'скопировано';
         btn.classList.add('is-done');
-        setTimeout(function () { btn.textContent = 'копировать'; btn.classList.remove('is-done'); }, 1600);
+        setTimeout(function () { btn.textContent = label; btn.classList.remove('is-done'); }, 1400);
       };
       if (navigator.clipboard) navigator.clipboard.writeText(btn.dataset.copy).then(done, function () {});
     });
@@ -61,133 +54,278 @@
     setInterval(tick, 20000);
   })();
   var nap = initNap();
-  // rules under each heading draw themselves out when they scroll in
-  var rules = document.querySelectorAll('.rule');
-  if ('IntersectionObserver' in window && !reduced) {
-    var rio = new IntersectionObserver(function (es) {
-      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); rio.unobserve(e.target); } });
-    }, { rootMargin: '0px 0px -10% 0px' });
-    rules.forEach(function (r) { rio.observe(r); });
-  } else rules.forEach(function (r) { r.classList.add('is-in'); });
+  // "могу сделать сайт / дизайн / бота / mini app": each word in the sentence opens its own note
+  (function say() {
+    var ws = document.querySelectorAll('.say .w'), outs = document.querySelectorAll('.say__item');
+    ws.forEach(function (w, i) {
+      w.addEventListener('click', function () {
+        ws.forEach(function (x, j) { x.classList.toggle('is-on', i === j); x.setAttribute('aria-expanded', i === j ? 'true' : 'false'); });
+        outs.forEach(function (o, j) { o.classList.toggle('is-on', i === j); });
+      });
+    });
+  })();
 
-  // work screenshots are shown through the same ascii lens as the intro; hover develops the real image
-  function initShots() {
-    var cvs = document.querySelectorAll('.rel__ascii');
-    if (!cvs.length) return null;
-    var list = [];
-    var JUNK = '.:-=+*/#';
-
-    function grid(cv) {
-      var dpr = Math.min(devicePixelRatio || 1, 2), W = cv.clientWidth, H = cv.clientHeight;
-      if (!W || !H) return null;
-      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
-      var fs = W < 340 ? 8 : 9, cw = fs * .62, ch = fs * 1.18;
-      return { dpr: dpr, W: W, H: H, fs: fs, cw: cw, ch: ch, cols: Math.floor(W / cw), rows: Math.floor(H / ch) };
+  // small helpers shared by the planets and the moons
+  function cellGrid(cv, fs) {
+    var dpr = Math.min(devicePixelRatio || 1, 2), W = cv.clientWidth, H = cv.clientHeight;
+    if (!W || !H) return null;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    var cw = fs * .62, ch = fs * 1.18, cols = Math.floor(W / cw), rows = Math.floor(H / ch);
+    return { dpr: dpr, W: W, H: H, cw: cw, ch: ch, cols: cols, rows: rows, ox: (W - cols * cw) / 2, oy: (H - rows * ch) / 2 };
+  }
+  function shades() {
+    var p = readPal(), out = [];
+    for (var l = 0; l < 10; l++) {
+      var k = l / 9;
+      out.push(rgb(k < .62 ? mix(mix(p.bg, p.acc, .32), p.acc, k / .62) : mix(p.acc, p.ink, (k - .62) / .38)));
     }
-    function shades(p) {
-      var out = [];
-      for (var l = 0; l < 10; l++) {
-        var k = l / 9;
-        out.push(rgb(k < .65 ? mix(mix(p.bg, p.acc, .18), p.acc, k / .65) : mix(p.acc, p.ink, (k - .65) / .35)));
-      }
-      return out;
-    }
-    function sample(item) {
-      var g = item.g, img = item.img;
-      if (!g || !img || !img.naturalWidth) return false;
-      var s = document.createElement('canvas');
-      s.width = g.cols; s.height = g.rows;
-      var sx = s.getContext('2d');
-      sx.drawImage(img, 0, 0, g.cols, g.rows);
-      var d = sx.getImageData(0, 0, g.cols, g.rows).data, lum = new Float32Array(g.cols * g.rows), lo = 1, hi = 0;
-      for (var i = 0; i < lum.length; i++) {
-        var v = (d[i * 4] * .3 + d[i * 4 + 1] * .59 + d[i * 4 + 2] * .11) / 255;
-        lum[i] = v; if (v < lo) lo = v; if (v > hi) hi = v;
-      }
-      // stretch contrast so dark screenshots still read as pictures
-      for (i = 0; i < lum.length; i++) lum[i] = Math.pow(clamp((lum[i] - lo) / Math.max(.05, hi - lo), 0, 1), .85);
-      item.lum = lum;
-      return true;
-    }
-    function empty(item) {
-      var g = item.g, n = g.cols * g.rows, lum = new Float32Array(n), txt = item.txt = {};
+    return out;
+  }
+  // lum[] holds 0..1 per cell (negative = empty), glyph[] can force a character
+  function paintCells(ctx, g, lum, glyph, cols) {
+    ctx.setTransform(g.dpr, 0, 0, g.dpr, 0, 0);
+    ctx.clearRect(0, 0, g.W, g.H);
+    ctx.font = '500 ' + (g.ch * .82).toFixed(1) + 'px "JetBrains Mono", ui-monospace, monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for (var lv = 0; lv < 10; lv++) {
+      ctx.fillStyle = cols[lv];
       for (var r = 0; r < g.rows; r++) for (var c = 0; c < g.cols; c++) {
-        var i = r * g.cols + c, edge = r === 0 || r === g.rows - 1 || c === 0 || c === g.cols - 1;
-        if (edge) { lum[i] = .45; txt[i] = (r === 0 || r === g.rows - 1) ? ((c === 0 || c === g.cols - 1) ? '+' : '-') : '|'; }
-        else lum[i] = hash2(c, r) < .05 ? .2 : -1;
-      }
-      var msg = 'свободно', r0 = g.rows >> 1, c0 = (g.cols - msg.length) >> 1;
-      for (var k = 0; k < msg.length; k++) { lum[r0 * g.cols + c0 + k] = .95; txt[r0 * g.cols + c0 + k] = msg[k]; }
-      item.lum = lum;
-    }
-    function draw(item, upto) {
-      var g = item.g, x = item.ctx, cols = shades(item.pal || readPal());
-      x.setTransform(g.dpr, 0, 0, g.dpr, 0, 0);
-      x.clearRect(0, 0, g.W, g.H);
-      x.font = '500 ' + (g.ch * .82).toFixed(1) + 'px "JetBrains Mono", ui-monospace, monospace';
-      x.textAlign = 'center';
-      x.textBaseline = 'middle';
-      var ox = (g.W - g.cols * g.cw) / 2, oy = (g.H - g.rows * g.ch) / 2, rows = Math.min(g.rows, upto);
-      for (var lv = 0; lv < 10; lv++) {
-        x.fillStyle = cols[lv];
-        for (var r = 0; r < rows; r++) for (var c = 0; c < g.cols; c++) {
-          var i = r * g.cols + c, L = item.lum[i];
-          if (L < .06 || Math.min(9, (L * 10) | 0) !== lv) continue;
-          var chr = item.txt && item.txt[i] ? item.txt[i] : RAMP[lv][(hash2(c, r) * 4) | 0];
-          if (r === rows - 1 && rows < g.rows) chr = JUNK[(Math.random() * JUNK.length) | 0];
-          x.fillText(chr, ox + (c + .5) * g.cw, oy + (r + .5) * g.ch);
-        }
+        var i = r * g.cols + c, L = lum[i];
+        if (L < .05 || Math.min(9, (L * 10) | 0) !== lv) continue;
+        ctx.fillText(glyph[i] || RAMP[lv][(hash2(c, r) * 4) | 0], g.ox + (c + .5) * g.cw, g.oy + (r + .5) * g.ch);
       }
     }
-    function typeIn(item) {
-      if (item.typed) return draw(item, 1e9);
-      item.typed = true;
-      if (reduced) return draw(item, 1e9);
-      var t0 = 0;
-      (function step(ts) {
-        if (!t0) t0 = ts;
-        var k = Math.ceil((ts - t0) / 700 * item.g.rows);
-        draw(item, k);
-        if (k < item.g.rows) requestAnimationFrame(step);
-      })(performance.now());
+  }
+  function fract(x) { return x - Math.floor(x); }
+
+  function initOrbs() {
+    var lis = document.querySelectorAll('.orb');
+    if (!lis.length) return null;
+    var items = [], cols = shades(), raf = 0, LX = -.5, LY = -.42, LZ = .76;
+    var touch = matchMedia('(hover: none)').matches;
+
+    function setup(it) {
+      it.g = cellGrid(it.cv, it.cv.clientWidth < 360 ? 7 : 8);
+      if (!it.g) return;
+      var n = it.g.cols * it.g.rows;
+      it.lum = new Float32Array(n); it.glyph = new Array(n);
+      it.R = it.ring ? Math.min(it.g.H * .44, it.g.W * .25) : it.g.H * .46;
+      sample(it);
     }
-    function prep(item, show) {
-      item.g = grid(item.cv);
-      if (!item.g) return;
-      if (item.img) { if (!sample(item)) return; } else empty(item);
-      if (show) typeIn(item); else draw(item, 0);
+    function sample(it) {
+      var g = it.g, img = it.img;
+      if (!g || !img || !img.naturalWidth) return;
+      var s = document.createElement('canvas'), tw = g.cols, th = g.rows;
+      s.width = tw; s.height = th;
+      var sx = s.getContext('2d');
+      sx.drawImage(img, 0, 0, tw, th);
+      var d = sx.getImageData(0, 0, tw, th).data, t = new Float32Array(tw * th), lo = 1, hi = 0, i;
+      for (i = 0; i < t.length; i++) {
+        var v = (d[i * 4] * .3 + d[i * 4 + 1] * .59 + d[i * 4 + 2] * .11) / 255;
+        t[i] = v; if (v < lo) lo = v; if (v > hi) hi = v;
+      }
+      // stretch contrast so dark screenshots still read on the sphere
+      for (i = 0; i < t.length; i++) t[i] = Math.pow(clamp((t[i] - lo) / Math.max(.05, hi - lo), 0, 1), .8);
+      it.tex = t; it.tw = tw; it.th = th;
+    }
+    function tex(it, u, v) {
+      if (!it.tex) return .5;
+      return it.tex[clamp((v * it.th) | 0, 0, it.th - 1) * it.tw + clamp((u * it.tw) | 0, 0, it.tw - 1)];
     }
 
-    cvs.forEach(function (cv) {
-      var li = cv.closest('li'), img = cv.parentNode.querySelector('img');
-      var item = { cv: cv, ctx: cv.getContext('2d'), img: img, li: li, typed: false, seen: false };
-      list.push(item);
+    function render(it, t) {
+      var g = it.g, lum = it.lum, glyph = it.glyph, R = it.R, cx = g.W / 2, cy = g.H / 2;
+      var CT = Math.cos(it.tilt), ST = Math.sin(it.tilt), RS = .26, k = it.k;
+      var maxd = Math.sqrt(cx * cx + cy * cy);
+      var ma = t * .5 + it.seed * 6, mx = Math.cos(ma) * 1.75, my = Math.sin(ma) * .42 - .1, mr = .2;
+      for (var r = 0; r < g.rows; r++) for (var c = 0; c < g.cols; c++) {
+        var i = r * g.cols + c, px = g.ox + (c + .5) * g.cw, py = g.oy + (r + .5) * g.ch, h = hash2(c + it.seed * 31, r);
+        glyph[i] = '';
+        // the flat page spreads out from the middle with a sparkling edge
+        if (k > 0 && it.tex) {
+          var dx = px - cx, dy = py - cy, e = Math.sqrt(dx * dx + dy * dy) / maxd * .78 + h * .22;
+          if (e < k - .05) { lum[i] = .06 + .94 * tex(it, c / g.cols, r / g.rows); continue; }
+          if (e < k + .03) { lum[i] = .7 + h * .3; glyph[i] = '+*:.#'[(h * 5) | 0]; continue; }
+        }
+        var x = (px - cx) / R, y = (py - cy) / R;
+        var xr = x * CT + y * ST, yr = -x * ST + y * CT, d2 = x * x + y * y, L = -1;
+        var ring = -1;
+        if (it.ring) {
+          var ry = yr / RS, rd = Math.sqrt(xr * xr + ry * ry);
+          if (rd > 1.3 && rd < 2 && Math.abs(rd - 1.66) > .05) {
+            ring = (.3 + .28 * (.5 + .5 * Math.sin(rd * 24)) + .08 * Math.sin(Math.atan2(ry, xr) * 30 - t)) * (1 - .45 * Math.pow((rd - 1.3) / .7, 2));
+            if (yr < 0) ring *= .7;
+          }
+        }
+        if (d2 < 1) {
+          if (ring >= 0 && yr > 0) L = ring;
+          else if (it.empty) {
+            // the empty slot is just a wireframe globe
+            var nz0 = Math.sqrt(1 - d2), la = Math.asin(clamp(yr, -1, 1)), lo2 = Math.atan2(xr, nz0) + t * .35;
+            var a1 = Math.abs(fract(la / (Math.PI / 6) + .5) - .5), a2 = Math.abs(fract(lo2 / (Math.PI / 6) + .5) - .5) * Math.max(.25, Math.cos(la));
+            L = d2 > .9 ? .42 : (a1 < .09 || a2 < .045) ? .28 + .2 * nz0 : -1;
+          } else {
+            var nz = Math.sqrt(1 - d2), lat = Math.asin(clamp(yr, -1, 1)), lon = Math.atan2(xr, nz) + t * .22 + it.seed * 3;
+            var dif = Math.max(0, x * LX + y * LY + nz * LZ);
+            L = .1 + (.45 + .55 * tex(it, fract(lon / (Math.PI * 2)), .5 + lat / Math.PI)) * (.08 + .92 * dif) + Math.pow(1 - nz, 3) * .25 * dif;
+          }
+        } else if (ring >= 0) L = ring;
+        else if (d2 < 1.25 && !it.empty) {
+          var dd = Math.sqrt(d2);
+          L = .28 * (1 - (dd - 1) / .118) * Math.max(0, (x * LX + y * LY) / dd + .35);
+        }
+        if (it.moon) {
+          var mdx = (x - mx) / mr, mdy = (y - my) / mr, m2 = mdx * mdx + mdy * mdy;
+          if (m2 < 1 && (Math.sin(ma) > 0 || d2 >= 1)) {
+            var mz = Math.sqrt(1 - m2);
+            L = .05 + .85 * Math.max(0, mdx * LX + mdy * LY + mz * LZ) * (.75 + .25 * hash2(Math.round(mdx * 3), Math.round(mdy * 3)));
+          }
+        }
+        lum[i] = L;
+      }
+      paintCells(it.ctx, g, lum, glyph, cols);
+    }
+
+    function frame(ts) {
+      raf = 0;
+      var busy = false;
+      items.forEach(function (it) {
+        if (!it.g || !it.vis) return;
+        var dt = it.last ? Math.min(ts - it.last, 250) / 1000 : 0;
+        if (it.last && ts - it.last < 42 && it.k === it.goal) { busy = true; return; }
+        it.last = ts;
+        if (!reduced) it.t += dt;
+        var was = it.k;
+        it.k = reduced ? it.goal : it.goal > it.k ? Math.min(it.goal, it.k + dt / .75) : Math.max(it.goal, it.k - dt / .45);
+        if (it.k >= 1 && it.goal === 1) it.li.classList.add('is-flat');
+        render(it, it.t);
+        // once the real screenshot covers the canvas there is nothing left to animate
+        if (!(it.k >= 1 && was >= 1) && !(reduced && it.k === it.goal)) busy = true;
+      });
+      if (busy) kick();
+    }
+    function kick() { if (!raf) raf = requestAnimationFrame(frame); }
+    function aim(it, on) {
+      if (it.empty || !it.tex) on = false;
+      it.goal = on ? 1 : 0;
+      if (!on) it.li.classList.remove('is-flat');
+      it.last = 0;
+      if (reduced) { it.k = it.goal; if (it.g) render(it, it.t); if (on) it.li.classList.add('is-flat'); }
+      kick();
+    }
+
+    lis.forEach(function (li, n) {
+      var cv = li.querySelector('.orb__cv'), img = li.querySelector('img');
+      var it = {
+        li: li, cv: cv, ctx: cv.getContext('2d'), img: img, k: 0, goal: 0, t: 0, last: 0, vis: false, seed: n * .37 + .1,
+        ring: li.hasAttribute('data-ring'), moon: li.hasAttribute('data-moon'), tilt: +(li.dataset.tilt || 0), empty: !img
+      };
+      items.push(it);
+      setup(it);
       if (img) {
         img.loading = 'eager';
-        if (img.complete && img.naturalWidth) prep(item, false);
-        else img.addEventListener('load', function () { prep(item, item.seen); });
-      } else prep(item, false);
+        if (!(img.complete && img.naturalWidth)) img.addEventListener('load', function () { sample(it); if (it.g) render(it, it.t); kick(); });
+      }
+      if (it.g) render(it, 0);
+      if (!touch) {
+        var a = li.querySelector('a');
+        a.addEventListener('pointerenter', function () { aim(it, true); });
+        a.addEventListener('pointerleave', function () { aim(it, false); });
+        a.addEventListener('focus', function () { aim(it, true); });
+        a.addEventListener('blur', function () { aim(it, false); });
+      }
     });
 
-    var touch = matchMedia('(hover: none)').matches;
     if ('IntersectionObserver' in window) {
-      var sio = new IntersectionObserver(function (es) {
+      var vio = new IntersectionObserver(function (es) {
         es.forEach(function (e) {
-          var item = list.filter(function (x) { return x.li === e.target; })[0];
-          if (!item) return;
-          if (e.isIntersecting && !item.seen) { item.seen = true; if (item.lum) typeIn(item); }
-          // on phones there is no hover, so a picture develops once it sits in the middle of the screen
-          if (touch && item.img) item.li.classList.toggle('is-dev', e.intersectionRatio > .85);
+          var it = items.filter(function (x) { return x.li === e.target; })[0];
+          it.vis = e.isIntersecting;
+          it.last = 0;
+          if (it.vis) kick();
         });
-      }, { threshold: [0, .85, 1], rootMargin: touch ? '-25% 0px -25% 0px' : '0px' });
-      list.forEach(function (x) { sio.observe(x.li); });
-    } else list.forEach(function (x) { x.seen = true; if (x.lum) typeIn(x); });
+      });
+      items.forEach(function (it) { vio.observe(it.li); });
+      if (touch) {
+        // phones have no hover, so a planet unrolls once it sits in the middle of the screen
+        var tio = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            var it = items.filter(function (x) { return x.cv === e.target; })[0];
+            aim(it, e.isIntersecting);
+          });
+        }, { rootMargin: '-30% 0px -30% 0px' });
+        items.forEach(function (it) { tio.observe(it.cv); });
+      }
+    } else items.forEach(function (it) { it.vis = true; kick(); });
 
-    addEventListener('resize', debounce(function () { list.forEach(function (x) { prep(x, x.typed); }); }, 200));
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { list.forEach(function (x) { if (x.lum) draw(x, x.typed ? 1e9 : 0); }); });
-    return function () { list.forEach(function (x) { if (x.lum) draw(x, x.typed ? 1e9 : 0); }); };
+    addEventListener('resize', debounce(function () { items.forEach(function (it) { setup(it); if (it.g) render(it, it.t); }); }, 200));
+    return function () { cols = shades(); items.forEach(function (it) { if (it.g) render(it, it.t); }); };
   }
-  initShots();
+
+  // moon phases for the four steps: the terminator sweeps into place when they scroll in
+  function initMoons() {
+    var cvs = document.querySelectorAll('.moon');
+    if (!cvs.length) return null;
+    var cols = shades(), list = [];
+    function setup(m) {
+      m.g = cellGrid(m.cv, m.cv.clientWidth < 120 ? 6 : 7);
+      if (m.g) { var n = m.g.cols * m.g.rows; m.lum = new Float32Array(n); m.glyph = new Array(n); }
+    }
+    function render(m, ph) {
+      var g = m.g;
+      if (!g) return;
+      var R = Math.min(g.W, g.H) * .46, cx = g.W / 2, cy = g.H / 2;
+      var lx = Math.sin(ph), lz = Math.cos(ph);
+      for (var r = 0; r < g.rows; r++) for (var c = 0; c < g.cols; c++) {
+        var i = r * g.cols + c, x = (g.ox + (c + .5) * g.cw - cx) / R, y = (g.oy + (r + .5) * g.ch - cy) / R, d2 = x * x + y * y;
+        m.glyph[i] = '';
+        if (d2 >= 1) { m.lum[i] = -1; continue; }
+        var nz = Math.sqrt(1 - d2), lat = Math.asin(y), lon = Math.atan2(x, nz);
+        // maria and craters from a little value noise
+        var n1 = hash2(Math.floor(lon * 2.2 + 9), Math.floor(lat * 2.2 + 9)), n2 = hash2(Math.floor(lon * 5 + 3), Math.floor(lat * 5 + 3));
+        var tx = .62 + .22 * n1 + .16 * n2;
+        var dif = Math.max(0, x * lx + nz * lz - y * .08);
+        var soft = clamp(dif * 4, 0, 1);
+        m.lum[i] = .07 + (tx * (.3 + .7 * dif)) * soft + (d2 > .86 ? .06 : 0);
+      }
+      paintCells(m.ctx, g, m.lum, m.glyph, cols);
+    }
+    function play(m) {
+      if (m.played) return;
+      m.played = true;
+      if (reduced) return render(m, m.ph);
+      var t0 = 0, from = Math.PI * .96;
+      (function step(ts) {
+        if (!t0) t0 = ts;
+        var k = clamp((ts - t0) / 1600, 0, 1);
+        render(m, from + (m.ph - from) * easeS(k));
+        if (k < 1) requestAnimationFrame(step);
+      })(performance.now());
+    }
+    cvs.forEach(function (cv, n) {
+      var m = { cv: cv, ctx: cv.getContext('2d'), ph: +cv.dataset.phase, played: false };
+      list.push(m);
+      setup(m);
+      render(m, Math.PI * .96);
+    });
+    if ('IntersectionObserver' in window && !reduced) {
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          var i = list.findIndex(function (m) { return m.cv === e.target; });
+          setTimeout(function () { play(list[i]); }, i * 220);
+          io.unobserve(e.target);
+        });
+      }, { rootMargin: '0px 0px -15% 0px' });
+      list.forEach(function (m) { io.observe(m.cv); });
+    } else list.forEach(play);
+    addEventListener('resize', debounce(function () { list.forEach(function (m) { setup(m); render(m, m.played ? m.ph : Math.PI * .96); }); }, 200));
+    return function () { cols = shades(); list.forEach(function (m) { render(m, m.played ? m.ph : Math.PI * .96); }); };
+  }
+
+  var orbs = initOrbs(), moons = initMoons();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (orbs) orbs(); if (moons) moons(); });
 
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (zip) zip(); });
 
