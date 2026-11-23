@@ -6,38 +6,12 @@
   doc.classList.add('js');
 
   var bar = document.getElementById('progress');
-  var links = Array.prototype.slice.call(document.querySelectorAll('.nav__links a'));
-  var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
   function onScroll() {
     var max = doc.scrollHeight - innerHeight;
     bar.style.width = (max > 0 ? scrollY / max * 100 : 0) + '%';
-    var cur = 0;
-    sections.forEach(function (s, i) { if (s && s.getBoundingClientRect().top < innerHeight * .4) cur = i; });
-    links.forEach(function (a, i) { a.classList.toggle('is-on', i === cur); });
   }
   addEventListener('scroll', onScroll, { passive: true });
   onScroll();
-
-  var items = document.querySelectorAll('.sec__head, .about > *, .svc__name, .works li, .steps li, .contact__big, .links li');
-  if ('IntersectionObserver' in window && !reduced) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
-      });
-    }, { rootMargin: '0px 0px -8% 0px' });
-    items.forEach(function (el, i) {
-      el.classList.add('reveal');
-      el.style.transitionDelay = (i % 4) * 70 + 'ms';
-      io.observe(el);
-    });
-  }
-
-  var svc = document.querySelectorAll('.svc__item');
-  svc.forEach(function (li) {
-    var open = function () { svc.forEach(function (x) { x.classList.toggle('is-on', x === li); }); };
-    li.querySelector('.svc__name').addEventListener('click', open);
-    li.addEventListener('mouseenter', function () { if (matchMedia('(hover: hover) and (min-width: 981px)').matches) open(); });
-  });
 
   document.querySelectorAll('[data-copy]').forEach(function (btn) {
     btn.addEventListener('click', function () {
@@ -87,6 +61,134 @@
     setInterval(tick, 20000);
   })();
   var nap = initNap();
+  // rules under each heading draw themselves out when they scroll in
+  var rules = document.querySelectorAll('.rule');
+  if ('IntersectionObserver' in window && !reduced) {
+    var rio = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); rio.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -10% 0px' });
+    rules.forEach(function (r) { rio.observe(r); });
+  } else rules.forEach(function (r) { r.classList.add('is-in'); });
+
+  // work screenshots are shown through the same ascii lens as the intro; hover develops the real image
+  function initShots() {
+    var cvs = document.querySelectorAll('.rel__ascii');
+    if (!cvs.length) return null;
+    var list = [];
+    var JUNK = '.:-=+*/#';
+
+    function grid(cv) {
+      var dpr = Math.min(devicePixelRatio || 1, 2), W = cv.clientWidth, H = cv.clientHeight;
+      if (!W || !H) return null;
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+      var fs = W < 340 ? 8 : 9, cw = fs * .62, ch = fs * 1.18;
+      return { dpr: dpr, W: W, H: H, fs: fs, cw: cw, ch: ch, cols: Math.floor(W / cw), rows: Math.floor(H / ch) };
+    }
+    function shades(p) {
+      var out = [];
+      for (var l = 0; l < 10; l++) {
+        var k = l / 9;
+        out.push(rgb(k < .65 ? mix(mix(p.bg, p.acc, .18), p.acc, k / .65) : mix(p.acc, p.ink, (k - .65) / .35)));
+      }
+      return out;
+    }
+    function sample(item) {
+      var g = item.g, img = item.img;
+      if (!g || !img || !img.naturalWidth) return false;
+      var s = document.createElement('canvas');
+      s.width = g.cols; s.height = g.rows;
+      var sx = s.getContext('2d');
+      sx.drawImage(img, 0, 0, g.cols, g.rows);
+      var d = sx.getImageData(0, 0, g.cols, g.rows).data, lum = new Float32Array(g.cols * g.rows), lo = 1, hi = 0;
+      for (var i = 0; i < lum.length; i++) {
+        var v = (d[i * 4] * .3 + d[i * 4 + 1] * .59 + d[i * 4 + 2] * .11) / 255;
+        lum[i] = v; if (v < lo) lo = v; if (v > hi) hi = v;
+      }
+      // stretch contrast so dark screenshots still read as pictures
+      for (i = 0; i < lum.length; i++) lum[i] = Math.pow(clamp((lum[i] - lo) / Math.max(.05, hi - lo), 0, 1), .85);
+      item.lum = lum;
+      return true;
+    }
+    function empty(item) {
+      var g = item.g, n = g.cols * g.rows, lum = new Float32Array(n), txt = item.txt = {};
+      for (var r = 0; r < g.rows; r++) for (var c = 0; c < g.cols; c++) {
+        var i = r * g.cols + c, edge = r === 0 || r === g.rows - 1 || c === 0 || c === g.cols - 1;
+        if (edge) { lum[i] = .45; txt[i] = (r === 0 || r === g.rows - 1) ? ((c === 0 || c === g.cols - 1) ? '+' : '-') : '|'; }
+        else lum[i] = hash2(c, r) < .05 ? .2 : -1;
+      }
+      var msg = 'свободно', r0 = g.rows >> 1, c0 = (g.cols - msg.length) >> 1;
+      for (var k = 0; k < msg.length; k++) { lum[r0 * g.cols + c0 + k] = .95; txt[r0 * g.cols + c0 + k] = msg[k]; }
+      item.lum = lum;
+    }
+    function draw(item, upto) {
+      var g = item.g, x = item.ctx, cols = shades(item.pal || readPal());
+      x.setTransform(g.dpr, 0, 0, g.dpr, 0, 0);
+      x.clearRect(0, 0, g.W, g.H);
+      x.font = '500 ' + (g.ch * .82).toFixed(1) + 'px "JetBrains Mono", ui-monospace, monospace';
+      x.textAlign = 'center';
+      x.textBaseline = 'middle';
+      var ox = (g.W - g.cols * g.cw) / 2, oy = (g.H - g.rows * g.ch) / 2, rows = Math.min(g.rows, upto);
+      for (var lv = 0; lv < 10; lv++) {
+        x.fillStyle = cols[lv];
+        for (var r = 0; r < rows; r++) for (var c = 0; c < g.cols; c++) {
+          var i = r * g.cols + c, L = item.lum[i];
+          if (L < .06 || Math.min(9, (L * 10) | 0) !== lv) continue;
+          var chr = item.txt && item.txt[i] ? item.txt[i] : RAMP[lv][(hash2(c, r) * 4) | 0];
+          if (r === rows - 1 && rows < g.rows) chr = JUNK[(Math.random() * JUNK.length) | 0];
+          x.fillText(chr, ox + (c + .5) * g.cw, oy + (r + .5) * g.ch);
+        }
+      }
+    }
+    function typeIn(item) {
+      if (item.typed) return draw(item, 1e9);
+      item.typed = true;
+      if (reduced) return draw(item, 1e9);
+      var t0 = 0;
+      (function step(ts) {
+        if (!t0) t0 = ts;
+        var k = Math.ceil((ts - t0) / 700 * item.g.rows);
+        draw(item, k);
+        if (k < item.g.rows) requestAnimationFrame(step);
+      })(performance.now());
+    }
+    function prep(item, show) {
+      item.g = grid(item.cv);
+      if (!item.g) return;
+      if (item.img) { if (!sample(item)) return; } else empty(item);
+      if (show) typeIn(item); else draw(item, 0);
+    }
+
+    cvs.forEach(function (cv) {
+      var li = cv.closest('li'), img = cv.parentNode.querySelector('img');
+      var item = { cv: cv, ctx: cv.getContext('2d'), img: img, li: li, typed: false, seen: false };
+      list.push(item);
+      if (img) {
+        img.loading = 'eager';
+        if (img.complete && img.naturalWidth) prep(item, false);
+        else img.addEventListener('load', function () { prep(item, item.seen); });
+      } else prep(item, false);
+    });
+
+    var touch = matchMedia('(hover: none)').matches;
+    if ('IntersectionObserver' in window) {
+      var sio = new IntersectionObserver(function (es) {
+        es.forEach(function (e) {
+          var item = list.filter(function (x) { return x.li === e.target; })[0];
+          if (!item) return;
+          if (e.isIntersecting && !item.seen) { item.seen = true; if (item.lum) typeIn(item); }
+          // on phones there is no hover, so a picture develops once it sits in the middle of the screen
+          if (touch && item.img) item.li.classList.toggle('is-dev', e.intersectionRatio > .85);
+        });
+      }, { threshold: [0, .85, 1], rootMargin: touch ? '-25% 0px -25% 0px' : '0px' });
+      list.forEach(function (x) { sio.observe(x.li); });
+    } else list.forEach(function (x) { x.seen = true; if (x.lum) typeIn(x); });
+
+    addEventListener('resize', debounce(function () { list.forEach(function (x) { prep(x, x.typed); }); }, 200));
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { list.forEach(function (x) { if (x.lum) draw(x, x.typed ? 1e9 : 0); }); });
+    return function () { list.forEach(function (x) { if (x.lum) draw(x, x.typed ? 1e9 : 0); }); };
+  }
+  initShots();
+
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (zip) zip(); });
 
   function easeS(x) { return x * x * (3 - 2 * x); }
@@ -523,35 +625,6 @@
     addEventListener('resize', debounce(function () { size(); if (reduced) draw(0); }, 150));
     return function () { colors(); if (reduced) draw(0); };
   }
-
-  var peek = document.querySelector('.peek');
-  if (peek && !reduced && matchMedia('(hover: hover) and (min-width: 981px)').matches) {
-    var pim = peek.querySelector('img'), px = 0, py = 0, tx = 0, ty = 0, praf = 0, warmed = false;
-    var pstep = function () {
-      praf = 0;
-      var dx = tx - px, dy = ty - py;
-      px += dx * .16; py += dy * .16;
-      peek.style.transform = 'translate(' + px.toFixed(1) + 'px,' + py.toFixed(1) + 'px) rotate(' + clamp(dx * .1, -9, 9).toFixed(2) + 'deg)';
-      if (Math.abs(dx) + Math.abs(dy) > .4) praf = requestAnimationFrame(pstep);
-    };
-    var shots = document.querySelectorAll('.work .work__img');
-    shots.forEach(function (im) {
-      var a = im.closest('.work'), src = im.getAttribute('src');
-      a.addEventListener('pointerenter', function (e) {
-        if (!warmed) { warmed = true; shots.forEach(function (x) { new Image().src = x.getAttribute('src'); }); }
-        pim.src = src;
-        px = tx = e.clientX; py = ty = e.clientY;
-        peek.classList.add('is-on');
-        if (!praf) praf = requestAnimationFrame(pstep);
-      });
-      a.addEventListener('pointermove', function (e) {
-        tx = e.clientX; ty = e.clientY;
-        if (!praf) praf = requestAnimationFrame(pstep);
-      });
-      a.addEventListener('pointerleave', function () { peek.classList.remove('is-on'); });
-    });
-  }
-
 
   function debounce(fn, ms) { var t; return function () { clearTimeout(t); t = setTimeout(fn, ms); }; }
 })();
