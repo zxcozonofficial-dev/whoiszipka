@@ -149,7 +149,6 @@ body::after {
 }
 .hero__skip:hover { color: var(--ink); }
 .hero.is-done .hero__skip, .hero:not(.eye-on) .hero__skip { opacity: 0; pointer-events: none; }
-.eye-on:not(.is-done) .eye { cursor: pointer; }
 
 .sec {
   max-width: var(--max);

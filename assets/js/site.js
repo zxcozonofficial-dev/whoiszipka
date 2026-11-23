@@ -379,7 +379,6 @@
     function jump() { finish(); now = END; LX = LY = 0; light(); paint(); }
 
     if (skip) skip.addEventListener('click', jump);
-    cv.addEventListener('click', function () { if (!done) jump(); });
     addEventListener('pointermove', function (e) {
       var b = sec.getBoundingClientRect();
       ptr = { x: e.clientX - b.left, y: e.clientY - b.top };
