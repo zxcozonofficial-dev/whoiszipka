@@ -50,23 +50,6 @@
     });
   });
 
-  var hands = document.querySelector('.hands');
-  if (hands && !reduced) {
-    var hx = 0, hy = 0, gx = 0, gy = 0, raf = 0;
-    var step = function () {
-      hx += (gx - hx) * .06;
-      hy += (gy - hy) * .06;
-      hands.style.setProperty('--mx', hx.toFixed(3));
-      hands.style.setProperty('--my', hy.toFixed(3));
-      raf = Math.abs(gx - hx) + Math.abs(gy - hy) > .001 ? requestAnimationFrame(step) : 0;
-    };
-    addEventListener('pointermove', function (e) {
-      gx = e.clientX / innerWidth * 2 - 1;
-      gy = e.clientY / innerHeight * 2 - 1;
-      if (!raf) raf = requestAnimationFrame(step);
-    }, { passive: true });
-  }
-
   var snow = document.getElementById('snow');
   var winter = function () { return doc.dataset.season === 'winter'; };
   var startSnow = initSnow(snow);
@@ -331,278 +314,458 @@
     ctx.fill();
   }
 
-  function zipTeeth(ctx, len, wfn, dfn, extra, lim, pal) {
-    var P = 6.5, n = Math.ceil(len / P) + 1;
-    var light = rgb(pal.metal), dark = rgb(pal.metalD);
-    for (var i = 0; i < n; i++) {
-      var y = i * P, o = wfn(y) + extra;
-      if (o > lim) continue;
-      var a = Math.atan(dfn(y)), left = i % 2 === 0, x0 = left ? -7 : -3;
-      ctx.save();
-      ctx.translate(left ? -o : o, y);
-      ctx.rotate(left ? a : -a);
-      ctx.fillStyle = light;
-      ctx.fillRect(x0, -2.25, 10, 4.5);
-      ctx.fillStyle = dark;
-      ctx.fillRect(x0, .75, 10, 1.5);
-      ctx.restore();
-    }
-  }
-
-  function zipSlider(ctx, ang, pal) {
-    var out = rgb(pal.out), metal = rgb(pal.metal), metalD = rgb(pal.metalD), acc = rgb(pal.acc);
-    ctx.fillStyle = out;
-    ctx.beginPath(); ctx.moveTo(-18, -32); ctx.lineTo(18, -32); ctx.lineTo(13, 12); ctx.lineTo(-13, 12); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = metal;
-    ctx.beginPath(); ctx.moveTo(-15.5, -29.5); ctx.lineTo(15.5, -29.5); ctx.lineTo(11, 9.5); ctx.lineTo(-11, 9.5); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = metalD;
-    ctx.beginPath(); ctx.moveTo(8.5, -29.5); ctx.lineTo(15.5, -29.5); ctx.lineTo(11, 9.5); ctx.lineTo(6.5, 9.5); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(-10.5, -25, 2.5, 27);
-    ctx.fillStyle = out;
-    ctx.beginPath(); ctx.moveTo(-5, -32); ctx.lineTo(5, -32); ctx.lineTo(0, -21); ctx.closePath(); ctx.fill();
-
-    ctx.save();
-    ctx.translate(0, -7);
-    ctx.rotate(ang);
-    ctx.fillStyle = out; rr(ctx, -11.5, -2.5, 23, 77, 6);
-    ctx.fillStyle = acc; rr(ctx, -9, 0, 18, 72, 4);
-    ctx.fillStyle = rgb(mix(pal.acc, [255, 255, 255], .55)); ctx.fillRect(-6.5, 24, 2, 20);
-    ctx.fillStyle = rgb(mix(pal.acc, [0, 0, 0], .3)); ctx.fillRect(5, 4, 2.5, 64);
-    ctx.fillStyle = out; rr(ctx, -4.5, 5, 9, 14, 2); rr(ctx, -4, 49, 8, 15, 2);
-    ctx.restore();
-
-    ctx.fillStyle = out; rr(ctx, -6.5, -17, 13, 21, 3);
-    ctx.fillStyle = metalD; rr(ctx, -4, -14.5, 8, 16, 2);
-    ctx.fillStyle = metal; ctx.fillRect(-2.5, -13, 2, 12);
-  }
-
-  var zip = initZip();
+  var RAMP = [".`',", "-:;~", "=+^\"", "/\\|!", "()[]", "tfjr", "zcYJ", "UCLQ", "0OZm", "#MW@"];
+  var zip = initEye();
+  (function clock() {
+    var el = document.querySelector('.end__clock b');
+    if (!el) return;
+    var f;
+    try { f = new Intl.DateTimeFormat('ru-RU', { timeZone: 'Europe/Moscow', hour: '2-digit', minute: '2-digit' }); } catch (e) { return; }
+    function tick() { el.textContent = f.format(new Date()); }
+    tick();
+    setInterval(tick, 20000);
+  })();
   var cord = initCord();
-  function repaint() { if (zip) zip(); if (cord) cord(); toneLabel(); }
+  var nap = initNap();
+  function repaint() { if (zip) zip(); if (cord) cord(); if (nap) nap(); toneLabel(); }
   toneLabel();
   var toneBtn = document.querySelector('.end__tone');
   if (toneBtn) toneBtn.addEventListener('click', nextTone);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (zip) zip(); });
 
-  (function hem() {
-    var c = document.createElement('canvas'), k = 3;
-    c.width = 4 * k; c.height = 32 * k;
-    var g = c.getContext('2d');
-    g.fillStyle = '#000';
-    for (var r = 0; r < 32; r++) for (var x = 0; x < 4; x++) {
-      if ((BAYER[(r & 3) * 4 + x] + .5) / 16 < Math.pow((r + 1) / 32, 1.15)) g.fillRect(x * k, r * k, k, k);
-    }
-    doc.style.setProperty('--hem', 'url(' + c.toDataURL() + ')');
-  })();
+  function easeS(x) { return x * x * (3 - 2 * x); }
+  function hash2(a, b) { var h = Math.sin(a * 127.1 + b * 311.7) * 43758.5453; return h - Math.floor(h); }
+  function blinkAt(d) { return d > 0 && d < .28 ? 1 - .98 * Math.sin(d / .28 * Math.PI) : 1; }
 
-  function initZip() {
-    var sec = document.querySelector('.hero'), cv = document.getElementById('zip');
-    if (!sec || !cv || reduced || !window.Path2D) return null;
-    var stage = sec.querySelector('.zip__stage'), grab = sec.querySelector('.zip__grab');
-    var hint = sec.querySelector('.zip__hint'), handsEl = sec.querySelector('.hands');
+  function initEye() {
+    var sec = document.querySelector('.hero'), cv = document.getElementById('eye');
+    if (!sec || !cv) return null;
+    var skip = sec.querySelector('.hero__skip');
     var ctx = cv.getContext('2d');
-    var JUST = new Path2D('M122 -560H316V200H100L0 100V40H122ZM122 -606V-726H316V-606Z M814 -560V0H488L360 -128V-560H554V-168H620V-560Z M857 0V-152H1065V-233H857V-448L969 -560H1259V-408H1051V-329H1259V-111L1148 0Z M1302 -650 1496 -700V-540H1620V-380H1496V-160H1620V0H1430L1302 -128Z');
-    var ZIPKA = new Path2D('M1640 0V-140L1784 -400H1644V-560H1994V-420L1850 -160H1998V0Z M2030 0V-560H2224V0ZM2030 -606V-726H2224V-606Z M2268 140V-560H2594L2722 -432V-128L2594 0H2462V140ZM2528 -400H2462V-160H2528Z M2765 0V-700H2959V-371H2989L3033 -560H3234L3150 -301L3243 0H3040L2992 -211H2959V0Z M3257 -112V-328L3499 -338V-400H3267V-560H3557L3685 -432V0H3369ZM3443 -233V-152H3499V-252Z');
-    var W = 0, H = 0, dpr = 1, cx = 0, cloth = [null, null], shade = null, pal = null, portrait = false;
-    var p = 0, s = 0, s0 = 0, sEnd = 0, spread = 0, A = 0;
-    var ang = 0, angV = 0, lastS = null, raf = 0, drag = null;
-    doc.classList.add('zip-on');
 
-    function wOf(y) { return y >= s ? 0 : A * (1 - Math.exp(-1.6 * (s - y) / H)) / .798; }
-    function dW(y) { return y >= s ? 0 : -A * 1.6 / (.798 * H) * Math.exp(-1.6 * (s - y) / H); }
+    var EXTRA = "+-|*.";
+    var CHARS = RAMP.join('') + EXTRA, GI = {};
+    for (var q = 0; q < CHARS.length; q++) if (GI[CHARS[q]] === undefined) GI[CHARS[q]] = q;
+    var LV = RAMP.length, MATS = 3;
 
-    function makeCloth(side) {
-      var cw = side < 0 ? cx : cv.width - cx, ch = cv.height;
-      var c = document.createElement('canvas');
-      c.width = cw; c.height = ch;
-      var g = c.getContext('2d');
-      var PX = Math.max(2, Math.round(3 * dpr)), lw = Math.ceil(cw / PX), lh = Math.ceil(ch / PX);
-      var t = document.createElement('canvas');
-      t.width = lw; t.height = lh;
-      var tg = t.getContext('2d'), im = tg.createImageData(lw, lh), d = im.data;
-      var sh = [mix(pal.bg, [0, 0, 0], .5), mix(pal.bg, [0, 0, 0], .12), pal.bg2, mix(pal.bg2, pal.acc, .1), mix(pal.bg2, pal.acc, .22)];
-      for (var y = 0; y < lh; y++) for (var x = 0; x < lw; x++) {
-        var u = (side < 0 ? x * PX : cx + x * PX) / cv.width, v = y * PX / ch, e = Math.abs(u - .5) * 2;
-        var lum = .62
-          + .17 * Math.sin((u * 3.1 + v * 1.7) * 3.2 + Math.sin(v * 5) * .6)
-          + .07 * Math.sin(u * 17 - v * 9)
-          - .3 * e * e - .2 * v * v;
-        var lv = clamp(Math.floor(lum * 4 + (BAYER[(y & 3) * 4 + (x & 3)] + .5) / 16 - .5), 0, 4), o = (y * lw + x) * 4;
-        d[o] = sh[lv][0]; d[o + 1] = sh[lv][1]; d[o + 2] = sh[lv][2]; d[o + 3] = 255;
+    // eye opens, dive into the pupil, warp, a ringed planet arrives and opens an eye of its own
+    var END = 7.4, T_OPEN = .9, T_HOLD = 2.3, T_ZOOM = 3.0, T_SPACE = 4.9, T_LOOK = 6.2;
+    var CT = Math.cos(-.32), ST = Math.sin(-.32), RS = .27;
+    var W = 0, H = 0, dpr = 1, cw = 7, ch = 13, cols = 0, rows = 0, RF = .34, PCY = .07;
+    var atlas = null, aw = 0, ah = 0;
+    var lum = null, mat = null, glyph = null, inSpace = null;
+    var stars = [], t0 = 0, now = 0, done = false, raf = 0, visible = true, last = 0;
+    var LX = 0, LY = 0, ptr = null, ptrT = -1e9, blinkT = -99;
+
+    var seq = function (a, b, t) { return clamp((t - a) / (b - a), 0, 1); };
+    var ease = easeS, hash = hash2;
+    function fr(x) { return x - Math.floor(x); }
+
+    function bake() {
+      var pal = readPal();
+      var neutral = [mix(pal.bg, pal.ink3, .6), pal.ink];
+      var accent = [mix(pal.bg, pal.acc, .35), pal.acc];
+      var hot = [mix(pal.bg, pal.acc, .45), mix(pal.acc, [255, 255, 255], .55)];
+      var ramps = [neutral, accent, hot];
+      var gw = Math.ceil(cw * dpr), gh = Math.ceil(ch * dpr);
+      atlas = document.createElement('canvas');
+      atlas.width = CHARS.length * gw; atlas.height = MATS * LV * gh;
+      aw = gw; ah = gh;
+      var g = atlas.getContext('2d');
+      g.font = '500 ' + (ch * .82 * dpr).toFixed(1) + 'px "JetBrains Mono", ui-monospace, monospace';
+      g.textAlign = 'center';
+      g.textBaseline = 'middle';
+      for (var m = 0; m < MATS; m++) for (var l = 0; l < LV; l++) {
+        var k = l / (LV - 1);
+        g.fillStyle = rgb(mix(ramps[m][0], ramps[m][1], Math.pow(k, .8)));
+        for (var c = 0; c < CHARS.length; c++) g.fillText(CHARS[c], c * gw + gw / 2, (m * LV + l) * gh + gh / 2);
       }
-      tg.putImageData(im, 0, 0);
-      g.imageSmoothingEnabled = false;
-      g.drawImage(t, 0, 0, lw, lh, 0, 0, lw * PX, lh * PX);
-
-      g.scale(dpr, dpr);
-      var hw = cw / dpr, ie = side < 0 ? hw : 0;
-      g.fillStyle = rgb(mix(pal.bg, [0, 0, 0], .4));
-      g.fillRect(side < 0 ? hw - 17 : 0, 0, 17, H);
-      g.strokeStyle = rgb(pal.ink3);
-      g.lineWidth = 1.5;
-      g.setLineDash([7, 5]);
-      [22, 27].forEach(function (off, i) {
-        g.globalAlpha = i ? .45 : 1;
-        g.beginPath(); g.moveTo(ie + side * off, 0); g.lineTo(ie + side * off, H); g.stroke();
-      });
-      g.globalAlpha = 1;
-      g.setLineDash([]);
-
-      var gut = clamp(W * .04, 16, 48), k;
-      g.fillStyle = rgb(pal.ink);
-      g.save();
-      if (portrait) {
-        var gap = 36, y0 = H * .31;
-        k = Math.min((hw - gap - 12) / 926, H * .46 / 2045);
-        if (side < 0) { g.translate(hw - gap - 726 * k, y0); g.rotate(Math.PI / 2); g.scale(k, k); g.fill(JUST); }
-        else { g.translate(gap + 140 * k, y0); g.rotate(Math.PI / 2); g.scale(k, k); g.translate(-1640, 0); g.fill(ZIPKA); }
-      } else {
-        var gp = 50, base;
-        k = Math.min((hw - gut - gp) / 2045, H * .3 / 926);
-        base = H * .52 + 280 * k;
-        if (side < 0) { g.translate(hw - gp - 1620 * k, base); g.scale(k, k); g.fill(JUST); }
-        else { g.translate(gp - 1640 * k, base); g.scale(k, k); g.fill(ZIPKA); }
-      }
-      g.restore();
-      if (!portrait) {
-        g.font = '500 11px "JetBrains Mono", monospace';
-        g.fillStyle = rgb(pal.ink3);
-        g.textBaseline = 'alphabetic';
-        if (side < 0) { g.textAlign = 'left'; g.fillText('ВЕБ-ДИЗАЙНЕР И РАЗРАБОТЧИК', gut, H - 30); }
-        else { g.textAlign = 'right'; g.fillText('САЙТЫ / ДИЗАЙН / TELEGRAM-БОТЫ / MINI APPS', hw - gut, H - 30); }
-      }
-      return c;
-    }
-
-    function makeShade() {
-      var cell = Math.max(2, Math.round(2 * dpr));
-      var mk = function (pts, alpha) {
-        var c = document.createElement('canvas');
-        c.width = c.height = cell * 4;
-        var g = c.getContext('2d');
-        g.fillStyle = 'rgba(0,0,0,' + alpha + ')';
-        pts.forEach(function (q) { g.fillRect(q[0] * cell, q[1] * cell, cell, cell); });
-        return ctx.createPattern(c, 'repeat');
-      };
-      return {
-        a: mk([[0, 0], [2, 0], [1, 1], [3, 1], [0, 2], [2, 2], [1, 3], [3, 3]], .5),
-        b: mk([[0, 0], [2, 2]], .5),
-      };
     }
 
     function build() {
       dpr = Math.min(devicePixelRatio || 1, 2);
-      W = stage.clientWidth;
-      H = stage.clientHeight;
-      cv.width = Math.round(W * dpr);
-      cv.height = Math.round(H * dpr);
-      cx = Math.round(cv.width / 2);
-      portrait = W < H * .8;
-      s0 = H * (portrait ? .2 : .25);
-      sEnd = H + 100;
-      A = Math.min(W * .3, H * .5);
-      pal = readPal();
-      cloth[0] = makeCloth(-1);
-      cloth[1] = makeCloth(1);
-      shade = makeShade();
-      kick();
+      W = sec.clientWidth; H = sec.clientHeight;
+      if (!W || !H) { cols = rows = 0; return; }
+      var fs = W < 600 ? 10 : W < 1100 ? 11 : 12;
+      cw = fs * .62; ch = fs * 1.18;
+      cols = Math.ceil(W / cw); rows = Math.ceil(H / ch);
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+      var n = cols * rows;
+      lum = new Float32Array(n); mat = new Uint8Array(n); glyph = new Int16Array(n); inSpace = new Uint8Array(n);
+      var asp = W / H;
+      RF = W < H ? Math.min(.5, asp * .62) : Math.min(.48, asp * .4);
+      PCY = W < H ? .16 : .08;
+      stars = [];
+      for (var i = 0; i < 240; i++) {
+        stars.push({
+          x: (Math.random() * 2 - 1) * (asp + .4) * 1.3, y: (Math.random() * 2 - 1) * 1.5, z: Math.random(),
+          sp: 1 + Math.random() * 2.5, ph: Math.random() * 6.28,
+        });
+      }
+      bake();
+      paint();
     }
 
-    function draw() {
-      var CW = cv.width, CH = cv.height, L = cloth[0], R = cloth[1];
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.clearRect(0, 0, CW, CH);
-      if (spread >= W / 2 + 60) return;
-      var SH = Math.max(2, Math.round(2 * dpr)), sd = clamp(Math.round(s * dpr), 0, CH), sp = spread * dpr;
-      var bA = Math.round(6 * dpr), bB = Math.round(16 * dpr);
-      for (var y = 0; y < sd; y += SH) {
-        var h = Math.min(SH, sd - y), o = Math.round(wOf((y + h / 2) / dpr) * dpr + sp);
-        ctx.drawImage(L, 0, y, L.width, h, -o, y, L.width, h);
-        ctx.drawImage(R, 0, y, R.width, h, cx + o, y, R.width, h);
-        if (o > 3) {
-          var wb = Math.min(bB, o), wa = Math.min(bA, o);
-          ctx.fillStyle = shade.b; ctx.fillRect(cx - o, y, wb, h); ctx.fillRect(cx + o - wb, y, wb, h);
-          ctx.fillStyle = shade.a; ctx.fillRect(cx - o, y, wa, h); ctx.fillRect(cx + o - wa, y, wa, h);
+    function geo(t) {
+      var zt = seq(T_ZOOM, T_SPACE, t), z = Math.exp(Math.pow(zt, 1.7) * 5.2);
+      var asp = W / H, ew = Math.min(1.45, asp * .9), a = ew * .42, R = a * .93, Rp = R * (.34 + .06 * zt);
+      return { zt: zt, z: z, ew: ew, a: a, R: R, Rp: Rp, m: clamp(Rp * z, .2, 1) };
+    }
+    function planetAt(t) {
+      var k = ease(seq(T_SPACE - .5, T_LOOK, t));
+      return { r: .025 + (RF - .025) * k, cy: -PCY * k };
+    }
+    function dist(t) { return .035 * t + 2.4 * ease(seq(T_ZOOM + .5, T_SPACE + .9, t)); }
+    function lid(t) {
+      var o = ease(seq(T_LOOK, T_LOOK + .8, t));
+      if (o <= 0) return 0;
+      var k = Math.floor(t / 4.6), bt = k * 4.6 + 1.2 + hash(k, 9) * 2.6;
+      return o * blinkAt(t - bt) * blinkAt(t - blinkT);
+    }
+
+    // the planet's face: banded sphere that turns out to have an eye
+    function surf(x, y, nz, t) {
+      var dif = Math.max(0, x * -.45 + y * -.5 + nz * .74);
+      var lat = Math.asin(clamp(y, -1, 1)), lon = Math.atan2(x, nz) + t * .18;
+      var band = .5 + .5 * Math.sin(lat * 9 + .9 * Math.sin(lon * 2));
+      var base = .08 + .62 * dif * (.65 + .35 * band) + Math.pow(1 - nz, 3) * .3;
+      var op = lid(t);
+      if (op > .01 && Math.abs(x) < .74) {
+        var ey = y + .1, q = x / .74, h = .44 * op * (1 - q * q) * (ey < 0 ? 1.1 : .9), ad = Math.abs(ey);
+        if (ad < h) {
+          var shade = 1 - .5 * Math.pow(clamp(1 - (h - ad) / .15, 0, 1), 2);
+          var ix = x - LX * .34, iy = ey - LY * .14, ir = Math.sqrt(ix * ix + iy * iy), IR = .27;
+          var gx = ix + IR * .35, gy = iy + IR * .35;
+          if (ir < IR && gx * gx + gy * gy < IR * IR * .04) return [1, 0];
+          if (ir < IR * .46) return [.03, 0];
+          if (ir < IR) {
+            var ang = Math.atan2(iy, ix);
+            var fib = .5 + .5 * Math.sin(ang * 22 + Math.sin(ang * 5 + ir * 30) * 2 + ir * 40);
+            var l = (.35 + .55 * fib) * (1 - .6 * Math.pow(clamp((ir - IR * .82) / (IR * .18), 0, 1), 1.5));
+            return [l * shade, 1];
+          }
+          return [(.95 - .4 * q * q) * shade * (.75 + .25 * dif), 0];
+        }
+        if (ad < h + .045) return [.04, 0];
+        if (ad < h + .14) base *= .7;
+      }
+      return [base, 2];
+    }
+
+    function space(u, v, m, t) {
+      var P = planetAt(t), x = u / m / P.r, y = (v / m - P.cy) / P.r;
+      var xr = x * CT + y * ST, yr = -x * ST + y * CT, ry = yr / RS, rd = Math.sqrt(xr * xr + ry * ry), ring = -1;
+      if (rd > 1.32 && rd < 2.05 && Math.abs(rd - 1.7) > .05) {
+        var ra = Math.atan2(ry, xr);
+        ring = (.32 + .3 * (.5 + .5 * Math.sin(rd * 26)) + .1 * Math.sin(ra * 40 - t * 1.4 + rd * 9));
+        ring *= 1 - .5 * Math.pow((rd - 1.32) / .73, 2);
+        if (yr < 0) ring *= .75;
+      }
+      var d2 = x * x + y * y;
+      if (d2 < 1) {
+        if (ring >= 0 && yr > 0) return [ring, 0];
+        return surf(x, y, Math.sqrt(1 - d2), t);
+      }
+      if (ring >= 0) return [ring, 0];
+      var d = Math.sqrt(d2);
+      if (d < 1.12) return [.3 * (1 - (d - 1) / .12), 1];
+      return [-1, 0];
+    }
+
+    function eye(u, v, t, r) {
+      var open = ease(seq(T_OPEN, T_HOLD, t)), G = geo(t);
+      var zt = G.zt, z = G.z, ew = G.ew, a = G.a, R = G.R, Rp = G.Rp;
+      var lookX = .1 * LX * (1 - zt), lookY = .05 * LY * (1 - zt);
+      var eu = u / z, ev = v / z, iu = eu - lookX * R, iv = ev - lookY * R, rr = Math.sqrt(iu * iu + iv * iv);
+      if (rr < Rp && zt > 0) return space(u, v, G.m, t);
+      var h = Math.abs(eu) < ew ? a * open * (1 - (eu / ew) * (eu / ew)) * (ev < 0 ? 1.08 : .92) : -1;
+      if (Math.abs(ev) > h) {
+        var edge = Math.abs(ev) - h;
+        if (h > 0 && edge < .035) return [.06, 0];
+        var stripe = r % 2 ? .55 : 1;
+        return [(.16 + .1 * hash(Math.floor(u * 40), r)) * stripe * (.6 + .4 * Math.min(1, t / T_OPEN)), 0];
+      }
+      var shade = 1 - .55 * Math.pow(clamp(1 - (h - Math.abs(ev)) / (a * .35), 0, 1), 2);
+      var gx = iu + R * .3, gy = iv + R * .32;
+      if (rr < R && gx * gx + gy * gy < R * R * .012) return [1, 0];
+      if (rr < Rp) return [.03, 0];
+      if (rr < R) {
+        var ang = Math.atan2(iv, iu);
+        var fib = .5 + .5 * Math.sin(ang * 38 + Math.sin(ang * 7 + rr * 9) * 2.2 + rr * 18);
+        var l = .28 + .5 * fib * (.55 + .45 * (rr - Rp) / (R - Rp));
+        l += .3 * Math.exp(-Math.pow((rr - Rp * 1.45) / (R * .08), 2));
+        l *= 1 - .7 * Math.pow(clamp((rr - R * .86) / (R * .14), 0, 1), 1.5);
+        return [l * shade, 1];
+      }
+      var vein = .06 * Math.sin(Math.atan2(ev, eu) * 23 + Math.abs(eu) * 30) * Math.pow(Math.abs(eu) / ew, 2);
+      return [(.86 - .45 * Math.pow(eu / ew, 2) - vein) * shade, 0];
+    }
+
+    function star(c, r, l, ch2) {
+      if (c < 0 || r < 0 || c >= cols || r >= rows) return;
+      var i = r * cols + c;
+      if (!inSpace[i] || lum[i] > l) return;
+      lum[i] = l; mat[i] = 0; glyph[i] = GI[ch2];
+    }
+    function streak(c0, r0, c1, r1, b) {
+      var a = Math.atan2((r1 - r0) * ch, (c1 - c0) * cw);
+      if (a < 0) a += Math.PI;
+      var chr = a < .39 || a > 2.75 ? '-' : a < 1.18 ? '\\' : a < 1.96 ? '|' : '/';
+      var n = Math.min(70, Math.max(Math.abs(c1 - c0), Math.abs(r1 - r0)));
+      for (var k = 0; k <= n; k++) {
+        var f = k / n;
+        star(Math.round(c0 + (c1 - c0) * f), Math.round(r0 + (r1 - r0) * f), b * (.2 + .8 * f), k === n ? '*' : chr);
+      }
+    }
+    function sc(px) { return Math.round((px * H / 2 + W / 2) / cw - .5); }
+    function sr(py) { return Math.round((py * H / 2 + H / 2) / ch - .5); }
+
+    function steer(t) {
+      var tx, ty;
+      if (ptr && performance.now() - ptrT < 2500) {
+        var P = planetAt(Math.max(t, T_LOOK));
+        tx = clamp((ptr.x - W / 2) / (W * .32), -1, 1);
+        ty = clamp((ptr.y - (H / 2 + P.cy * H / 2)) / (H * .32), -1, 1);
+      } else {
+        tx = .75 * Math.sin(t * .6); ty = .55 * Math.sin(t * .43 + 1);
+      }
+      LX += (tx - LX) * .14; LY += (ty - LY) * .14;
+    }
+
+    function frame(ts) {
+      raf = 0;
+      if (!visible) return;
+      if (ts - last < 33) { raf = requestAnimationFrame(frame); return; }
+      last = ts;
+      if (!t0) t0 = ts;
+      now = (ts - t0) / 1000;
+      if (!done && now >= END) finish();
+      steer(now);
+      paint();
+      if (!reduced) raf = requestAnimationFrame(frame);
+    }
+
+    function paint() {
+      if (!atlas || !cols) return;
+      var t = reduced ? END : now, i, c, r;
+      var boot = clamp(t / .6, 0, 1), flickT = Math.floor(t * 7);
+      for (r = 0; r < rows; r++) {
+        var v = ((r + .5) * ch - H / 2) / (H / 2);
+        for (c = 0; c < cols; c++) {
+          i = r * cols + c;
+          var u = ((c + .5) * cw - W / 2) / (H / 2);
+          if (r > rows * boot) { lum[i] = -1; inSpace[i] = 0; continue; }
+          var res = eye(u, v, t, r);
+          var l = res[0];
+          inSpace[i] = l < 0 ? 1 : 0;
+          if (l < 0) {
+            var hd = hash(c, r);
+            l = hd < .012 ? .14 + .1 * Math.sin(t * 3 + hd * 900) : -1;
+            res[1] = 0;
+          } else if (res[1] === 2 && r % 2) l *= .72;
+          lum[i] = l; mat[i] = res[1];
+          var lv = clamp(Math.floor(l * LV), 0, LV - 1);
+          var vr = hash(c, r) * 4 | 0;
+          if (hash(c + flickT, r) < .04) vr = (vr + 1) & 3;
+          glyph[i] = GI[RAMP[lv][vr]];
         }
       }
-      if (sd < CH) {
-        ctx.drawImage(L, 0, sd, L.width, CH - sd, 0, sd, L.width, CH - sd);
-        ctx.drawImage(R, 0, sd, R.width, CH - sd, cx, sd, R.width, CH - sd);
+      if (t > T_ZOOM + .4) {
+        var m = geo(t).m, fade = ease(seq(T_ZOOM + .4, T_ZOOM + 1.3, t)), Dn = dist(t), Dp = dist(t - .07);
+        for (var s = 0; s < stars.length; s++) {
+          var S = stars[s], z = fr(S.z - Dn), zp = fr(S.z - Dp);
+          var zz = .03 + .97 * z, hc = sc(S.x * .32 / zz * m), hr = sr(S.y * .32 / zz * m);
+          var b = clamp(1.2 - zz, .15, 1) * fade;
+          if (zp > z) {
+            var zzp = .03 + .97 * zp, pc = sc(S.x * .32 / zzp * m), pr = sr(S.y * .32 / zzp * m);
+            if (Math.abs(hc - pc) + Math.abs(hr - pr) > 2) { streak(pc, pr, hc, hr, b); continue; }
+          }
+          var tw = .5 + .5 * Math.sin(t * S.sp + S.ph);
+          if (zz > .6) { if (tw > .3) star(hc, hr, b * (.45 + .4 * tw), '.'); continue; }
+          var arm = Math.round((zz < .25 ? 2.4 : 1.2) * (.5 + .7 * tw)), bb = b * (.75 + .25 * tw);
+          star(hc, hr, bb, '+');
+          for (var k = 1; k <= arm; k++) {
+            var al = bb * (1 - k / (arm + 1)) * .85;
+            star(hc - k * 2, hr, al, '-'); star(hc - k * 2 + 1, hr, al, '-');
+            star(hc + k * 2, hr, al, '-'); star(hc + k * 2 - 1, hr, al, '-');
+            if (k <= Math.ceil(arm / 2)) { star(hc, hr - k, al, '|'); star(hc, hr + k, al, '|'); }
+          }
+        }
+        // the odd shooting star once everything has settled
+        var SP = 3.9, kk = Math.floor(t / SP), s2 = (t - kk * SP) / 1.1;
+        if (t > END + .5 && s2 < 1 && hash(kk, 5) > .3) {
+          var c0 = Math.round(cols * (.3 + .65 * hash(kk, 1))), r0 = Math.round(rows * (.03 + .3 * hash(kk, 2)));
+          var L = Math.round(rows * .4), hc2 = c0 - Math.round(s2 * L), hr2 = r0 + Math.round(s2 * L), fo = Math.sin(s2 * Math.PI);
+          for (var j = 0; j < 10; j++) star(hc2 + j, hr2 - j, fo * (1 - j / 10), j ? '/' : '*');
+        }
       }
-      ctx.setTransform(dpr, 0, 0, dpr, cx, 0);
-      zipTeeth(ctx, H, wOf, dW, spread, W / 2 + 12, pal);
-      if (s < H + 50) {
-        ctx.translate(0, s);
-        zipSlider(ctx, ang, pal);
+
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      var dw = cw * dpr, dh = ch * dpr;
+      for (i = 0; i < lum.length; i++) {
+        var Lm = lum[i];
+        if (Lm < .04) continue;
+        c = i % cols; r = (i / cols) | 0;
+        var lvl = clamp(Math.floor(Lm * LV), 0, LV - 1);
+        ctx.drawImage(atlas, glyph[i] * aw, (mat[i] * LV + lvl) * ah, aw, ah, Math.round(c * dw), Math.round(r * dh), aw, ah);
       }
     }
 
-    function frame() {
-      raf = 0;
-      var r = sec.getBoundingClientRect(), len = r.height - innerHeight;
-      if (r.bottom < -20) { lastS = null; return; }
-      p = len > 0 ? clamp(-r.top / len, 0, 1) : 1;
-      var ps = clamp((p - .6) / .4, 0, 1);
-      s = s0 + (sEnd - s0) * Math.min(1, p / .6);
-      spread = (W / 2 + 70) * ps * ps * (3 - 2 * ps);
-      var vs = lastS === null ? 0 : s - lastS;
-      lastS = s;
-      angV += clamp(vs, -40, 40) * .0012 - ang * .05 - angV * .07;
-      ang = clamp(ang + angV, -1.1, 1.1);
-      draw();
-      var yl = H * (portrait ? .2 : .36), yr = H * (portrait ? .74 : .72);
-      handsEl.style.setProperty('--pl', (wOf(yl) + spread).toFixed(1));
-      handsEl.style.setProperty('--pr', (wOf(yr) + spread).toFixed(1));
-      hint.style.opacity = clamp(1 - p * 9, 0, 1);
-      hint.style.transform = 'translateY(' + (s - 36).toFixed(1) + 'px)';
-      grab.style.transform = 'translate(' + (W / 2 - 32) + 'px,' + (s - 40) + 'px)';
-      grab.style.visibility = s < H && !spread ? 'visible' : 'hidden';
-      if (drag || Math.abs(ang) > .003 || Math.abs(angV) > .003) kick();
+    function finish() {
+      if (done) return;
+      done = true;
+      t0 = performance.now() - END * 1000;
+      sec.classList.add('is-done');
     }
-    function kick() { if (!raf) raf = requestAnimationFrame(frame); }
+    function kick() { if (!raf && visible && !reduced) raf = requestAnimationFrame(frame); }
+    function jump() { finish(); now = END; LX = LY = 0; paint(); }
 
-    addEventListener('scroll', kick, { passive: true });
-    addEventListener('resize', debounce(function () {
-      if (stage.clientWidth !== W || stage.clientHeight !== H) build();
-    }, 120));
-    setInterval(function () {
-      if (p < .01 && !drag && !document.hidden) { angV += .055; kick(); }
-    }, 3600);
-    stage.addEventListener('pointermove', function (e) {
-      if (drag || s > H) return;
-      var dx = e.clientX - W / 2, dy = e.clientY - (s + 30);
-      if (dx * dx + dy * dy < 70 * 70) { angV -= clamp(e.movementX || 0, -30, 30) * .0016; kick(); }
+    if (skip) skip.addEventListener('click', jump);
+    cv.addEventListener('click', function () { if (!done) jump(); else blinkT = now; });
+    addEventListener('pointermove', function (e) {
+      var b = sec.getBoundingClientRect();
+      ptr = { x: e.clientX - b.left, y: e.clientY - b.top };
+      ptrT = performance.now();
     }, { passive: true });
-
-    function secLen() { return sec.offsetHeight - innerHeight; }
-    function secTop() { return sec.getBoundingClientRect().top + scrollY; }
-    grab.addEventListener('pointerdown', function (e) {
-      drag = { dy: e.clientY - s, pu: 0 };
-      grab.setPointerCapture(e.pointerId);
-      doc.classList.add('is-zipping');
-      e.preventDefault();
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) { visible = es[0].isIntersecting; if (visible) kick(); }).observe(sec);
+    }
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) return;
+      last = 0;
       kick();
     });
-    grab.addEventListener('pointermove', function (e) {
-      if (!drag) return;
-      var pu = clamp((e.clientY - drag.dy - s0) / (sEnd - s0), 0, 1);
-      drag.pu = pu;
-      angV -= clamp(e.movementX || 0, -30, 30) * .002;
-      scrollTo({ top: secTop() + pu * .6 * secLen(), behavior: 'instant' });
-    });
-    var drop = function () {
-      if (!drag) return;
-      var far = drag.pu > .8;
-      drag = null;
-      doc.classList.remove('is-zipping');
-      if (far) scrollTo({ top: secTop() + secLen(), behavior: 'smooth' });
-    };
-    grab.addEventListener('pointerup', drop);
-    grab.addEventListener('pointercancel', drop);
+    var rebuild = debounce(function () {
+      if (sec.clientWidth !== W || sec.clientHeight !== H) build();
+    }, 150);
+    if ('ResizeObserver' in window) new ResizeObserver(function () { if (!cols) build(); else rebuild(); }).observe(sec);
+    else addEventListener('resize', rebuild);
 
+    sec.classList.add('eye-on');
     build();
-    return build;
+    if (reduced) { finish(); paint(); } else kick();
+    return function () { bake(); paint(); };
+  }
+
+  // footer: the same eye, smaller; it watches the cursor and dozes off when nobody moves
+  function initNap() {
+    var cv = document.querySelector('.end__eye');
+    if (!cv) return null;
+    var ctx = cv.getContext('2d'), W = 0, H = 0, dpr = 1, cw = 7, ch = 13, cols = 0, rows = 0;
+    var cols8 = null, raf = 0, vis = false, last = 0, op = 0, LX = 0, LY = 0;
+    var ptr = null, act = -1e9, blinkT = -99, t0 = performance.now();
+
+    function colors() {
+      var p = readPal(), out = [[], []];
+      for (var l = 0; l < 10; l++) {
+        var k = Math.pow(l / 9, .8);
+        out[0].push(rgb(mix(mix(p.bg, p.ink3, .6), p.ink, k)));
+        out[1].push(rgb(mix(mix(p.bg, p.acc, .35), p.acc, k)));
+      }
+      out.z = rgb(p.acc);
+      cols8 = out;
+    }
+    function size() {
+      dpr = Math.min(devicePixelRatio || 1, 2);
+      W = cv.clientWidth; H = cv.clientHeight;
+      if (!W || !H) return;
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+      var fs = W < 420 ? 10 : 11;
+      cw = fs * .62; ch = fs * 1.18;
+      cols = Math.floor(W / cw); rows = Math.floor(H / ch);
+      colors();
+    }
+
+    function cell(X, Y, t, c, r) {
+      var EW = W * .44, EH = H * .4, x = X / EW, y = Y / EH;
+      if (Math.abs(x) >= 1) return null;
+      y -= (1 - op) * .3 * (1 - x * x);
+      var h = op * (1 - x * x) * (y < 0 ? 1.08 : .92), ad = Math.abs(y);
+      if (ad < h) {
+        var ix = X - LX * EW * .42, iy = Y - LY * EH * .22, ir = Math.sqrt(ix * ix + iy * iy), IR = EH * .62;
+        var shade = 1 - .5 * Math.pow(clamp(1 - (h - ad) / .35, 0, 1), 2);
+        var gx = ix + IR * .35, gy = iy + IR * .4;
+        if (ir < IR && gx * gx + gy * gy < IR * IR * .03) return [1, 0];
+        if (ir < IR * .45) return [.03, 0];
+        if (ir < IR) {
+          var ang = Math.atan2(iy, ix), fib = .5 + .5 * Math.sin(ang * 26 + Math.sin(ang * 6) * 2 + ir * .4);
+          return [(.35 + .55 * fib) * shade * (1 - .6 * Math.pow(clamp((ir / IR - .82) / .18, 0, 1), 1.5)), 1];
+        }
+        return [(.82 - .4 * x * x) * shade, 0];
+      }
+      var e = ad - h, ep = e * EH;
+      if (ep < ch * .55) return [.62, 0, op < .15 ? '~' : '-'];
+      // lashes fan out over the top lid when open, hang under the line when shut
+      var side = op < .15 ? y > 0 : y < 0;
+      if (side && ep < ch * 2.4 && Math.abs(x) < .82 && c % 3 === 0) {
+        var lean = x < -.25 ? '\\' : x > .25 ? '/' : '|';
+        if (op < .15) lean = x < -.25 ? '/' : x > .25 ? '\\' : '|';
+        return [.5 * (1 - ep / (ch * 2.4)) + .2, 0, lean];
+      }
+      return null;
+    }
+
+    function draw(t) {
+      if (!cols) return;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, W, H);
+      ctx.font = '500 ' + (ch * .82).toFixed(1) + 'px "JetBrains Mono", ui-monospace, monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      var fl = Math.floor(t * 6);
+      for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) {
+        var X = (c + .5) * cw - W / 2, Y = (r + .5) * ch - H / 2, res = cell(X, Y, t, c, r);
+        if (!res || res[0] < .04) continue;
+        var lv = clamp(Math.floor(res[0] * 10), 0, 9), vr = hash2(c, r) * 4 | 0;
+        if (hash2(c + fl, r) < .03) vr = (vr + 1) & 3;
+        ctx.fillStyle = cols8[res[1]][lv];
+        ctx.fillText(res[2] || RAMP[lv][vr], X + W / 2, Y + H / 2);
+      }
+      if (op < .2) {
+        ctx.fillStyle = cols8.z;
+        for (var k = 0; k < 3; k++) {
+          var ph = (t * .3 + k / 3) % 1;
+          ctx.globalAlpha = Math.sin(ph * Math.PI) * (1 - op * 5);
+          ctx.font = '500 ' + (ch * (.8 + ph * .9)).toFixed(1) + 'px "JetBrains Mono", ui-monospace, monospace';
+          ctx.fillText(ph < .5 ? 'z' : 'Z', W * .76 + ph * W * .1 + Math.sin(ph * 9 + k) * 6, H * .4 - ph * H * .42);
+        }
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    function frame(ts) {
+      raf = 0;
+      if (!vis) return;
+      if (ts - last < 33) { raf = requestAnimationFrame(frame); return; }
+      last = ts;
+      var t = (ts - t0) / 1000, awake = ts - act < 4500;
+      var k = Math.floor(t / 4.2), bt = k * 4.2 + 1 + hash2(k, 3) * 2.5;
+      var target = awake ? blinkAt(t - bt) * blinkAt(t - blinkT) : 0;
+      op += (target - op) * (target > op ? .25 : awake ? .45 : .035);
+      if (ptr) {
+        var b = cv.getBoundingClientRect();
+        var tx = clamp((ptr.x - b.left - W / 2) / (W * .6), -1, 1), ty = clamp((ptr.y - b.top - H / 2) / (H * 1.4), -1, 1);
+        LX += (tx - LX) * .15; LY += (ty - LY) * .15;
+      }
+      draw(t);
+      raf = requestAnimationFrame(frame);
+    }
+    function kick() { if (!raf && vis) raf = requestAnimationFrame(frame); }
+    function wake() { act = performance.now(); }
+
+    addEventListener('pointermove', function (e) { ptr = { x: e.clientX, y: e.clientY }; wake(); }, { passive: true });
+    addEventListener('scroll', wake, { passive: true });
+    addEventListener('touchstart', wake, { passive: true });
+    cv.addEventListener('click', function () { wake(); blinkT = (performance.now() - t0) / 1000; });
+
+    size();
+    if (reduced) { op = 1; draw(0); }
+    else if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) { vis = es[0].isIntersecting; if (vis) kick(); }).observe(cv);
+    }
+    addEventListener('resize', debounce(function () { size(); if (reduced) draw(0); }, 150));
+    return function () { colors(); if (reduced) draw(0); };
   }
 
   function initCord() {

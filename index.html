@@ -29,11 +29,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tektur:wdth,wght@75..100,500..900&family=JetBrains+Mono:ital,wght@0,400..600;1,400&family=Pixelify+Sans:wght@500..700&display=swap">
-<link rel="stylesheet" href="assets/css/site.css?v=73d8fd3e">
+<link rel="stylesheet" href="assets/css/site.css?v=5d9c0fcb">
 <script>
   try { var t = localStorage.getItem('zipka-tone'); if (t === 'acid' || t === 'rust') document.documentElement.dataset.tone = t; else if (localStorage.getItem('zipka-season') !== 'off') document.documentElement.dataset.season = 'winter'; } catch (e) { document.documentElement.dataset.season = 'winter'; }
 </script>
-<script defer src="assets/js/site.js?v=73d8fd3e"></script>
+<script defer src="assets/js/site.js?v=5d9c0fcb"></script>
 
 <script type="application/ld+json">
 {
@@ -73,25 +73,13 @@
 
 <main id="main">
   <section class="hero" id="top">
-    <div class="zip__stage">
-      <div class="lining">
-        <div class="lining__in">
-          <div class="neck">
-            <h1 class="mark" aria-label="justzipka.fun"><svg class="mark__svg" viewBox="0 -726 3717 926" aria-hidden="true"><path d="M122 -560H316V200H100L0 100V40H122ZM122 -606V-726H316V-606Z M814 -560V0H488L360 -128V-560H554V-168H620V-560Z M857 0V-152H1065V-233H857V-448L969 -560H1259V-408H1051V-329H1259V-111L1148 0Z M1302 -650 1496 -700V-540H1620V-380H1496V-160H1620V0H1430L1302 -128Z M1640 0V-140L1784 -400H1644V-560H1994V-420L1850 -160H1998V0Z M2030 0V-560H2224V0ZM2030 -606V-726H2224V-606Z M2268 140V-560H2594L2722 -432V-128L2594 0H2462V140ZM2528 -400H2462V-160H2528Z M2765 0V-700H2959V-371H2989L3033 -560H3234L3150 -301L3243 0H3040L2992 -211H2959V0Z M3257 -112V-328L3499 -338V-400H3267V-560H3557L3685 -432V0H3369ZM3443 -233V-152H3499V-252Z"/></svg><span class="mark__px" aria-hidden="true">.fun</span></h1>
-            <p class="neck__meta"><span>веб-дизайнер и разработчик</span><span>размер: под любой экран</span></p>
-          </div>
-          <p class="lining__big">Привет, я Зипка.<br>Делаю сайты<br>от идеи до запуска.</p>
-          <a class="hero__link" href="https://t.me/holyfear" target="_blank" rel="noopener">Написать в Telegram <span>@holyfear</span></a>
-        </div>
-      </div>
-      <canvas class="zip__cv" id="zip" aria-hidden="true"></canvas>
-      <div class="hands" aria-hidden="true">
-        <img class="hand hand--l" src="assets/hands/hand-left.png" alt="" width="1422" height="800">
-        <img class="hand hand--r" src="assets/hands/hand-right.png" alt="" width="1458" height="800">
-      </div>
-      <div class="zip__grab" aria-hidden="true"></div>
-      <p class="zip__hint" aria-hidden="true"><b>расстегни</b>листай или тяни бегунок <i>↓</i></p>
+    <canvas class="eye" id="eye" aria-hidden="true"></canvas>
+    <h1 class="sr">justzipka.fun</h1>
+    <div class="hero__body">
+      <p class="hero__lead">Сайты, боты и Mini Apps.<br>От идеи до запуска.</p>
+      <a class="hero__link" href="https://t.me/holyfear" target="_blank" rel="noopener">Написать в Telegram <span>@holyfear</span></a>
     </div>
+    <button class="hero__skip" type="button">пропустить</button>
   </section>
 
   <section class="sec" id="about">
@@ -99,7 +87,6 @@
     <div class="about">
       <p class="about__big">Каждый сайт сам придумываю, рисую, верстаю и выкладываю в сеть. Ещё пишу Telegram-ботов и Mini Apps.</p>
       <dl class="specs">
-        <div><dt>ник</dt><dd>Зипка / justzipka</dd></div>
         <div><dt>стек</dt><dd>HTML, CSS, JavaScript, Python</dd></div>
         <div><dt>часовой пояс</dt><dd>МСК, UTC+3</dd></div>
         <div><dt>статус</dt><dd class="ok">беру новые проекты</dd></div>
@@ -219,12 +206,12 @@
 
 <footer class="end">
   <div class="end__in">
-    <svg class="end__logo" viewBox="0 0 168 43" aria-hidden="true"><path d="M128 0h5v1h-5zM64 2h4v1h-4zM11 2h4v1h-4zM98 2h7v1h-7zM97 3h7v1h-7zM128 1h6v4h-6zM10 3h6v2h-6zM101 4h3v2h-3zM97 4h2v2h-2zM11 5h5v2h-5zM97 6h7v1h-7zM98 7h6v1h-6zM64 3h5v7h-5zM128 5h5v5h-5zM43 9h2v1h-2zM8 10h8v1h-8zM77 10h17v1h-17zM43 10h11v1h-11zM108 10h4v2h-4zM8 11h6v1h-6zM79 11h15v1h-15zM44 11h10v1h-10zM77 11h1v1h-1zM138 10h6v3h-6zM114 10h8v3h-8zM128 10h6v3h-6zM59 10h16v3h-16zM152 10h11v3h-11zM31 10h6v3h-6zM15 12h2v1h-2zM108 12h5v1h-5zM77 12h17v1h-17zM9 12h5v1h-5zM43 12h11v1h-11zM39 13h17v1h-17zM78 13h15v1h-15zM60 13h14v1h-14zM149 13h17v1h-17zM94 13h1v1h-1zM11 13h6v1h-6zM108 13h17v2h-17zM137 13h6v2h-6zM149 14h6v1h-6zM70 14h4v1h-4zM60 14h9v1h-9zM39 14h10v1h-10zM160 14h6v1h-6zM50 14h6v1h-6zM78 14h17v1h-17zM128 13h5v3h-5zM89 15h5v1h-5zM120 15h6v1h-6zM108 15h8v2h-8zM51 15h5v2h-5zM149 15h5v2h-5zM86 16h8v1h-8zM40 15h5v3h-5zM136 15h5v3h-5zM128 16h6v2h-6zM86 17h5v2h-5zM161 15h5v5h-5zM40 18h8v2h-8zM84 19h7v1h-7zM128 18h12v5h-12zM83 20h6v3h-6zM43 20h11v3h-11zM152 20h14v3h-14zM149 23h18v1h-18zM48 23h8v2h-8zM136 23h5v2h-5zM149 24h15v1h-15zM31 13h5v13h-5zM108 17h5v9h-5zM128 23h5v3h-5zM81 23h5v3h-5zM166 24h2v2h-2zM161 25h4v1h-4zM136 25h6v1h-6zM136 26h7v1h-7zM78 26h8v1h-8zM20 10h5v18h-5zM64 15h5v13h-5zM120 16h5v12h-5zM51 25h5v3h-5zM149 25h5v3h-5zM108 26h8v2h-8zM29 26h7v2h-7zM40 26h5v2h-5zM158 26h8v2h-8zM78 27h5v1h-5zM138 27h5v1h-5zM129 26h5v3h-5zM64 28h10v1h-10zM99 10h5v20h-5zM138 28h7v2h-7zM149 28h17v2h-17zM20 28h16v2h-16zM40 28h16v2h-16zM64 29h7v1h-7zM128 29h6v1h-6zM108 28h14v3h-14zM73 29h1v2h-1zM99 30h6v1h-6zM140 30h5v2h-5zM66 30h6v2h-6zM73 31h2v1h-2zM11 14h5v19h-5zM78 28h16v5h-16zM128 30h5v3h-5zM22 30h8v3h-8zM32 30h4v3h-4zM161 30h5v3h-5zM152 30h8v3h-8zM43 30h11v3h-11zM114 31h3v2h-3zM98 31h7v2h-7zM141 32h4v1h-4zM5 32h2v1h-2zM66 32h9v1h-9zM1 32h2v1h-2zM0 33h7v1h-7zM11 33h6v2h-6zM0 34h6v1h-6zM1 35h16v2h-16zM108 31h5v9h-5zM4 37h9v3h-9zM108 40h3v1h-3zM108 41h4v1h-4zM113 41h1v1h-1zM108 42h5v1h-5z"/></svg>
+    <canvas class="end__eye" aria-hidden="true"></canvas>
     <button class="end__tone" type="button" aria-label="Сменить расцветку сайта"><i>расцветка</i><b>розовая</b><span>дёрни за язычок</span></button>
   </div>
   <canvas class="end__cord" id="cord" aria-hidden="true"></canvas>
   <div class="end__grab" aria-hidden="true"></div>
-  <div class="end__row"><span>justzipka.fun</span><a href="#top">наверх ↑</a></div>
+  <div class="end__row"><span class="end__clock">у меня сейчас <b>--:--</b> по мск</span><a href="#top">наверх ↑</a></div>
 </footer>
 <div class="peek" aria-hidden="true"><img alt="" width="640" height="400"></div>
 
